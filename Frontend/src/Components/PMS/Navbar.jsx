@@ -18,6 +18,7 @@ import {
 import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 import EaiiIcon from "../Assets/Eaii.png";
+import ECSCIcon from "../Assets/ethiopian_civil_service_commistion_logo.jpeg";
 import apiService from "../services/apiServices";
 import ProfileUpdate from "./Myprofile";
 import "./Navbar.css";
@@ -240,8 +241,8 @@ const Navbar = (props) => {
         </div>
         <div class="flex flex-row sm:justify-between md:justify-between   place-content-center py-4 bg-sky-950 w-full ">
           <div class="flex flex-row space-x-3 items-center ">
-            <img src={EaiiIcon} alt="Logo" class="hidden lg:block md:block" />
-            <Typography class="text-white">EAII-PMS</Typography>
+            <img src={ECSCIcon} alt="Logo" class="hidden lg:block md:block" />
+            <Typography class="text-white">ECSC-PMS</Typography>
             <Typography class="text-white">{props.userName}</Typography>
           </div>
           <div class="flex flex-row gap-10">
