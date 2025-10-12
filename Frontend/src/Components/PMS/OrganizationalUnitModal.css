@@ -1,0 +1,64 @@
+/*Employee*/
+.employee table {
+  width: 50vw;
+  border-collapse: collapse;
+}
+
+.employee tr:nth-child(odd) {
+  background: #f7f6fe;
+}
+.employee th {
+  background: #fff;
+  font-size: 3vh;
+}
+.emp-role {
+  height: 2vh;
+  margin-left: -2vw;
+}
+.employee-name {
+  margin-bottom: 2vw;
+  margin-left: 4vw;
+  color: #172b4d;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.employee th,
+.employee td {
+  padding: 2vh;
+  font: "Montserrat";
+  line-height: 1.2rem;
+  text-align: center;
+}
+.employee-info {
+  margin-right: -4vw;
+  display: flex;
+  align-items: center;
+}
+.employee-info img {
+  margin-right: 10px;
+}
+
+/* Add Division button*/
+.division-buttons {
+  margin-left: 75.5%;
+}
+.add-div-title {
+  margin-top: 1vw;
+  margin-bottom: 2vw;
+  color: #172b4d;
+  font-size: 24px;
+  font-weight: 700;
+}
+/*Org-unit-edit*/
+.edit-div-title {
+  margin-top: 1vw;
+  margin-bottom: 2vw;
+  color: #172b4d;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.org_unit_edit-buttons {
+  margin-left: 68%;
+}

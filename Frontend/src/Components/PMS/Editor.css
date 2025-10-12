@@ -1,0 +1,14 @@
+/* Editor.css */
+.editor-container {
+  border: 1px solid #ccc;
+  padding: 10px;
+  height: 300px; /* Adjust as needed */
+}
+
+.DraftEditor-editorContainer {
+  border: 1px solid #ddd;
+  cursor: text;
+  padding: 15px;
+  background-color: #fefefe;
+  min-height: 140px; /* Adjust as needed */
+}

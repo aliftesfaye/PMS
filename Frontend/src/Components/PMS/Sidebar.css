@@ -1,0 +1,106 @@
+.sidebar-container {
+  width: 15vw;
+  height: 90vh;
+  padding: 20px;
+  box-shadow: 2px 4px 2px 0px #0000001a;
+}
+
+.link,
+.dropdown-item {
+  gap: 1vw;
+  display: flex;
+  align-items: center;
+  margin-bottom: 1vh;
+  padding: 7px;
+  padding-left: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 200;
+  transition: background-color 0.3s ease;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+}
+.link:hover {
+  gap: 1vw;
+  display: flex;
+  align-items: center;
+  margin-bottom: 1vh;
+  padding: 7px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 200;
+  transition: background-color 0.3s ease;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  background: #e7e7ee;
+}
+
+.link img {
+  margin-right: 10px;
+}
+
+.dropdown-item img {
+  margin-right: 10px;
+}
+
+.link.selected,
+.link .selected img {
+  gap: 1vw;
+  background-color: #082f49;
+  color: #fff;
+}
+
+.dropdown_items.selected,
+.dropdown_items .selected img {
+  background-color: #e9f2ff;
+  color: #0c66e4;
+}
+
+/* .home-box {
+  margin-top: -40vw;
+  margin-left: 20vw;
+  height: 66vh;
+}
+
+.projects-box {
+  margin-top: -105vh;
+  height: 97.3vh;
+}
+
+.teams-box {
+  margin-top: -48vw;
+  margin-left: 1vw;
+}
+
+.users-box {
+  margin-top: -50vw;
+  margin-left: 20vw;
+}
+
+.roles-box {
+  margin-top: -103vh;
+}
+
+.sectors-box {
+  margin-top: -58vw;
+  margin-left: 20vw;
+}
+
+.organizational-unit-box {
+  margin-top: -49vw;
+} */
+
+.dropdown-icon {
+  cursor: pointer;
+  /* margin-left: 3vw; */
+  align-self: right;
+}
+
+.dropdown-item {
+  padding-left: 2.5vw;
+  /* width: 12vw; */
+}
+
+/* .orgone {
+  margin-top: 0;
+} */

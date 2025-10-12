@@ -1,0 +1,80 @@
+.division table {
+  width: 60vw;
+  border-collapse: collapse;
+}
+.division tr:nth-child(odd) {
+  background: #f7f6fe;
+}
+.division th {
+  background: #fff;
+  font-size: 3vh;
+}
+.division-name {
+  margin-bottom: 2vw;
+  color: #172b4d;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.division th,
+.division td {
+  padding: 2vh;
+  font: "Montserrat";
+  line-height: 1.2rem;
+  text-align: center;
+}
+.sector-buttons {
+  margin-top: -15vh;
+  margin-left: 40.5vw;
+}
+.sector-edit-buttons {
+  margin-top: -15vh;
+  margin-left: 65%;
+}
+.create-new-sector-container {
+  width: 60vw;
+  margin-left: 2vw;
+  margin-bottom: 5%;
+}
+/*add sector*/
+.dropdown-icon {
+  cursor: pointer;
+  .dropdown-icon {
+    position: absolute;
+    top: 50%;
+    right: 10px; /* Adjust the right spacing */
+    transform: translateY(-50%);
+    color: #333; /* Adjust the color of the icon */
+    cursor: pointer;
+  }
+}
+
+.dropdown-options {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.dropdown-option {
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.dropdown-option:hover {
+  background-color: #f0f0f0;
+}
+
+.dropdown-options::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dropdown-options::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
+}
+
+.dropdown-options::-webkit-scrollbar-thumb:hover {
+  background-color: #999;
+}

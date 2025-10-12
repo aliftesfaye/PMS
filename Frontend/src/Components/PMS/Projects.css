@@ -1,0 +1,192 @@
+.proj-title {
+  margin-left: 20%;
+  margin-top: 100px;
+  width: 22.5vw;
+  height: 1.4vh;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 2.4vh;
+  color: #172b4d;
+}
+
+.status-filter {
+  margin-top: 30px;
+  margin-bottom: 10px;
+  width: 1020px;
+  margin-left: 19%;
+  display: flex;
+}
+
+.status-filter span {
+  cursor: pointer;
+  padding: 10px 10px;
+  color: #909090;
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+.status-filter span.active-filter {
+  color: blue;
+}
+.create-project-button {
+  margin-left: 525px;
+  width: 200px;
+  border-radius: 5px;
+  border: none;
+  background: #0c8ce9;
+  color: white;
+  cursor: pointer;
+}
+.proj table {
+  width: 1000px;
+  margin-left: 19%;
+  border-collapse: collapse;
+}
+
+.proj th,
+.proj td {
+  width: 100px;
+  padding: 5px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1rem;
+  line-height: 1.2rem;
+  text-align: left;
+}
+.technical-manager {
+  margin: 0px 30px;
+}
+.project-manager {
+  margin: 0rem 30px;
+}
+
+.members-image {
+  border-radius: 50%;
+  margin-right: -0.5vw;
+}
+.members-container {
+  display: flex;
+}
+
+.completed,
+.canceled,
+.process {
+  border-radius: 16px;
+  margin-left: -1.5vw;
+  padding: 0.5rem;
+}
+
+.completed {
+  color: #1f9254;
+  background: #ebf9f1;
+}
+
+.canceled {
+  color: #a30d11;
+  background-color: #fbe7e8;
+}
+
+.process {
+  color: #cd6200;
+  background-color: #fef2e5;
+}
+
+.proj th {
+  background: #fff;
+}
+
+.proj tr:nth-child(odd) {
+  background: #f7f6fe;
+}
+.initials {
+  margin-right: 0.7036rem;
+  font-size: 1rem;
+  padding: 0.4rem;
+  color: #ffffff;
+  border-radius: 0.2rem;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 16px;
+  position: relative;
+}
+
+.background-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.create-project-container {
+  width: 65vw;
+  height: 65vh;
+  background-color: blue;
+  border-radius: 16px;
+  position: absolute;
+  z-index: 999;
+}
+
+.close-button {
+  cursor: pointer;
+
+  margin-left: 80vw;
+  background-color: white;
+  border: none;
+  border-radius: 4px;
+}
+
+@media (max-width: 760px) {
+  .status-filter {
+    margin-left: 0.4rem;
+  }
+  .projects-container {
+    max-width: calc(100% - 2500px);
+  }
+  .projects-wrapper {
+    overflow-x: auto;
+  }
+  .proj-title {
+    margin-left: 1rem;
+  }
+  .proj table {
+    margin-left: 0.7rem;
+  }
+  .create-project-button {
+    margin-left: -14rem;
+    margin-top: 3rem;
+  }
+}
+@media (max-width: 1340px) {
+  .projects-wrapper {
+    margin-left: 19vw;
+    padding-left: 1vw;
+    overflow-x: auto;
+  }
+
+  .projects-container {
+    max-width: calc(100% - 2500px);
+  }
+}
+
+/* Define the hover highlight color for the table row */
+.hoverTable tbody tr:hover {
+  background-color: #faf9fe;
+  cursor: pointer;
+}

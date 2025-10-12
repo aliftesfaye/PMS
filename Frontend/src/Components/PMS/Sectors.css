@@ -1,0 +1,94 @@
+.sectors-container{
+  margin-left: 2vw;
+  }
+  .search-add {
+    display: flex;
+    align-items: center;
+    margin-top: 6vh;
+    width:72vw;
+    margin-bottom:3vh;
+    margin-left: 19vw;
+  }
+  .sector-search-input:focus {
+    border: none; 
+    outline: none; 
+  }
+ 
+  .sector-search {
+    display: flex;
+    width: 20vw;
+    border-radius: 5px;
+    border: 1px solid #00000040;
+    background: #FFFFFF;
+  }
+  
+  .sector-search img {
+    width: 1.5vw;
+    margin-left: 1vw;
+    height: 5vh;
+    object-fit: contain;
+  }
+ 
+  .sector-search-input {
+    margin-left: 1vw;
+    border: none;
+    margin-top: -3px;
+    outline: none;
+    background: none;
+    width: 15vw;
+  }
+ 
+.add-sector-button {
+ color:white;
+ width: 12vw;
+ margin-left: 37vw;
+  }
+  .sector-division-button, .sector-edit-button , .sector-delete-button {
+    width: 55px;
+    height: 32px;
+    left: 4.5px;
+    margin-right: 10px;
+    border-radius: 5px;
+    color: white;
+
+  }
+  .sector-division-button{
+    width: 6vw;
+  }
+  .sector table {
+    width: 66vw;
+    margin-left: 22vw;
+    border-collapse: collapse;
+  }
+  
+  .sector th,
+  .sector td {
+    padding: 1.5vh;
+    font: 'Montserrat';
+    line-height: 1.2rem;
+    text-align: left;
+  }
+.sec-leader{
+  padding-left: -5vw;
+}
+.sec-leader img{
+  margin-left: 0.9vw;
+}
+  .sector th {
+    background: #fff;
+  }
+  
+  
+  .sector tr:nth-child(odd) {
+    background: #F7F6FE;
+  }
+
+
+  .sector-edit-button {
+    background: #EB8F0D;
+  }
+  
+  .sector-delete-button {
+    width: 67px;
+    background: #F21611;
+  }

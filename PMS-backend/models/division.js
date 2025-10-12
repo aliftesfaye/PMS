@@ -1,0 +1,52 @@
+// models/division.js
+
+module.exports = (sequelize, DataTypes) => {
+  const Division = sequelize.define(
+    "Divisions",
+    {
+      division_id: {
+        type: DataTypes.UUID,
+        primaryKey: true,
+        allowNull: false,
+      },
+      sector_id: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+          model: "Sectors",
+          key: "sector_id",
+        },
+      },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      head_id: {
+        type: DataTypes.UUID,
+        allowNull: true,
+      },
+
+      created_by: DataTypes.UUID,
+      updated_by: DataTypes.UUID,
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
+      is_deleted: {
+        allowNull: false,
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      deletionAt: DataTypes.DATE,
+      deletedBy: DataTypes.UUID,
+    },
+    {
+      timestamps: true,
+      sequelize,
+      tableName: "divisions",
+      modelName: "Division",
+    }
+  );
+  Division.associate = (models) => {
+    Division.hasMany(models.User, { foreignKey: "division_id", as: "User" });
+  };
+  return Division;
+};

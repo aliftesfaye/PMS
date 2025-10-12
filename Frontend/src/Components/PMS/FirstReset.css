@@ -1,0 +1,86 @@
+
+  .reset-password-container-input{
+    width: 25rem;
+  height: 93vh;
+  margin-left:30rem;
+  background: white;
+  }
+  .reset-password-container {
+    background: #F3F3F4; 
+    margin-top: -2vw;  
+    padding-top: 0.02vw;
+     
+}
+
+.center-container{
+  padding-top:2vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 4vw; 
+  margin-bottom: 1vw; 
+}
+
+
+.titlee{
+  margin-bottom: 0.5vw;
+  font-family: Poppins;
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: 0em;
+  text-align: left;
+  color: #181B5E;
+}
+.subtitlee{
+  font-family: Poppins;
+  font-size: 22px;
+  margin-left: -1vw;
+  font-weight: 600;
+  letter-spacing: 0em;
+  text-align: left;
+  color: #181B5E;
+}
+.sub-subtitle{
+  margin-bottom: 0.5vw;
+  margin-left: 5vw;
+  font-size: 15px;
+  width: 30vw;
+  color: #828282;
+  ;
+}
+.res-group{
+  margin-bottom: 1rem;
+  margin-left: 3vw;
+}
+.res-input::placeholder {
+  text-indent: 0.5vw; 
+}
+.res-buttons{
+  margin-left:0.5rem;
+}
+.res-buttons button {
+  width: 21.6rem; 
+  height: 6vh;
+  margin-top: 1vw;
+}
+/* FirstResetPage.css */
+
+.container1 {
+  position: relative;
+  margin-left: 20rem;
+  width: 0rem;
+  margin-top: 6rem;
+}
+
+.first-reset {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.login-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+}

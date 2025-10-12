@@ -1,0 +1,503 @@
+const { where } = require("sequelize");
+const db = require("../../config/db");
+const Sub_task = db.Sub_task;
+const User = db.User;
+const Task_member = db.Task_member;
+const Task = db.Task;
+const Notification = db.Notification;
+const Sub_task_member = db.Sub_task_member;
+const Project_member = db.Project_member;
+const Project = db.Project;
+const Activity = db.Activity;
+const { v4: uuidv4 } = require("uuid");
+
+//const uuid = uuidv4();
+
+const getAlltaskMembers = async (req, res) => {
+  try {
+    const members = await db.Task_member.findAll();
+    return res.status(200).json(members);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+const createSubTask = async (req, res, io) => {
+  const uuid = uuidv4();
+
+  const {
+    name,
+    subtask_status,
+    start_date,
+    end_date,
+    subtaskmembers,
+    is_milestone,
+    description,
+  } = req.body;
+  const { task_id } = req.params;
+
+  if (
+    !name ||
+    !subtask_status ||
+    !subtaskmembers ||
+    !start_date ||
+    !end_date ||
+    !task_id
+  ) {
+    return res
+      .status(400)
+      .json({ message: "Please provide the information properly" });
+  }
+
+  try {
+    const existingSubTask = await Sub_task.findOne({
+      where: { name: name, task_id: task_id },
+    });
+    if (existingSubTask) {
+      return res.status(409).json({ message: "Sub_task name already exists" });
+    }
+
+    const task = await Task.findByPk(task_id, {
+      include: [
+        {
+          model: Activity,
+          as: "activity",
+        },
+      ],
+    });
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
+    const subTask = await Sub_task.create({
+      sub_task_id: uuid,
+      name,
+      task_id,
+      subtask_status,
+      start_date,
+      end_date,
+      is_milestone,
+      description,
+    });
+
+    const notifications = [];
+    for (const value of subtaskmembers) {
+      const projectMember = await Project_member.findOne({
+        where: { project_member_id: value },
+      });
+      if (!projectMember) {
+        await Sub_task.destroy({ where: { sub_task_id: uuid } });
+        return res.status(400).json({ message: "Select member properly" });
+      }
+
+      await Sub_task_member.create({
+        subtask_member_id: uuidv4(),
+        sub_task_id: uuid,
+        project_member_id: value,
+      });
+
+      // Create notification for each subtask member
+      const notification = await Notification.create({
+        notification_id: uuidv4(),
+        message: `A new sub-task "${name}" has been created in task "${task.name}".`,
+        user_id: projectMember.user_id,
+        project_id: task.activity.project_id,
+      });
+      notifications.push(notification);
+    }
+
+    // Update the is_milestone value of the Task and its associated Activity if necessary
+    if (is_milestone) {
+      await task.update({ is_milestone: true });
+      await task.activity.update({ is_milestone: true });
+    }
+
+    // Prepare notifications to emit via Socket.IO
+    let notificationArray = [];
+    const unreadNotifications = await Notification.findAll({
+      where: { read: 0 },
+    });
+
+    let customId = 1; // Start with 1 as the initial custom ID
+    for (const notification of unreadNotifications) {
+      notificationArray.push({
+        id: customId,
+        notification_id: notification.notification_id,
+        message: notification.message,
+        user_id: notification.user_id,
+        date: new Date(notification.createdAt).toLocaleTimeString(),
+      });
+      customId++;
+    }
+
+    // Emit notifications after a delay
+    setTimeout(() => {
+      io.emit("notification", notificationArray);
+    }, 3000);
+
+    return res.status(201).json({ message: "Sub-task created", subTask });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+const getAllSubTasks = async (req, res) => {
+  const { task_id } = req.params;
+  try {
+    const subTasks = await Sub_task.findAll({
+      where: { task_id: task_id, is_deleted: false },
+      include: [
+        {
+          model: Project_member,
+          as: "members",
+          attributes: ["user_id", "project_member_id"],
+          through: { attributes: [] },
+          include: [
+            {
+              model: User,
+              as: "UserInfo",
+              attributes: ["full_name", "img_url", "email"],
+            },
+          ],
+        },
+      ],
+    });
+    return res.status(200).json(subTasks);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+const getSubTaskById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const subTask = await Sub_task.findOne({
+      where: { sub_task_id: id, is_deleted: false },
+    });
+    if (!subTask) {
+      return res.status(404).json({ message: "Sub-task not found" });
+    }
+    return res.status(200).json(subTask);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+const updateSubTask = async (req, res) => {
+  const { id } = req.params;
+  const {
+    name,
+    start_date,
+    end_date,
+    subtaskmembers,
+    is_milestone,
+    description,
+  } = req.body;
+
+  // Convert subtaskmembers to an array
+  //let subtaskmembers = [];
+  // if (subtaskmembers && typeof subtaskmembers === 'string') {
+  //   subtaskmembers = subtaskmembers.split(",");
+  // }
+
+  try {
+    const subTask = await Sub_task.findOne({
+      where: { sub_task_id: id, is_deleted: false },
+    });
+    if (!subTask) {
+      return res.status(404).json({ message: "Sub-task not found" });
+    }
+
+    // Update the sub-task
+    await subTask.update({
+      name,
+      start_date,
+      end_date,
+      is_milestone,
+      description,
+      //...add any attribute here to update
+    });
+
+    // Delete existing sub task members
+    await Sub_task_member.destroy({
+      where: { sub_task_id: id },
+    });
+
+    // Create new sub-task members
+    for (const value of subtaskmembers) {
+      await Sub_task_member.create({
+        subtask_member_id: uuidv4(),
+        sub_task_id: id,
+        project_member_id: value.project_member_id,
+      });
+    }
+
+    return res.status(200).json({ message: "Sub-task updated" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+const deleteSubTask = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const subTask = await Sub_task.findByPk(id);
+    if (!subTask) {
+      return res.status(404).json({ message: "Sub-task not found" });
+    }
+
+    await subTask.destroy();
+    return res.status(200).json({ message: "Sub-task deleted" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+const getSubTaskMembers = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const subTask = await Sub_task.findByPk(id, {
+      include: [
+        {
+          model: Project_member,
+          as: "members", // Use the correct alias here
+          attributes: ["user_id"],
+          through: { attributes: [] },
+          include: [
+            {
+              model: User,
+              as: "UserInfo",
+              attributes: ["full_name", "img_url", "email"],
+            },
+          ],
+        },
+      ],
+    });
+    if (!subTask) {
+      return res.status(404).json({ message: "Sub_task not found" });
+    }
+    const members = subTask.members;
+    return res.status(200).json(subTask);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+const getSubtaskofmember = async (req, res) => {
+  const { project_member_id } = req.params;
+
+  try {
+    const subTask = await Sub_task_member.findAll({
+      where: { project_member_id: project_member_id },
+      include: [
+        {
+          model: Sub_task,
+          as: "Subtaskdetail",
+        },
+      ],
+    });
+
+    if (!subTask) {
+      return res.status(404).json({ message: "Sub-task member not found" });
+    }
+    const completedSubtasks = subTask.filter(
+      (task) => task.Subtaskdetail.subtask_status === "Completed"
+    );
+    const InprogeressSubtasks = subTask.filter(
+      (task) => task.Subtaskdetail.subtask_status === "In Progress"
+    );
+    const pendingSubtasks = subTask.filter(
+      (task) => task.Subtaskdetail.subtask_status === "Pending"
+    );
+
+    const response = {
+      data: subTask,
+      totalCount: subTask.length,
+      completedCount: completedSubtasks.length,
+      InprgressCount: InprogeressSubtasks.length,
+      pendingCount: pendingSubtasks.length,
+    };
+
+    return res.status(200).json(response);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+const updateSubTaskStatus = async (req, res, io) => {
+  const { id } = req.params;
+  const { subtask_status } = req.body;
+
+  try {
+    // Find the sub-task
+    const subTask = await Sub_task.findOne({
+      where: { sub_task_id: id, is_deleted: false },
+      include: [
+        {
+          model: Task,
+          as: "Task",
+          include: [
+            {
+              model: Activity,
+              as: "activity",
+              include: [
+                {
+                  model: Project,
+                  as: "project",
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!subTask) {
+      return res.status(404).json({ message: "Sub-task not found" });
+    }
+
+    // Update the sub-task status
+    await subTask.update({
+      subtask_status: subtask_status,
+    });
+
+    // Check the status of other sub-tasks with the same task_id
+    const otherSubTasks = await Sub_task.findAll({
+      where: { task_id: subTask.task_id, is_deleted: false },
+    });
+
+    // Determine the overall task status based on the sub-task statuses
+    let overallTaskStatus = "Pending";
+    if (otherSubTasks.every((task) => task.subtask_status === "Completed")) {
+      overallTaskStatus = "Completed";
+    } else if (
+      otherSubTasks.some((task) => task.subtask_status === "On Progress")
+    ) {
+      overallTaskStatus = "On Progress";
+    }
+
+    // Update the task status
+    await Task.update(
+      { task_status: overallTaskStatus },
+      { where: { task_id: subTask.task_id } }
+    );
+
+    // Check if there are other tasks with the same activity_id
+    const otherTasks = await Task.findAll({
+      where: { activity_id: subTask.Task.activity_id, is_deleted: false },
+    });
+
+    // Determine the overall activity status based on the task statuses
+    let overallActivityStatus = "On Progress";
+    if (otherTasks.every((task) => task.task_status === "Completed")) {
+      overallActivityStatus = "Completed";
+    } else if (otherTasks.some((task) => task.task_status === "Pending")) {
+      overallActivityStatus = "Pending";
+    }
+
+    // Update the activity status
+    await Activity.update(
+      { activity_status: overallActivityStatus },
+      { where: { activity_id: subTask.Task.activity_id } }
+    );
+
+    // Check if there are other activities with the same project_id
+    const otherActivities = await Activity.findAll({
+      where: {
+        project_id: subTask.Task.activity.project_id,
+        is_deleted: false,
+      },
+    });
+
+    // Determine the overall project status based on the activity statuses
+    let overallProjectStatus = "On Progress";
+    if (
+      otherActivities.every(
+        (activity) => activity.activity_status === "Completed"
+      )
+    ) {
+      overallProjectStatus = "Completed";
+    } else if (
+      otherActivities.some((activity) => activity.activity_status === "Pending")
+    ) {
+      overallProjectStatus = "Pending";
+    }
+
+    // Update the project status
+    await Project.update(
+      { overall_progress: overallProjectStatus },
+      { where: { project_id: subTask.Task.activity.project_id } }
+    );
+
+    // Notify project members about the status update
+    const projectId = subTask.Task.activity.project_id;
+    const projectName = subTask.Task.activity.project.name;
+    const message = `The status of sub-task "${subTask.name}" in project "${projectName}" has been updated to "${subtask_status}".`;
+
+    await notifyProjectMembers(projectId, message, io);
+
+    return res
+      .status(200)
+      .json({ message: "Sub-task status updated", subTask });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+const notifyProjectMembers = async (projectId, message, io) => {
+  try {
+    const projectMembers = await Project_member.findAll({
+      where: { project_id: projectId },
+    });
+
+    const notifications = [];
+    for (const member of projectMembers) {
+      const notification = await Notification.create({
+        notification_id: uuidv4(),
+        message: message,
+        user_id: member.user_id,
+        project_id: projectId,
+      });
+      notifications.push(notification);
+    }
+
+    // Emit notifications to connected clients via Socket.IO
+    const notificationArray = notifications.map((notification, index) => ({
+      id: index + 1,
+      notification_id: notification.notification_id,
+      message: notification.message,
+      user_id: notification.user_id,
+      date: new Date(notification.createdAt).toLocaleTimeString(),
+    }));
+
+    setTimeout(() => {
+      io.emit("notification", notificationArray);
+    }, 3000);
+  } catch (error) {
+    console.error("Error notifying project members:", error);
+  }
+};
+
+module.exports = {
+  createSubTask,
+  getAllSubTasks,
+  getSubTaskById,
+  updateSubTask,
+  deleteSubTask,
+  getAlltaskMembers,
+  getSubTaskMembers,
+  updateSubTaskStatus,
+  getSubtaskofmember,
+};

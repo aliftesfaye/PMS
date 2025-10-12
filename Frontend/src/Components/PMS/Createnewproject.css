@@ -1,0 +1,71 @@
+.create-new-project-container {
+  padding: 3vw;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-row {
+  display: flex;
+}
+
+input {
+  border: none;
+  background: #f3f3f4;
+  width: 25vw;
+  height: 6vh;
+  border-radius: 4px;
+}
+.inputf {
+  padding-left: 1vw;
+  padding-right: 1vw;
+  justify-content: flex-end;
+  margin-top: -8vh;
+  margin-left: 44.5vw;
+  width: 25%;
+}
+.form-buttons {
+  font-family: "Poppins", sans-serif;
+  justify-content: flex-end;
+  margin-top: -2rem;
+  margin-left: 32.7rem;
+}
+
+button {
+  background-color: hsl(205, 90%, 48%);
+  padding: 10px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+}
+.required::after {
+  content: " *";
+  color: red;
+}
+
+button[type="button"] {
+  background-color: white;
+  margin-left: -1rem;
+}
+
+/* button[type="submit"] {
+  background-color: hsl(205, 90%, 48%);
+  color: white;
+  margin-left: 2rem;
+  margin-top: 3rem;
+} */
+.create-title {
+  margin-bottom: 0.5vw;
+  font-size: 28px;
+  width: 70%;
+  font-weight: 700;
+  letter-spacing: 0em;
+  text-align: left;
+  color: #181b5e;
+}

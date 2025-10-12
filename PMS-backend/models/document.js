@@ -1,0 +1,58 @@
+"use strict";
+const { DataTypes } = require("sequelize");
+
+module.exports = (sequelize) => {
+  const Document = sequelize.define(
+    "Document",
+    {
+      document_id: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        primaryKey: true,
+      },
+      document_type_id: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+          model: "document_types", // The name of the referenced model
+          key: "document_type_id",
+        },
+      },
+      project_id: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+          model: "projects", // The name of the referenced model
+          key: "project_id",
+        },
+      },
+      document: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      description: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      created_by: DataTypes.UUID,
+      updated_by: DataTypes.UUID,
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
+      is_deleted: {
+        allowNull: false,
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      deletionAt: DataTypes.DATE,
+      deletedBy: DataTypes.UUID,
+    },
+    {
+      timestamps: true,
+      sequelize,
+      tableName: "documents",
+      modelName: "Document",
+    }
+  );
+
+  return Document;
+};
