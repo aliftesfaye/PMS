@@ -26,10 +26,10 @@ const verifyAccessWithProject = (permission_id) => {
 
       const roles = await db.sequelize.query(
         `
-        SELECT Roles.role_id FROM user_roles 
-        JOIN Roles ON user_roles.role_id = Roles.role_id 
+        SELECT roles.role_id FROM user_roles 
+        JOIN roles ON user_roles.role_id = roles.role_id 
         WHERE user_roles.user_id = :user_id 
-        AND Roles.project_related = true
+        AND roles.project_related = true
       `,
         {
           replacements: { user_id: userId },
@@ -75,3 +75,4 @@ const verifyAccessWithProject = (permission_id) => {
 };
 
 module.exports = verifyAccessWithProject;
+
