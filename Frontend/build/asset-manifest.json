@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.7e92dc39.css",
-    "main.js": "/static/js/main.eba3d442.js",
+    "main.js": "/static/js/main.7822f84f.js",
     "static/js/453.464a3187.chunk.js": "/static/js/453.464a3187.chunk.js",
     "static/media/Loginbackground.png": "/static/media/Loginbackground.8f5b620b14f3ffef0597.png",
     "static/media/signin.png": "/static/media/signin.dd7bdef82caf0d8be567.png",
@@ -9,15 +9,16 @@
     "static/media/login_logo.png": "/static/media/login_logo.f883cd85ecab8df639dc.png",
     "static/media/Reset_logo.png": "/static/media/Reset_logo.d30d90c27d77dd894599.png",
     "static/media/mypp.png": "/static/media/mypp.d60f59b7b6e0d1ad939b.png",
+    "static/media/ethiopian_civil_service_commistion_logo-removebg-preview (1).png": "/static/media/ethiopian_civil_service_commistion_logo-removebg-preview (1).2a4420628ad7ab44b04c.png",
     "static/media/Vector.svg": "/static/media/Vector.eedb216f8f3a4e00c427776aa38a1650.svg",
     "static/media/Completed.svg": "/static/media/Completed.c31101f5382595f74b68e420fba1a003.svg",
     "index.html": "/index.html",
     "main.7e92dc39.css.map": "/static/css/main.7e92dc39.css.map",
-    "main.eba3d442.js.map": "/static/js/main.eba3d442.js.map",
+    "main.7822f84f.js.map": "/static/js/main.7822f84f.js.map",
     "453.464a3187.chunk.js.map": "/static/js/453.464a3187.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.7e92dc39.css",
-    "static/js/main.eba3d442.js"
+    "static/js/main.7822f84f.js"
   ]
 }
