@@ -35,7 +35,7 @@ const handleforgot = async (req, res) => {
       await user.save();
 
       // Create a password reset link
-      const link = `http://196.189.21.165/resetPasswordcontainer?email=${email}&hash=${hash}`;
+      const link = `http://196.189.247.228/resetPasswordcontainer?email=${email}&hash=${hash}`;
 
       // Create a message object
       const message = {
