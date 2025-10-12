@@ -1,6 +1,7 @@
 import React from "react";
 import backgroundImage from "../Assets/Loginbackground.png";
 import EaiiLogin from "../Assets/EaiiLoginicon.png";
+import EcscLogin from "../Assets/ethiopian_civil_service_commistion_logo-removebg-preview (1).png";
 import LoginContainer from "./LoginContainer";
 import {
   CheckCircle,
@@ -40,8 +41,8 @@ const LoginBackground = () => {
                 <div className="flex justify-center mb-8">
                   <div className="bg-white/20 p-4 rounded-2xl backdrop-blur-sm border border-white/30">
                     <img 
-                      src={EaiiLogin} 
-                      alt="Ethiopian AI Institute" 
+                      src={EcscLogin} 
+                      alt="Ethiopia Civil Service Commission" 
                       className="h-16 w-auto filter brightness-0 invert"
                     />
                   </div>

@@ -41,7 +41,7 @@ const ForgetPassword = () => {
                   <div className="bg-white/20 p-4 rounded-2xl backdrop-blur-sm border border-white/30">
                     <img 
                       src={EaiiLogin} 
-                      alt="Ethiopian AI Institute" 
+                      alt="Ethiopia Civil Service Commission" 
                       className="h-16 w-auto filter brightness-0 invert"
                     />
                   </div>
@@ -50,7 +50,7 @@ const ForgetPassword = () => {
                 {/* Institute Info */}
                 <div className="text-center mb-8">
                   <h1 className="text-2xl lg:text-3xl font-bold mb-4 leading-tight">
-                    ETHIOPIAN ARTIFICIAL INTELLIGENCE INSTITUTE
+                    Ethiopia Civil Service Commission
                   </h1>
                   <p className="text-xl lg:text-2xl font-semibold text-white/90 mb-2">
                     PROJECT MANAGEMENT SYSTEM
@@ -79,7 +79,7 @@ const ForgetPassword = () => {
                 {/* Learn More Button */}
                 <div className="text-center">
                   <a
-                    href="https://www.aii.et/"
+                    href="https://fcsc.ecsc.gov.et/"
                     className="inline-flex items-center px-6 py-3 bg-white/20 backdrop-blur-sm border border-white/30 text-white font-semibold rounded-lg hover:bg-white/30 transition-all duration-200 transform hover:-translate-y-0.5"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -101,7 +101,7 @@ const ForgetPassword = () => {
         {/* Footer */}
         <div className="text-center mt-6">
           <p className="text-white/70 text-sm">
-            © 2024 Ethiopian Artificial Intelligence Institute. All rights reserved.
+            © 2025 Federal Democratic Republic of Ethiopia Civil Service Commission. All rights reserved.
           </p>
         </div>
       </div>
