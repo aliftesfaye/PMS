@@ -4,6 +4,12 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import PuffLoader from "react-spinners/ClipLoader";
 import apiService from "../services/apiServices";
+import {
+  Email,
+  ArrowBack,
+  ErrorOutline,
+  CheckCircle,
+} from "@mui/icons-material";
 
 const ForgetPasswordContainer = () => {
   const [email, setEmail] = useState("");
@@ -52,54 +58,101 @@ const ForgetPasswordContainer = () => {
   };
 
   return (
-    <div className=" bg-white p-16 rounded-2xl mr-12 w-full">
+    <div className="w-full max-w-md mx-auto p-8 bg-white rounded-2xl shadow-2xl border border-gray-100">
       <Helmet>
         <title>PMS - Forget Password</title>
       </Helmet>
+
+      {/* Loading Backdrop */}
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
       >
         <PuffLoader color="#fff" />
       </Backdrop>
-      <div className="flex flex-col items-center ">
-        <div className="mt-5 text-2xl font-semibold">Forgot Password</div>
-        <div className="mt-5  text-base tracking-normal leading-6 text-justify text-zinc-500">
-          Enter your email for the verification process, we will send a link to
-          your email for changing your password.
-        </div>{" "}
-      </div>
-      <form onSubmit={handleSubmit}>
-        <div className="mt-9 ">Email</div>
-        <div className="flex flex-col">
-          <input
-            type="email"
-            className=" py-5 mt-3 px-3 text-sm w-full rounded-lg"
-            value={email}
-            onChange={handleEmailChange}
-            placeholder="example@gmail.com"
-            required
-          />
-          <button
-            className="mt-4 p-2 bg-blue-500 text-white rounded-md w-full"
-            disabled={loading}
-          >
-            {loading ? "Sending..." : "Continue"}
-          </button>
+
+      {/* Header */}
+      <div className="text-center mb-8">
+        <div className="mb-2">
+          <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Email style={{ fontSize: 32, color: "white" }} />
+          </div>
         </div>
-        <div className=" mt-6 ">
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">Reset Your Password</h1>
+        <p className="text-gray-600">
+          Enter your email for verification. We'll send a password reset link to your email.
+        </p>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Email Field */}
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+            Email Address
+          </label>
+          <div className="relative">
+            <input
+              id="email"
+              type="email"
+              className="w-full px-4 py-3 pl-11 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              value={email}
+              onChange={handleEmailChange}
+              placeholder="example@gmail.com"
+              required
+            />
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+              <Email style={{ fontSize: 20, color: "#9CA3AF" }} />
+            </div>
+          </div>
+        </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+            <div className="flex items-center">
+              <ErrorOutline style={{ fontSize: 20, color: "#F87171", marginRight: 8 }} />
+              <span className="text-red-700 text-sm">{error}</span>
+            </div>
+          </div>
+        )}
+
+        {/* Success Message */}
+        {successMessage && (
+          <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+            <div className="flex items-center">
+              <CheckCircle style={{ fontSize: 20, color: "#10B981", marginRight: 8 }} />
+              <span className="text-green-700 text-sm">{successMessage}</span>
+            </div>
+          </div>
+        )}
+
+        {/* Continue Button */}
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+        >
+          {loading ? "Sending Reset Link..." : "Send Reset Link"}
+        </button>
+
+        {/* Back to Login Link */}
+        <div className="text-center">
           <Link
             to="/"
-            className="text-blue-500 flex justify-center hover:underline"
+            className="inline-flex items-center text-blue-600 hover:text-blue-500 transition-colors duration-200"
           >
+            <ArrowBack style={{ fontSize: 16, marginRight: 8 }} />
             Back to Login Page
           </Link>
         </div>
       </form>
-      {error && <div className="text-red-500 mt-4">{error}</div>}
-      {successMessage && (
-        <div className="text-green-500 mt-4">{successMessage}</div>
-      )}
+
+      {/* Footer */}
+      <div className="mt-8 pt-6 border-t border-gray-200">
+        <p className="text-center text-sm text-gray-600">
+          Check your inbox and spam folder for the reset link
+        </p>
+      </div>
     </div>
   );
 };

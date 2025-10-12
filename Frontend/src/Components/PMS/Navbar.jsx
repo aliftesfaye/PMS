@@ -18,7 +18,7 @@ import {
 import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 import EaiiIcon from "../Assets/Eaii.png";
-import ECSCIcon from "../Assets/ethiopian_civil_service_commistion_logo.jpeg";
+import ECSCIcon from "../Assets/ethiopian_civil_service_commistion_logo.png";
 import apiService from "../services/apiServices";
 import ProfileUpdate from "./Myprofile";
 import "./Navbar.css";
