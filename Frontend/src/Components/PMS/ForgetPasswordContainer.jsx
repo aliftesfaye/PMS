@@ -58,7 +58,7 @@ const ForgetPasswordContainer = () => {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto p-8 bg-white rounded-2xl shadow-2xl border border-gray-100">
+    <div className="w-full max-w-md mx-auto p-8 bg-white rounded-2xl border border-gray-100">
       <Helmet>
         <title>PMS - Forget Password</title>
       </Helmet>
