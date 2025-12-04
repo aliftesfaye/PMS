@@ -241,8 +241,8 @@ const Navbar = (props) => {
         </div>
         <div class="flex flex-row sm:justify-between md:justify-between   place-content-center py-4 bg-sky-950 w-full ">
           <div class="flex flex-row space-x-3 items-center ">
-            <img src={ECSCIcon} alt="Logo" class="hidden lg:block md:block" />
-            <Typography class="text-white">ECSC-PMS</Typography>
+            <img src={EaiiIcon} alt="Logo" class="hidden lg:block md:block" />
+            <Typography class="text-white">EAII-PMS</Typography>
             <Typography class="text-white">{props.userName}</Typography>
           </div>
           <div class="flex flex-row gap-10">

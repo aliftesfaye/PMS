@@ -18,7 +18,7 @@ import Backdrop from "@mui/material/Backdrop";
 import ProgressBar from "@ramonak/react-progress-bar";
 import { EditorState } from "draft-js";
 import React, { useEffect, useRef, useState } from "react";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"; // Import editor styles
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { Helmet } from "react-helmet-async";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import PuffLoader from "react-spinners/ClipLoader";
@@ -37,20 +37,17 @@ const Activity = (props) => {
   const [detailModalOpen, setDetailModalOpen] = useState(false);
   const [commentModalOpen, setCommentModalOpen] = useState(false);
   const [viewcommentModalOpen, setViewcommentModalOpen] = useState(false);
-
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [activities, setActivities] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
-
   const [userInfo, setUserInfo] = useState(() => {
     return JSON.parse(localStorage.getItem("userInfo")) || [];
   });
   const [permissions, setPermissions] = useState(() => {
     return JSON.parse(localStorage.getItem("permissions")) || [];
   });
-
   const [projectPermissions, setProjectPermissions] = useState(() => {
     return JSON.parse(localStorage.getItem("project_permissions")) || [];
   });
@@ -67,7 +64,6 @@ const Activity = (props) => {
   const [updateActivity, setUpdateActivity] = useState(0);
   const [commentOnActivity, setCommentOnActivity] = useState(0);
   const [viewCommentOnActivity, setViewCommentOnActivity] = useState(0);
-
   const [deleteActivity, setDeleteActivity] = useState(0);
   const [selectedActivityId, setSelectedActivityId] = useState(null);
   const [formData, setFormData] = useState({
@@ -123,7 +119,6 @@ const Activity = (props) => {
         }
       });
 
-      // Filter activities based on the isMilestone parameter
       const filteredActivities = sortedResponse.filter(
         (activity) => activity.activity.is_milestone === isMilestone
       );
@@ -151,7 +146,6 @@ const Activity = (props) => {
         }
       });
 
-      // Filter activities based on the is_milestone flag
       const filteredActivities = sortedResponse.filter(
         (activity) => activity.activity.is_milestone === formData.is_milestone
       );
@@ -165,6 +159,7 @@ const Activity = (props) => {
       console.error("Error fetching activity:", error);
     }
   };
+
   const handleEditClick = (row) => {
     setSelectedRow(row);
     setEditModalOpen(true);
@@ -180,6 +175,7 @@ const Activity = (props) => {
     setSelectedActivityId(data.activity.activity_id);
     setDetailModalOpen(true);
   };
+
   const handleClickOutside = (event) => {
     if (modalRef.current && !modalRef.current.contains(event.target)) {
       setEditModalOpen(false);
@@ -203,13 +199,16 @@ const Activity = (props) => {
     setCommentModalOpen(false);
     setViewcommentModalOpen(false);
   };
+
   const handleDeleteClick = (row) => {
     setSelectedRow(row);
     setDeleteModalOpen(true);
   };
+
   const handleDeleteModalClose = () => {
     setDeleteModalOpen(false);
   };
+
   const modalRef = useRef(null);
 
   const handlefetchActivity = async () => {
@@ -232,9 +231,11 @@ const Activity = (props) => {
       console.error("Error fetching Activities:", error);
     }
   };
+
   const handleAddModalClose = () => {
     setAddModalOpen(false);
   };
+
   const filteredRows =
     statusFilter === "All"
       ? activities
@@ -254,6 +255,7 @@ const Activity = (props) => {
     setStatusFilter(status);
     setCurrentPage(1);
   };
+
   useEffect(() => {
     async function fetchUsers() {
       localStorage.setItem("userInfo", JSON.stringify(userInfo));
@@ -314,7 +316,6 @@ const Activity = (props) => {
     setUpdateActivity(UPDATE_ACTIVITY.length);
     setCommentOnActivity(COMMENT_ON_ACTIVITY.length);
     setViewCommentOnActivity(VIEW_COMMENT_ON_ACTIVITY.length);
-
     setDeleteActivity(DELETE_ACTIVITY.length);
 
     handlefetchActivity();
@@ -346,6 +347,7 @@ const Activity = (props) => {
   const handleAddActivityClick = () => {
     setAddModalOpen(true);
   };
+
   useEffect(() => {
     const storedUserInfo = JSON.parse(localStorage.getItem("userInfo"));
     if (storedUserInfo) {
@@ -357,6 +359,7 @@ const Activity = (props) => {
     setSelectedRow(activity);
     setCommentModalOpen(true);
   };
+
   const handleViewCommentOnActivityClick = (activity) => {
     setSelectedRow(activity);
     setViewcommentModalOpen(true);
@@ -373,7 +376,7 @@ const Activity = (props) => {
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-  // setExpandedTeamIndices(currentActivities);
+
   const toggleTeamExpansion = (activityIndex) => {
     const newExpandedTeamIndices = [...expandedTeamIndices];
     newExpandedTeamIndices[activityIndex] =
@@ -386,146 +389,182 @@ const Activity = (props) => {
   };
 
   const pageCount = Math.ceil(search.length / rowsPerPage);
+
   const handleRowsPerPageChange = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setCurrentPage(1);
   };
+
+  // Function to get status color
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Completed":
+        return "bg-green-100 text-green-800 border-green-200";
+      case "On Progress":
+        return "bg-orange-100 text-orange-800 border-orange-200";
+      case "Pending":
+        return "bg-blue-100 text-blue-800 border-blue-200";
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-200";
+    }
+  };
+
+  // Function to get progress bar color
+  const getProgressBarColor = (progress) => {
+    if (progress >= 100) return "#10B981";
+    if (progress >= 75) return "#3B82F6";
+    if (progress >= 50) return "#F59E0B";
+    return "#EF4444";
+  };
+
   return (
-    <div className="ml-auto w-4/5 mr-5 mt-24">
+    <div className="ml-4 md:ml-auto w-full md:w-4/5 mr-0 md:mr-5 mt-20 md:mt-24 px-4 md:px-0">
       <Helmet>
         <title>{props.setSelectedProjectInfo.name} - Activities</title>
       </Helmet>
-      <div className="flex gap-3 px-5 py-5 ">
-        <div className="flex flex-col justify-center text-3xl font-semibold text-white whitespace-nowrap">
-          <div
-            className="justify-center items-center px-3 py-1 rounded"
-            style={{ backgroundColor: "#082f49" }}
-          >
-            {props.setSelectedProjectInfo.name.charAt(0).toUpperCase()}
+
+      {/* Header Section */}
+      <div className="flex flex-col sm:flex-row gap-4 px-4 md:px-5 py-4 md:py-5 items-start sm:items-center">
+        <div className="flex items-center gap-3">
+          <div className="flex-shrink-0">
+            <div
+              className="flex justify-center items-center w-10 h-10 md:w-12 md:h-12 text-white font-semibold rounded-lg"
+              style={{ backgroundColor: "#082f49" }}
+            >
+              {props.setSelectedProjectInfo.name.charAt(0).toUpperCase()}
+            </div>
+          </div>
+          <div className="flex-auto">
+            <h1 className="text-xl md:text-2xl font-bold text-slate-800">
+              {props.setSelectedProjectInfo.name}
+            </h1>
+            <p className="text-sm md:text-base text-slate-600 mt-1">
+              List of Activities
+            </p>
           </div>
         </div>
-        <div className="flex-auto my-auto text-xl font-medium text-blue-950">
-          {props.setSelectedProjectInfo.name}
-        </div>
       </div>
-      <div className="flex-auto my-auto px-5 py-2 text-xl font-medium text-blue-950">
-        List of Activities
-      </div>
-      <div>
-        <ul class="my-5 flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-200 dark:text-gray-400">
-          <li class="me-2 " onClick={() => handleFilterClick("All")}>
-            <a
-              href="#"
-              aria-current="page"
-              className={`cursor-pointer ${
-                statusFilter === "All"
-                  ? "font-bold text-blue-900 bg-gray-100 inline-block p-4 rounded-t-lg"
-                  : "inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 "
-              }`}
-            >
-              <div>All</div>
-            </a>
-          </li>
 
-          <li class="me-2" onClick={() => handleFilterClick("Completed")}>
-            <a
-              href="#"
-              className={`cursor-pointer ${
-                statusFilter === "Completed"
-                  ? "font-bold text-blue-900 bg-gray-100 inline-block p-4  rounded-t-lg "
-                  : "inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 "
-              }`}
-            >
-              <div>Completed</div>
-            </a>
-          </li>
-          <li class="me-2" onClick={() => handleFilterClick("On Progress")}>
-            <a
-              href="#"
-              className={`cursor-pointer ${
-                statusFilter === "On Progress"
-                  ? "font-bold text-blue-900 bg-gray-100 inline-block p-4   rounded-t-lg "
-                  : "inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 "
-              }`}
-            >
-              <div>On Progress</div>
-            </a>
-          </li>
-
-          <li class="me-2" onClick={() => handleFilterClick("Pending")}>
-            <a
-              href="#"
-              className={`cursor-pointer ${
-                statusFilter === "Pending"
-                  ? "font-bold text-blue-900 bg-gray-100 inline-block p-4   rounded-t-lg "
-                  : "inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 "
-              }`}
-            >
-              <div>Pending</div>
-            </a>
-          </li>
-        </ul>
-        <div className="flex justify-between">
-          <div className="flex flex-row relative gap-6 items-center">
-            <div class=" self-center ">
-              <TextField
-                type="text"
-                placeholder="Search by Activity Name"
-                size="small"
-                class="bg-white rounded-lg"
-                variant="outlined"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </div>
-            <div className="flex flex-row ">
-              <input
-                type="checkbox"
-                id="is_milestone"
-                name="is_milestone"
-                checked={formData.is_milestone}
-                onChange={handleInputChange}
-                className="h-4 w-4 mt-1 text-blue-600 focus:ring-blue-500 border-gray-300 rounded-md"
-              />
-              <label htmlFor="is_milestone" className="ml-3">
-                Is Milestone?
-              </label>
-            </div>
-            <button onClick={fetchAllActivities}>Show All Activities</button>
+      {/* Filters and Search Section */}
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 mb-6 mx-4 md:mx-5">
+        {/* Status Filter Tabs */}
+        <div className="border-b border-slate-200">
+          <div className="flex flex-wrap gap-2 px-4 md:px-6 py-4">
+            {["All", "Completed", "On Progress", "Pending"].map((status) => (
+              <button
+                key={status}
+                onClick={() => handleFilterClick(status)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  statusFilter === status
+                    ? "bg-slate-800 text-white shadow-sm"
+                    : "text-slate-600 hover:bg-slate-50"
+                }`}
+              >
+                {status}
+              </button>
+            ))}
           </div>
-          <div className="text-end">
+        </div>
+
+        {/* Search and Controls */}
+        <div className="p-4 md:p-6">
+          <div className="flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center">
+            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center w-full lg:w-auto">
+              {/* Search Input */}
+              <div className="w-full sm:w-64">
+                <TextField
+                  fullWidth
+                  type="text"
+                  placeholder="Search by Activity Name"
+                  size="small"
+                  variant="outlined"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIcon className="text-slate-400" />
+                      </InputAdornment>
+                    ),
+                    className: "rounded-lg bg-white",
+                  }}
+                />
+              </div>
+
+              {/* Milestone Checkbox */}
+              <div className="flex items-center">
+                <label className="flex items-center cursor-pointer">
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      id="is_milestone"
+                      name="is_milestone"
+                      checked={formData.is_milestone}
+                      onChange={handleInputChange}
+                      className="sr-only"
+                    />
+                    <div
+                      className={`w-10 h-5 rounded-full transition-colors ${
+                        formData.is_milestone ? "bg-blue-600" : "bg-slate-300"
+                      }`}
+                    >
+                      <div
+                        className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white transition-transform ${
+                          formData.is_milestone ? "transform translate-x-5" : ""
+                        }`}
+                      ></div>
+                    </div>
+                  </div>
+                  <span className="ml-2 text-sm font-medium text-slate-700">
+                    Milestone Activities
+                  </span>
+                </label>
+              </div>
+
+              {/* Show All Button */}
+              <button
+                onClick={fetchAllActivities}
+                className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-50 rounded-lg transition-colors"
+              >
+                Show All
+              </button>
+            </div>
+
+            {/* Add Activity Button */}
             {createActivity !== 0 && (
               <button
-                className="text-white p-3 m-3 "
-                style={{ backgroundColor: "#082f49" }}
                 onClick={() => handleAddActivityClick()}
+                className="px-5 py-2.5 bg-gradient-to-r from-slate-800 to-slate-900 text-white font-medium rounded-lg hover:shadow-lg transition-all duration-200 flex items-center gap-2 whitespace-nowrap"
               >
-                + Add New Activity
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+                Add New Activity
               </button>
             )}
           </div>
-          {/* <Editor
-            editorState={editorState}
-            onEditorStateChange={onEditorStateChange}
-          /> */}
         </div>
       </div>
+
+      {/* Rows Per Page Selector */}
       {filteredRows.length !== 0 && (
-        <div className="rows-per-page flex my-6 ml-2 justify-start text-sm ">
-          {" "}
-          Rows per page
-          <div>
+        <div className="flex items-center justify-between px-4 md:px-5 mb-4">
+          <div className="flex items-center gap-2 text-sm text-slate-600">
+            <span>Rows per page:</span>
             <select
               value={rowsPerPage}
               onChange={handleRowsPerPageChange}
-              className=" w-fit pl-3 text-sm border-none outline-none bg-white  focus:border-none focus:outline-none"
+              className="px-3 py-1.5 border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value={8}>8</option>
               <option value={16}>16</option>
@@ -533,16 +572,16 @@ const Activity = (props) => {
               <option value={100}>100</option>
             </select>
           </div>
+          <div className="text-sm text-slate-500">
+            Showing {indexOfFirstActivity + 1}-
+            {Math.min(indexOfLastActivity, search.length)} of {search.length}{" "}
+            activities
+          </div>
         </div>
       )}
 
-      <div
-        class={
-          activities.length !== 0
-            ? "flex flex-wrap"
-            : "flex flex-wrap justify-center"
-        }
-      >
+      {/* Activities Grid */}
+      <div className="px-4 md:px-5 pb-8">
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={loading}
@@ -551,8 +590,8 @@ const Activity = (props) => {
         </Backdrop>
 
         {activities.length !== 0 ? (
-          currentActivities.map((data, activityIndex) => {
-            {
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+            {currentActivities.map((data, activityIndex) => {
               const progress = function (start_date, end_date) {
                 const currentDate = new Date();
                 const totalDuration = new Date(end_date) - new Date(start_date);
@@ -567,6 +606,7 @@ const Activity = (props) => {
               const activity = data.activity;
               const Tasklength = data.Tasklength;
               const commentlength = data.commentlength;
+
               const date_diff_indays = function (date1, date2) {
                 const dt1 = new Date(date1);
                 const dt2 = new Date(date2);
@@ -588,79 +628,96 @@ const Activity = (props) => {
                     (1000 * 60 * 60 * 24)
                 );
               };
+
               const daysBetween = date_diff_indays(
                 activity.start_date,
                 activity.end_date
               );
-
               const days_left = date_diff_indays(new Date(), activity.end_date);
-
               const isActivityStarted = date_diff_indays(
                 new Date(),
                 activity.start_date
               );
-
-              var daysLeftDisplay =
+              const daysLeftDisplay =
                 days_left > 0
                   ? days_left + (days_left === 1 ? " day" : " days")
                   : "";
-
               const progress_result = progress(
                 activity.start_date,
                 activity.end_date
               );
-
               const activity_progress = activity.activity_status;
-
-              var days = Math.floor((daysBetween % 365) % 30);
-              var daysDisplay =
+              const days = Math.floor((daysBetween % 365) % 30);
+              const daysDisplay =
                 days > 0 ? days + (days === 1 ? " day" : " days") : "";
 
               return (
-                <Card
-                  className="border-x border-y rounded-full m-1 hover:bg-gray-300"
+                <div
                   key={activityIndex}
+                  className="bg-white rounded-xl border border-slate-200 hover:shadow-lg transition-all duration-300 overflow-hidden group cursor-pointer"
+                  onClick={() => handleDetailClick(activity, data)}
                 >
-                  <div className="flex flex-wrap justify-between py-4 px-2">
-                    <Typography className="font-bold text-lg flex flex-row">
-                      <div className="flex flex-row">
-                        {activity.name}
-                        {activity.is_milestone === true && (
-                          <div className="w-fit top-2 right-2 text-xs px-2 py-1 rounded">
-                            <FlagIcon fontSize="small" />
-                          </div>
-                        )}
+                  {/* Card Header */}
+                  <div className="p-4 border-b border-slate-100">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h3 className="font-semibold text-slate-800 text-base truncate">
+                            {activity.name}
+                          </h3>
+                          {activity.is_milestone && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-50 text-amber-700 text-xs font-medium rounded-full border border-amber-200">
+                              <FlagIcon fontSize="inherit" />
+                              Milestone
+                            </span>
+                          )}
+                        </div>
+                        <div
+                          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(
+                            activity_progress
+                          )}`}
+                        >
+                          {activity_progress}
+                        </div>
                       </div>
-                    </Typography>
 
-                    <div className="flex gap-3">
-                      <div
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          handleMenuOpen(activity.activity_id);
-                        }}
-                      >
-                        {(updateActivity !== 0 || deleteActivity !== 0) && (
-                          <MoreHorizIcon className="cursor-pointer" />
-                        )}
+                      {/* Actions Menu */}
+                      <div className="relative">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleMenuOpen(activity.activity_id);
+                          }}
+                          className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                        >
+                          <MoreHorizIcon />
+                        </button>
 
                         {openRowMenu === activity.activity_id && (
-                          <div className="cursor-pointer flex-row shadow-lg rounded-md flex gap-2">
+                          <div className="absolute right-0 top-full mt-1 bg-white rounded-lg shadow-lg border border-slate-200 z-10 min-w-[120px] py-1">
                             {updateActivity !== 0 && (
-                              <div
-                                className="text-blue-900"
-                                onClick={() => handleEditClick(activity)}
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleEditClick(activity);
+                                }}
+                                className="w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2"
                               >
-                                <FaEdit />
-                              </div>
+                                <FaEdit className="text-blue-600" />
+                                Edit
+                              </button>
                             )}
                             {deleteActivity !== 0 && (
-                              <div
-                                className="text-red-400"
-                                onClick={() => handleDeleteClick(activity)}
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteClick(activity);
+                                }}
+                                className="w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
                               >
                                 <FaTrash />
-                              </div>
+                                Delete
+                              </button>
                             )}
                           </div>
                         )}
@@ -668,470 +725,406 @@ const Activity = (props) => {
                     </div>
                   </div>
 
-                  <div>
-                    {/* <div>
-                      {!expandedTeamIndices[activityIndex] && (
-                        <div class="flex flex-wrap ml-4">
-                          {activity.members.map((member, memberIndex) => (
-                            <AccountCircleIcon />
-                          ))}
+                  {/* Card Body */}
+                  <div className="p-4">
+                    {/* Stats Row */}
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div className="flex items-center gap-2">
+                        <div className="p-2 bg-blue-50 rounded-lg">
+                          <AssignmentOutlinedIcon className="w-4 h-4 text-blue-600" />
                         </div>
-                      )}
-                      <p class="flex flex-wrap ml-4 justify-between pr-3">
-                        <div class="flex flex-wrap">
-                          Members:{" "}
-                          <div className="number-of-members">
-                            {activity.members.length}
+                        <div>
+                          <div className="text-sm font-medium text-slate-900">
+                            {Tasklength || 0}
+                          </div>
+                          <div className="text-xs text-slate-500">
+                            {Tasklength === 1 ? "Task" : "Tasks"}
                           </div>
                         </div>
-                        <span
-                          class="cursor-pointer"
-                          onClick={() => toggleTeamExpansion(activityIndex)}
-                        >
-                          {expandedTeamIndices[activityIndex] ? "▲" : "▼"}
-                        </span>
-                      </p>
-                      {expandedTeamIndices[activityIndex] && (
-                        <div class="ml-8 overflow-x-auto  mr-3">
-                          {(activity.members || []).map(
-                            (member, memberIndex) => (
-                              <div key={memberIndex}>
-                                <p>
-                                  {member
-                                    ? member.UserInfo.full_name || ""
-                                    : ""}
-                                </p>
-                              </div>
-                            )
-                          )}
-                        </div>
-                      )}
-                    </div> */}
+                      </div>
 
-                    <div className="icon-text flex items-center ml-5">
-                      <div className="flex gap-2 items-center">
-                        <AssignmentOutlinedIcon fontSize="15" />
-                        {Tasklength >= 1 ? (
-                          <div>
-                            <span className="text-black ml-1">
-                              {Tasklength}
-                            </span>
-                            <span className="text-black ml-1">
-                              {Tasklength === 1 ? "Task" : "Tasks"}
-                            </span>
+                      <div className="flex items-center gap-2">
+                        <div className="p-2 bg-purple-50 rounded-lg">
+                          <ChatOutlinedIcon className="w-4 h-4 text-purple-600" />
+                        </div>
+                        <div>
+                          <div className="text-sm font-medium text-slate-900">
+                            {commentlength || 0}
                           </div>
-                        ) : (
-                          <div>No Task</div>
-                        )}
+                          <div className="text-xs text-slate-500">Comments</div>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="icon-text flex items-center justify-between ml-5">
-                      <div
-                        className="flex items-center gap-2 cursor-pointer"
-                        onClick={() =>
-                          handleViewCommentOnActivityClick(activity)
-                        }
-                      >
-                        {viewCommentOnActivity !== 0 && (
-                          <>
-                            <ChatOutlinedIcon fontSize="15" />
-                            {commentlength >= 1 ? (
-                              <div>
-                                <span className="text-black ml-1">
-                                  {commentlength}{" "}
-                                </span>
-                                <span className="text-black ml-1">
-                                  {commentlength === 1
-                                    ? " Comment"
-                                    : " Comments"}
-                                </span>
-                              </div>
-                            ) : (
-                              <div>No comment</div>
-                            )}
-                          </>
-                        )}
+                    {/* Duration */}
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="p-1.5 bg-slate-50 rounded-lg">
+                        <Duration className="w-4 h-4 text-slate-600" />
                       </div>
-
-                      <div>
-                        {commentOnActivity !== 0 && (
-                          <div
-                            className="flex items-center gap-2 cursor-pointer"
-                            onClick={() =>
-                              handleCommentOnActivityClick(activity)
-                            }
-                          >
-                            <Typography>Add</Typography>
-                            <AddCommentIcon fontSize="small" />
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="icon-text flex items-center ml-5">
-                      <Duration fontSize="16" />
-                      <span className="text-black ml-1">
+                      <span className="text-sm text-slate-700">
                         {daysDisplay}
-                        {/* (
-                        {new Date(activity.start_date).toLocaleDateString()} -{" "}
-                        {new Date(activity.end_date).toLocaleDateString()} ) */}
                       </span>
-                      {/* <span className="text-black ml-1 ">days</span> */}
                     </div>
 
-                    <Divider />
-                    {isActivityStarted <= 0 ? (
-                      <div
-                        className="progress-bar-container w-72 hover:cursor-pointer"
-                        onClick={() => handleDetailClick(activity, data)}
-                      >
-                        <div className="icon-text flex items-center ml-3 mt-2  justify-evenly">
-                          <div className="progress-title">Progress</div>
+                    <div className="space-y-3 border-t border-slate-100 items-center justify-between mt-4 pt-4">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium text-slate-700">
+                          Progress
+                        </span>
 
-                          {days_left > 0 &&
-                          activity_progress !== "Completed" ? (
-                            <div
-                              class="flex ml-auto mr-4 gap-1 items-center px-1 rounded-md"
-                              style={{
-                                backgroundColor: `${
-                                  parseInt(progress_result) < 75
-                                    ? "orange"
-                                    : parseInt(progress_result) <= 100
-                                    ? "green"
-                                    : "red"
-                                }`,
-                              }}
-                            >
-                              <AccessTimeIcon
-                                fontSize="20"
-                                sx={{ color: "white" }}
-                              />
-
-                              <span className="text-white">
-                                {daysLeftDisplay}{" "}
-                              </span>
-                              <span className="text-white ml-1 "> left</span>
-                            </div>
-                          ) : days_left > 0 &&
-                            activity_progress === "Completed" ? (
-                            <div
-                              class="flex ml-auto mr-4 gap-1 items-center px-1 rounded-md"
-                              style={{
-                                backgroundColor: "green",
-                              }}
-                            >
-                              <AccessTimeIcon
-                                fontSize="20"
-                                sx={{ color: "white" }}
-                              />
-
-                              <span className="text-white ml-1 ">
-                                Completed
-                              </span>
+                        {/* Status Badge */}
+                        {isActivityStarted <= 0 ? (
+                          days_left > 0 && activity_progress !== "Completed" ? (
+                            <div className="flex items-center gap-1 px-2 py-1 bg-amber-50 text-amber-700 text-xs font-medium rounded-full">
+                              <AccessTimeIcon className="w-3 h-3" />
+                              {daysLeftDisplay} left
                             </div>
                           ) : activity_progress === "Completed" ? (
-                            <Typography style={{ color: "green" }}>
+                            <span className="text-xs font-medium px-2 py-1 bg-green-50 text-green-700 rounded-full">
                               Completed
-                            </Typography>
+                            </span>
                           ) : (
-                            <Typography style={{ color: "#EE4B2B" }}>
+                            <span className="text-xs font-medium px-2 py-1 bg-red-50 text-red-700 rounded-full">
                               Deadline Passed
-                            </Typography>
-                          )}
-                        </div>
-                        <div class="my-4 mx-2">
-                          {days_left > 0 &&
-                          activity_progress !== "Completed" ? (
-                            <div>
-                              <ProgressBar
-                                completed={parseInt(progress_result)}
-                                bgColor={`${
-                                  parseInt(progress_result) < 75
-                                    ? "orange"
-                                    : parseInt(progress_result) <= 100
-                                    ? "green"
-                                    : "blue"
-                                }`}
-                                height="12px"
-                                borderRadius="50px"
-                              />
-                            </div>
-                          ) : days_left > 0 &&
-                            activity_progress === "Completed" ? (
-                            <div>
-                              <ProgressBar
-                                completed={parseInt(progress_result)}
-                                bgColor={`green`}
-                                height="12px"
-                                borderRadius="50px"
-                              />
-                            </div>
-                          ) : activity_progress === "Completed" ? (
-                            <ProgressBar
-                              completed={parseInt(progress_result)}
-                              bgColor={`green`}
-                              height="12px"
-                              borderRadius="50px"
-                            />
-                          ) : (
-                            <ProgressBar
-                              completed={parseInt(progress_result)}
-                              bgColor={`#A52A2A`}
-                              height="12px"
-                              borderRadius="50px"
-                            />
-                          )}
-                        </div>
-                        <div class="my-4 mx-2">
-                          <div class="flex flex-wrap items-center justify-evenly">
-                            <Typography>Activity Status</Typography>
-                            <Typography
-                              style={{
-                                color: `${
-                                  activity_progress === "On Progress"
-                                    ? "orange"
-                                    : activity_progress === "Completed"
-                                    ? "green"
-                                    : "gray"
-                                }`,
-                              }}
-                              borderRadius="50px"
-                            >
-                              {activity_progress}
-                            </Typography>
-                          </div>
-                        </div>
+                            </span>
+                          )
+                        ) : (
+                          <span className="text-xs font-medium px-2 py-1 bg-blue-50 text-blue-700 rounded-full">
+                            Upcoming
+                          </span>
+                        )}
                       </div>
-                    ) : (
-                      <div
-                        className="progress-bar-container w-72 hover:cursor-pointer"
-                        onClick={() => handleDetailClick(activity, data)}
-                      >
-                        <div className="icon-text flex items-center ml-3 mt-2  justify-evenly">
-                          <div className="progress-title"></div>
-                          <div
-                            class="flex ml-auto mr-4 gap-1 items-center"
-                            style={{
-                              color: `${
-                                activity_progress === "on Progress"
-                                  ? "orange"
-                                  : activity_progress === "Completed"
-                                  ? "green"
-                                  : "blue"
-                              }`,
-                            }}
-                          >
-                            <AccessTimeIcon fontSize="20" />
 
-                            <span> Upcomming</span>
-                          </div>
-                        </div>
-                        <div class="my-4 mx-2">
-                          {days_left > 0 ? (
-                            <div>
-                              <ProgressBar
-                                completed={parseInt(progress_result)}
-                                bgColor={`${
-                                  parseInt(progress_result) < 75
-                                    ? "orange"
-                                    : parseInt(progress_result) <= 100
-                                    ? "green"
-                                    : "blue"
-                                }`}
-                                height="12px"
-                                borderRadius="50px"
-                              />
-                            </div>
-                          ) : (
-                            <ProgressBar
-                              completed={parseInt(progress_result)}
-                              bgColor={`##A52A2A`}
-                              height="12px"
-                              borderRadius="50px"
+                      {/* Clock/Speedometer Visual */}
+                      <div className="relative flex items-center gap-4">
+                        {/* Circular Progress */}
+                        <div className="relative w-16 h-16">
+                          <svg className="w-full h-full" viewBox="0 0 36 36">
+                            {/* Background circle */}
+                            <path
+                              d="M18 2.0845
+          a 15.9155 15.9155 0 0 1 0 31.831
+          a 15.9155 15.9155 0 0 1 0 -31.831"
+                              fill="none"
+                              stroke="#E2E8F0"
+                              strokeWidth="3"
                             />
-                          )}
-                        </div>
-                        <div class="my-4 mx-2">
-                          {/* <div
-                    className="progress-bar-background"
-                    style={{ width: "100%" }}
-                  ></div> */}
-                          {/* <div
-                    className={`progress-bar-progress ${
-                      activity.progress >= 80
-                        ? "green"
-                        : activity.progress >= 50
-                        ? "yellow"
-                        : "red"
-                    }`}
-                    style={{ width: activity.progress + "%" }}
-                  ></div> */}
-                          <div class="flex flex-wrap items-center justify-evenly">
-                            <Typography>Activity Status</Typography>
-                            <Typography
-                              style={{
-                                color: `${
-                                  activity_progress === "on Progress"
-                                    ? "orange"
-                                    : activity_progress === "Completed"
-                                    ? "green"
-                                    : "blue"
-                                }`,
-                              }}
-                              borderRadius="50px"
-                            >
-                              Upcomming
-                            </Typography>
+                            {/* Progress circle */}
+                            <path
+                              d="M18 2.0845
+          a 15.9155 15.9155 0 0 1 0 31.831
+          a 15.9155 15.9155 0 0 1 0 -31.831"
+                              fill="none"
+                              stroke={
+                                days_left <= 0 &&
+                                activity_progress !== "Completed"
+                                  ? "#EF4444" // Red color for deadline passed
+                                  : getProgressBarColor(
+                                      parseInt(progress_result)
+                                    )
+                              }
+                              strokeWidth="3"
+                              strokeDasharray={`${progress_result}, 100`}
+                              className="transition-all duration-500"
+                            />
+                          </svg>
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <span className="text-sm font-bold text-slate-700">
+                              {progress_result}%
+                            </span>
                           </div>
+                        </div>
+
+                        {/* Progress Bar */}
+                        <div className="flex-1">
+                          <ProgressBar
+                            completed={parseInt(progress_result)}
+                            bgColor={
+                              days_left <= 0 &&
+                              activity_progress !== "Completed"
+                                ? "#EF4444" // Red color for deadline passed
+                                : getProgressBarColor(parseInt(progress_result))
+                            }
+                            height="10px"
+                            borderRadius="6px"
+                            baseBgColor="rgba(226, 232, 240, 0.5)"
+                            labelColor="#64748B"
+                            className="progress-bar"
+                            isLabelVisible={false}
+                          />
+
+                          {/* Deadline Indicator */}
+                          {days_left <= 0 &&
+                            activity_progress !== "Completed" && (
+                              <div className="flex items-center gap-1 mt-1 text-xs text-red-600">
+                                <svg
+                                  className="w-3 h-3"
+                                  fill="currentColor"
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                                <span>
+                                  Deadline passed by {Math.abs(days_left)} days
+                                </span>
+                              </div>
+                            )}
                         </div>
                       </div>
-                    )}
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-100">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleViewCommentOnActivityClick(activity);
+                        }}
+                        className="flex items-center gap-1 text-sm text-slate-600 hover:text-slate-800"
+                      >
+                        <ChatOutlinedIcon fontSize="small" />
+                        <span>View Comments</span>
+                      </button>
+
+                      {commentOnActivity !== 0 && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCommentOnActivityClick(activity);
+                          }}
+                          className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800"
+                        >
+                          <AddCommentIcon fontSize="small" />
+                          <span>Add Comment</span>
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </Card>
+                </div>
               );
-            }
-          })
+            })}
+          </div>
         ) : (
-          <div class="text-center self-center">
-            <Typography>{noActivity}</Typography>
+          <div className="text-center py-12">
+            <div className="max-w-md mx-auto">
+              <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <AssignmentOutlinedIcon className="w-8 h-8 text-slate-400" />
+              </div>
+              <h3 className="text-lg font-medium text-slate-700 mb-2">
+                No Activities Found
+              </h3>
+              <p className="text-slate-500 mb-6">
+                {noActivity === "loading ..."
+                  ? "Loading activities..."
+                  : "Get started by creating your first activity"}
+              </p>
+              {createActivity !== 0 && noActivity !== "loading ..." && (
+                <button
+                  onClick={() => handleAddActivityClick()}
+                  className="px-4 py-2 bg-gradient-to-r from-slate-800 to-slate-900 text-white font-medium rounded-lg hover:shadow-lg transition-all duration-200"
+                >
+                  + Create First Activity
+                </button>
+              )}
+            </div>
           </div>
         )}
       </div>
-      {filteredRows.length !== 0 && (
-        <div className="flex flex-wrap justify-center gap-5 mb-10">
-          <Box className="text-sm flex  mt-1 pb-5 pt-5">
+
+      {/* Pagination */}
+      {filteredRows.length !== 0 && pageCount > 1 && (
+        <div className="flex justify-center px-4 md:px-5 pb-8">
+          <div className="bg-white rounded-lg border border-slate-200 p-4">
             <Pagination
               count={pageCount}
               page={currentPage}
               onChange={handleChange}
               variant="outlined"
               shape="rounded"
-              size="small"
               color="primary"
+              size="small"
+              showFirstButton
+              showLastButton
               sx={{
                 "& .MuiPaginationItem-root": {
-                  margin: "0 4px",
+                  fontSize: "0.875rem",
+                  minWidth: "32px",
+                  height: "32px",
+                  margin: "0 2px",
+                  "&.Mui-selected": {
+                    backgroundColor: "#0F172A",
+                    color: "#FFFFFF",
+                    "&:hover": {
+                      backgroundColor: "#1E293B",
+                    },
+                  },
                 },
               }}
             />
-          </Box>
-        </div>
-      )}
-
-      {addModalOpen && (
-        <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div className="bg-white w-3/5  rounded-md relative">
-            <span
-              className="absolute top-2 right-8 cursor-pointer text-gray-500"
-              onClick={handleAddModalClose}
-            >
-              X
-            </span>
-            <ActivityAdd
-              handlefetchActivity={handlefetchActivity}
-              handleCloseModal={handleAddModalClose}
-              selectedProject={props.setSelectedProjectInfo}
-            />{" "}
           </div>
         </div>
       )}
+
+      {/* Modals */}
+      {addModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-xl w-11/12 md:w-3/5 max-w-4xl max-h-[90vh] overflow-hidden">
+            <div className="flex justify-between items-center p-4 border-b border-slate-200">
+              <h3 className="text-lg font-semibold text-slate-800">
+                Add New Activity
+              </h3>
+              <button
+                onClick={handleAddModalClose}
+                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="p-4 md:p-6">
+              <ActivityAdd
+                handlefetchActivity={handlefetchActivity}
+                handleCloseModal={handleAddModalClose}
+                selectedProject={props.setSelectedProjectInfo}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       {editModalOpen && (
-        <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div
-            className="bg-white w-3/5 h-4/6 overflow-y-scroll rounded-md relative"
+            className="bg-white rounded-xl w-11/12 md:w-3/5 max-w-4xl max-h-[90vh] overflow-auto"
             ref={modalRef}
           >
-            <div
-              className="close  cursor-pointer text-end mr-12 mt-5"
-              onClick={handleEditModalClose}
-            >
-              X
+            <div className="sticky top-0 bg-white z-10 flex justify-between items-center p-4 border-b border-slate-200">
+              <h3 className="text-lg font-semibold text-slate-800">
+                Edit Activity
+              </h3>
+              <button
+                onClick={handleEditModalClose}
+                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                ✕
+              </button>
             </div>
-            <Activitiesedit
-              selectedRow={selectedRow}
-              handlefetchActivity={handlefetchActivity}
-              handleCloseModal={handleEditModalClose}
-              selectedProject={props.setSelectedProjectInfo}
-            />
+            <div className="p-4 md:p-6">
+              <Activitiesedit
+                selectedRow={selectedRow}
+                handlefetchActivity={handlefetchActivity}
+                handleCloseModal={handleEditModalClose}
+                selectedProject={props.setSelectedProjectInfo}
+              />
+            </div>
           </div>
         </div>
       )}
 
       {detailModalOpen && (
-        <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div className="bg-white w-2/3 rounded-md relative" ref={modalRef}>
-            <div
-              className="close cursor-pointer text-end mr-12 mt-5"
-              onClick={handleDetailModalClose}
-            >
-              X
-            </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+          <div
+            className="bg-white rounded-t-3xl w-full md:w-2/3  overflow-hidden"
+            ref={modalRef}
+          >
             <Activitiesdetail
               selectedRow={selectedRow}
               selectedRowAllData={selectedRowAllData}
-              handleCloseModal={handleAddModalClose}
-            />
-          </div>
-        </div>
-      )}
-      {commentModalOpen && (
-        <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div className="bg-white w-1/4 rounded-md relative" ref={modalRef}>
-            <div
-              className="close cursor-pointer text-end mr-12 mt-5"
-              onClick={handleDetailModalClose}
-            >
-              X
-            </div>
-            <Activitycomment
-              handlefetchActivity={handlefetchActivity}
-              activityName={selectedRow?.name}
-              selectedRow={selectedRow}
-              activityId={selectedRow?.activity_id}
-              userId={userInfo?.foundUser?.user_id}
               handleCloseModal={handleDetailModalClose}
-              selectedProject={props.setSelectedProjectInfo}
-            />
-          </div>
-        </div>
-      )}
-      {viewcommentModalOpen && (
-        <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div className="bg-white w-1/4 rounded-md relative" ref={modalRef}>
-            <div
-              className="close cursor-pointer text-end mr-12 mt-5"
-              onClick={handleDetailModalClose}
-            >
-              X
-            </div>
-            <Activitycommentview
-              handlefetchActivity={handlefetchActivity}
-              activityName={selectedRow?.name}
-              selectedRow={selectedRow}
-              activityId={selectedRow?.activity_id}
-              userId={userInfo?.foundUser?.user_id}
-              handleCloseModal={handleDetailModalClose}
-              selectedProject={props.setSelectedProjectInfo}
             />
           </div>
         </div>
       )}
 
-      {deleteModalOpen && (
-        <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div className="bg-white w-1/2 pt-4 rounded-md relative">
-            <div
-              className="close cursor-pointer text-end mr-12"
-              onClick={handleDeleteModalClose}
-            >
-              X
+      {commentModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div
+            className="bg-white rounded-xl w-11/12 md:w-1/4 max-w-md"
+            ref={modalRef}
+          >
+            <div className="flex justify-between items-center p-4 border-b border-slate-200">
+              <h3 className="text-lg font-semibold text-slate-800">
+                Add Comment
+              </h3>
+              <button
+                onClick={handleDetailModalClose}
+                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                ✕
+              </button>
             </div>
-            <Activitydelete
-              selectedRow={selectedRow}
-              handlefetchActivity={handlefetchActivity}
-              handleDeleteModalClose={handleDeleteModalClose}
-            />
+            <div className="p-4">
+              <Activitycomment
+                handlefetchActivity={handlefetchActivity}
+                activityName={selectedRow?.name}
+                selectedRow={selectedRow}
+                activityId={selectedRow?.activity_id}
+                userId={userInfo?.foundUser?.user_id}
+                handleCloseModal={handleDetailModalClose}
+                selectedProject={props.setSelectedProjectInfo}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {viewcommentModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div
+            className="bg-white rounded-xl w-11/12 md:w-1/4 max-w-md"
+            ref={modalRef}
+          >
+            <div className="flex justify-between items-center p-4 border-b border-slate-200">
+              <h3 className="text-lg font-semibold text-slate-800">Comments</h3>
+              <button
+                onClick={handleDetailModalClose}
+                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="p-4">
+              <Activitycommentview
+                handlefetchActivity={handlefetchActivity}
+                activityName={selectedRow?.name}
+                selectedRow={selectedRow}
+                activityId={selectedRow?.activity_id}
+                userId={userInfo?.foundUser?.user_id}
+                handleCloseModal={handleDetailModalClose}
+                selectedProject={props.setSelectedProjectInfo}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {deleteModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div
+            className="bg-white rounded-xl w-11/12 md:w-1/2 max-w-lg"
+            ref={modalRef}
+          >
+            <div className="flex justify-between items-center p-4 border-b border-slate-200">
+              <h3 className="text-lg font-semibold text-slate-800">
+                Delete Activity
+              </h3>
+              <button
+                onClick={handleDeleteModalClose}
+                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="p-4">
+              <Activitydelete
+                selectedRow={selectedRow}
+                handlefetchActivity={handlefetchActivity}
+                handleDeleteModalClose={handleDeleteModalClose}
+              />
+            </div>
           </div>
         </div>
       )}

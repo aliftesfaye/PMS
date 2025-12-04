@@ -1,21 +1,15 @@
 import React from "react";
 import backgroundImage from "../Assets/Loginbackground.png";
 import EaiiLogin from "../Assets/EaiiLoginicon.png";
-import EcscLogin from "../Assets/ethiopian_civil_service_commistion_logo-removebg-preview (1).png";
 import LoginContainer from "./LoginContainer";
-import {
-  CheckCircle,
-  TrendingUp,
-  Group,
-  OpenInNew,
-} from "@mui/icons-material";
+import { CheckCircle, TrendingUp, Group, OpenInNew } from "@mui/icons-material";
 
 const LoginBackground = () => {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">
       {/* Background Pattern */}
       <div className="absolute inset-0 overflow-hidden">
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20"
           style={{ backgroundImage: `url(${backgroundImage})` }}
         />
@@ -35,15 +29,15 @@ const LoginBackground = () => {
                 <div className="absolute top-0 left-0 w-32 h-32 bg-white rounded-full -translate-x-16 -translate-y-16"></div>
                 <div className="absolute bottom-0 right-0 w-32 h-32 bg-white rounded-full translate-x-16 translate-y-16"></div>
               </div>
-              
+
               <div className="relative z-10 h-full flex flex-col justify-center">
                 {/* Logo */}
                 <div className="flex justify-center mb-8">
                   <div className="bg-white/20 p-4 rounded-2xl backdrop-blur-sm border border-white/30">
-                    <img 
-                      src={EcscLogin} 
-                      alt="Ethiopia Civil Service Commission" 
-                      className="h-16 w-auto filter brightness-0 invert"
+                    <img
+                      src={EaiiLogin}
+                      alt="Ethiopian Artificial Intelligence Institute"
+                      className="h-24 w-auto"
                     />
                   </div>
                 </div>
@@ -51,36 +45,61 @@ const LoginBackground = () => {
                 {/* Institute Info */}
                 <div className="text-center mb-8">
                   <h1 className="text-2xl lg:text-3xl font-bold mb-4 leading-tight">
-                    Ethiopia Civil Service Commission
+                    Ethiopian Artificial Intelligence Institute
                   </h1>
                   <p className="text-xl lg:text-2xl font-semibold text-white/90 mb-2">
                     PROJECT MANAGEMENT SYSTEM
                   </p>
                   <p className="text-white/80 text-sm lg:text-base mt-4">
-                    Streamline your projects with intelligent management solutions
+                    Streamline your projects with intelligent management
+                    solutions
                   </p>
                 </div>
 
                 {/* Features List */}
                 <div className="space-y-3 mb-8">
                   <div className="flex items-center">
-                    <CheckCircle style={{ fontSize: 20, color: "#86EFAC", marginRight: 12 }} />
-                    <span className="text-white/90">Secure & Reliable Access</span>
+                    <CheckCircle
+                      style={{
+                        fontSize: 20,
+                        color: "#86EFAC",
+                        marginRight: 12,
+                      }}
+                    />
+                    <span className="text-white/90">
+                      Secure & Reliable Access
+                    </span>
                   </div>
                   <div className="flex items-center">
-                    <TrendingUp style={{ fontSize: 20, color: "#86EFAC", marginRight: 12 }} />
-                    <span className="text-white/90">Real-time Project Tracking</span>
+                    <TrendingUp
+                      style={{
+                        fontSize: 20,
+                        color: "#86EFAC",
+                        marginRight: 12,
+                      }}
+                    />
+                    <span className="text-white/90">
+                      Real-time Project Tracking
+                    </span>
                   </div>
                   <div className="flex items-center">
-                    <Group style={{ fontSize: 20, color: "#86EFAC", marginRight: 12 }} />
-                    <span className="text-white/90">Collaborative Workspace</span>
+                    <Group
+                      style={{
+                        fontSize: 20,
+                        color: "#86EFAC",
+                        marginRight: 12,
+                      }}
+                    />
+                    <span className="text-white/90">
+                      Collaborative Workspace
+                    </span>
                   </div>
                 </div>
 
                 {/* Learn More Button */}
                 <div className="text-center">
                   <a
-                    href="https://fcsc.ecsc.gov.et/"
+                    href="https://aii.et/"
                     className="inline-flex items-center px-6 py-3 bg-white/20 backdrop-blur-sm border border-white/30 text-white font-semibold rounded-lg hover:bg-white/30 transition-all duration-200 transform hover:-translate-y-0.5"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -102,7 +121,8 @@ const LoginBackground = () => {
         {/* Footer */}
         <div className="text-center mt-6">
           <p className="text-white/70 text-sm">
-            © 2025 Federal Democratic Republic of Ethiopia Civil Service Commission. All rights reserved.
+            © 2025 Ethiopian Artificial Intelligence Institute. All rights
+            reserved.
           </p>
         </div>
       </div>

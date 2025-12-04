@@ -49,15 +49,6 @@ const AuthProvider = ({ children }) => {
       } else {
         errorMessage = "Network Error";
       }
-
-      Swal.fire({
-        position: "center",
-        icon: "error",
-        title: "login failed",
-        text: errorMessage,
-        showConfirmButton: false,
-        timer: 2500,
-      });
     }
   };
 
