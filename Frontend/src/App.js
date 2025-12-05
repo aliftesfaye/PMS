@@ -70,14 +70,12 @@ import Users from "./Components/PMS/Users";
 import Checkboxtest from "./Components/PMS/checkboxtest";
 
 import Assign from "./Components/PMS/Assign";
-// import Footer from "./Components/PMS/Footer";
 import FirstResettry from "./Components/PMS/FirstResettry";
 import Footer from "./Components/PMS/Footer";
 
 import Organizationaluniteditt from "./Components/PMS/Organizationaluniteditt";
 
 import Organizationalunits from "./Components/PMS/Organizationalunits";
-import Try from "./Components/PMS/Try";
 import WorkspaceAddMajorTask from "./Components/PMS/WorkspaceAddMajorTask";
 import WorkspaceAddSubTask from "./Components/PMS/WorkspaceAddSubTask";
 import WorkspaceEditMajorTask from "./Components/PMS/WorkspaceEditMajorTask";
@@ -90,7 +88,6 @@ import Addorganization from "./Components/PMS/Addorganization";
 
 import FirstResetcontainer from "./Components/PMS/FirstResetcontainer";
 import Organizationalunittry from "./Components/PMS/Organizationalunittry";
-import Try2 from "./Components/PMS/Try2";
 import Viewprofile from "./Components/PMS/Viewprofile";
 import WorkspaceEditSubtask from "./Components/PMS/WorkspaceEditSubtask";
 import { useAuth } from "./context/authContext";
@@ -129,8 +126,6 @@ function App() {
 
           <Route path="/logincontainer" element={<LoginContainer />} />
           <Route path="/checkboxtest" element={<Checkboxtest />} />
-          <Route path="/try" element={<Try />} />
-          <Route path="/try2" element={<Try2 />} />
           <Route path="/Notification" element={<Notification />} />
 
           <Route path="/trash" element={<Trash />} />

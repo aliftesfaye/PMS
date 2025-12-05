@@ -1,14 +1,25 @@
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import HistoryToggleOffIcon from "@mui/icons-material/HistoryToggleOff";
-
 import ListAltIcon from "@mui/icons-material/ListAlt";
-import { LinearProgress } from "@mui/material";
+import EmailIcon from "@mui/icons-material/Email";
+import WorkIcon from "@mui/icons-material/Work";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import {
+  LinearProgress,
+  Avatar,
+  Chip,
+  Box,
+  Card,
+  Grid,
+  Typography,
+  Divider,
+} from "@mui/material";
 import Backdrop from "@mui/material/Backdrop";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import PuffLoader from "react-spinners/ClipLoader";
-import emailIcon from "../Assets/email.png";
 import apiService from "../services/apiServices";
 
 const Userprofile = (props) => {
@@ -17,8 +28,6 @@ const Userprofile = (props) => {
   });
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  const [totalSubTasks, setTotalSubTasks] = useState();
   const [loadingProjects, setLoadingProjects] = useState(true);
 
   const fetchData = async () => {
@@ -31,11 +40,13 @@ const Userprofile = (props) => {
       console.error("Error fetching user data:", error);
     }
   };
+
   const projectsWithSubtasks = projects.filter((project) =>
     project.activity.some((activity) =>
       activity.Task.some((task) => task.subTask.length > 0)
     )
   );
+
   const totalSubtasksLength = projectsWithSubtasks.reduce((total, project) => {
     return (
       total +
@@ -61,11 +72,10 @@ const Userprofile = (props) => {
               return (
                 sum +
                 task.subTask.reduce((subtaskSum, subtask) => {
-                  // Check if the subtask is completed
                   if (subtask.subtask_status === "Completed") {
-                    return subtaskSum + 1; // Increment the count if completed
+                    return subtaskSum + 1;
                   } else {
-                    return subtaskSum; // Otherwise, return the current count
+                    return subtaskSum;
                   }
                 }, 0)
               );
@@ -88,11 +98,10 @@ const Userprofile = (props) => {
               return (
                 sum +
                 task.subTask.reduce((subtaskSum, subtask) => {
-                  // Check if the subtask is completed
                   if (subtask.subtask_status === "Pending") {
-                    return subtaskSum + 1; // Increment the count if completed
+                    return subtaskSum + 1;
                   } else {
-                    return subtaskSum; // Otherwise, return the current count
+                    return subtaskSum;
                   }
                 }, 0)
               );
@@ -115,11 +124,10 @@ const Userprofile = (props) => {
               return (
                 sum +
                 task.subTask.reduce((subtaskSum, subtask) => {
-                  // Check if the subtask is completed
                   if (subtask.subtask_status === "In Progress") {
-                    return subtaskSum + 1; // Increment the count if completed
+                    return subtaskSum + 1;
                   } else {
-                    return subtaskSum; // Otherwise, return the current count
+                    return subtaskSum;
                   }
                 }, 0)
               );
@@ -130,6 +138,11 @@ const Userprofile = (props) => {
     },
     0
   );
+
+  const completionRate =
+    totalSubtasksLength > 0
+      ? Math.round((totalCompletedSubtasksLength / totalSubtasksLength) * 100)
+      : 0;
 
   useEffect(() => {
     fetchData();
@@ -144,197 +157,382 @@ const Userprofile = (props) => {
     fetchUsers();
   }, [userInfo]);
 
+  const getStatusColor = (status) => {
+    switch (status?.toLowerCase()) {
+      case "completed":
+        return "#10B981";
+      case "in progress":
+        return "#F59E0B";
+      case "pending":
+        return "#6B7280";
+      default:
+        return "#6B7280";
+    }
+  };
+
+  const getStatusBgColor = (status) => {
+    switch (status?.toLowerCase()) {
+      case "completed":
+        return "#D1FAE5";
+      case "in progress":
+        return "#FEF3C7";
+      case "pending":
+        return "#F3F4F6";
+      default:
+        return "#F3F4F6";
+    }
+  };
+
+  const StatCard = ({ icon: Icon, label, value, color, subtext }) => (
+    <Card className="p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-100">
+      <Box className="flex items-center gap-3">
+        <Box
+          className={`p-2 rounded-lg`}
+          sx={{ backgroundColor: `${color}15` }}
+        >
+          <Icon className="w-5 h-5" sx={{ color }} />
+        </Box>
+        <Box>
+          <Typography variant="h5" className="font-bold text-gray-900">
+            {value}
+          </Typography>
+          <Typography variant="caption" className="text-gray-600">
+            {label}
+          </Typography>
+          {subtext && (
+            <Typography variant="caption" className="block text-gray-500">
+              {subtext}
+            </Typography>
+          )}
+        </Box>
+      </Box>
+    </Card>
+  );
+
+  const ProjectCard = ({ project }) => (
+    <Card className="p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-100">
+      <Box className="flex items-center gap-3">
+        <Avatar
+          className="w-10 h-10"
+          sx={{
+            bgcolor: "primary.main",
+            fontWeight: "bold",
+            fontSize: "1rem",
+          }}
+        >
+          {project.name.charAt(0).toUpperCase()}
+        </Avatar>
+        <Box className="flex-1 min-w-0">
+          <Typography
+            variant="body1"
+            className="font-semibold text-gray-900 truncate"
+          >
+            {project.name.charAt(0).toUpperCase() +
+              project.name.slice(1).toLowerCase()}
+          </Typography>
+          <Typography variant="caption" className="text-gray-600">
+            {project.overall_progress} progress
+          </Typography>
+        </Box>
+      </Box>
+    </Card>
+  );
+
+  const SubTaskCard = ({ subTask, projectName }) => (
+    <Card className="p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-100 mb-3">
+      <Box className="flex items-center justify-between">
+        <Box className="flex items-center gap-3">
+          <Avatar
+            className="w-8 h-8"
+            sx={{
+              bgcolor: "#3B82F6",
+              fontSize: "0.875rem",
+            }}
+          >
+            {subTask.name.charAt(0).toUpperCase()}
+          </Avatar>
+          <Box>
+            <Typography variant="body2" className="font-medium text-gray-900">
+              {subTask.name.charAt(0).toUpperCase() +
+                subTask.name.slice(1).toLowerCase()}
+            </Typography>
+            <Chip
+              label={projectName}
+              size="small"
+              className="mt-1"
+              sx={{
+                backgroundColor: "#E0F2FE",
+                color: "#0369A1",
+                fontSize: "0.625rem",
+                height: "20px",
+              }}
+            />
+          </Box>
+        </Box>
+        <Chip
+          label={subTask.subtask_status}
+          size="small"
+          sx={{
+            backgroundColor: getStatusBgColor(subTask.subtask_status),
+            color: getStatusColor(subTask.subtask_status),
+            fontWeight: 600,
+            fontSize: "0.75rem",
+          }}
+        />
+      </Box>
+    </Card>
+  );
+
   return (
-    <div className="ml-auto w-4/5 mr-5 mt-24 relative">
+    <Box className="ml-auto lg:w-4/5 w-full px-4 lg:px-8 mt-24">
       <Helmet>
         <title>PMS - Profile</title>
       </Helmet>
+
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
       >
         <PuffLoader color="#fff" />
       </Backdrop>
-      <div className="flex flex-col mt-24 pr-9 pl-2 rounded-2xl md:ml-2 ">
-        <div className="title-profile-view mb-4 text-2xl font-bold text-blue-950">
-          User profile
-        </div>
-        <div className=" ">
-          <div className="  flex  gap-8 max-md:flex-col max-md:gap-0">
-            <div className="workedon-and-user-profile-container w-2/5 h-fit  flex flex-col max-md:ml-0 max-md:w-full ">
-              <div className="flex  flex-col max-md:mt-9">
-                <div className="profile-container-box flex flex-col py-5 mt-3 h-full rounded-2xl border-x-2 border-y-2 border-gray-200">
-                  <div className="profile-cont flex pr-1.5">
-                    <div className="right-side ml-4 flex flex-col justify-center items-center">
-                      <AccountCircleIcon
-                        className="rounded-full"
-                        fontSize="large"
-                        style={{ width: "100px", height: "100px" }}
-                      />
-                    </div>
-                    <div className="border-l ml-5 border-gray-300"></div>
 
-                    <div
-                      className="left-side ml-4 flex flex-col flex-nowrap w-full overflow-x-auto"
-                      style={{
-                        maxWidth: "calc(100% - 150px)",
-                        scrollbarWidth: "none",
-                        msOverflowStyle: "none",
-                      }}
+      {/* Header */}
+      <Box className="mb-8">
+        <Typography variant="h4" className="font-bold text-gray-900 mb-2">
+          User Profile
+        </Typography>
+        <Typography variant="body1" className="text-gray-600">
+          Overview of your tasks and projects
+        </Typography>
+      </Box>
+
+      {/* Main Content */}
+      <Grid container spacing={3}>
+        {/* Left Column - Profile & Projects */}
+        <Grid item xs={12} lg={5}>
+          {/* Profile Card */}
+          <Card className="rounded-2xl shadow-lg border-0 mb-6 overflow-hidden">
+            {/* Profile Header with Gradient */}
+            <Box
+              className="p-6"
+              sx={{
+                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              }}
+            >
+              <Box className="flex items-center gap-4">
+                <Avatar className="w-20 h-20 border-4 border-white shadow-lg">
+                  <AccountCircleIcon className="w-16 h-16" />
+                </Avatar>
+                <Box>
+                  <Typography
+                    variant="h5"
+                    className="font-bold text-white mb-1"
+                  >
+                    {userInfo.foundUser?.full_name || "User Name"}
+                  </Typography>
+                  <Box className="flex items-center gap-2">
+                    <EmailIcon className="w-4 h-4 text-white opacity-90" />
+                    <Typography
+                      variant="body2"
+                      className="text-white opacity-90"
                     >
-                      <div className="Fullname text-base whitespace-nowrap">
-                        {userInfo.foundUser.full_name}
-                      </div>
+                      {userInfo.foundUser?.email || "user@example.com"}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
+            </Box>
 
-                      <div className="email mb-1 mt-3 flex gap-1 items-center text-black whitespace-nowrap">
-                        <img
-                          loading="lazy"
-                          src={emailIcon}
-                          alt=""
-                          className="mt-2"
-                        />
-                        <div>{userInfo.foundUser.email}</div>
-                      </div>
+            {/* Profile Stats */}
+            <Box className="p-6">
+              {/* Completion Progress */}
+              <Box className="mb-6">
+                <Box className="flex justify-between items-center mb-2">
+                  <Typography
+                    variant="body2"
+                    className="font-medium text-gray-700"
+                  >
+                    Overall Completion
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    className="font-bold text-gray-900"
+                  >
+                    {completionRate}%
+                  </Typography>
+                </Box>
+                <LinearProgress
+                  variant="determinate"
+                  value={completionRate}
+                  sx={{
+                    height: 8,
+                    borderRadius: 4,
+                    backgroundColor: "#E5E7EB",
+                    "& .MuiLinearProgress-bar": {
+                      borderRadius: 4,
+                      background:
+                        "linear-gradient(90deg, #10B981 0%, #3B82F6 100%)",
+                    },
+                  }}
+                />
+              </Box>
 
-                      <div className="border-t mt-5 border-gray-300"></div>
+              {/* Stats Grid */}
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <StatCard
+                    icon={AssignmentIcon}
+                    label="Total Tasks"
+                    value={totalSubtasksLength}
+                    color="#3B82F6"
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <StatCard
+                    icon={CheckCircleIcon}
+                    label="Completed"
+                    value={totalCompletedSubtasksLength}
+                    color="#10B981"
+                    subtext={`${completionRate}% completion`}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <StatCard
+                    icon={ListAltIcon}
+                    label="In Progress"
+                    value={totalInProgressSubtasksLength}
+                    color="#F59E0B"
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <StatCard
+                    icon={HistoryToggleOffIcon}
+                    label="Pending"
+                    value={totalPendingSubtasksLength}
+                    color="#6B7280"
+                  />
+                </Grid>
+              </Grid>
+            </Box>
+          </Card>
 
-                      <div className="total-task mt-2 whitespace-nowrap">
-                        Total tasks {totalSubtasksLength}
-                      </div>
+          {/* Projects Card */}
+          <Card className="rounded-2xl shadow-lg border-0">
+            <Box className="p-6">
+              <Box className="flex items-center gap-2 mb-6">
+                <WorkIcon className="text-gray-700" />
+                <Typography variant="h6" className="font-bold text-gray-900">
+                  Projects Worked On
+                </Typography>
+              </Box>
 
-                      <div className="flex gap-2 mt-2 items-center whitespace-nowrap">
-                        <CheckCircleIcon className="shrink-0 w-2.5 aspect-square text-green-500" />
-                        <div className="flex-auto my-auto">
-                          {totalCompletedSubtasksLength}
-                        </div>
-                      </div>
+              {loadingProjects && (
+                <LinearProgress color="primary" className="mb-4" />
+              )}
 
-                      <div className="flex gap-2 mt-2 items-center whitespace-nowrap">
-                        <HistoryToggleOffIcon className="shrink-0 w-2.5 aspect-square text-gray-500" />
-                        <div className="flex-auto my-auto">
-                          {totalPendingSubtasksLength}
-                        </div>
-                      </div>
+              <Box className="space-y-3 max-h-96 overflow-y-auto pr-2">
+                {projects && projects.length > 0 ? (
+                  projects.map((project, index) => (
+                    <ProjectCard key={index} project={project} />
+                  ))
+                ) : (
+                  <Box className="text-center py-8">
+                    <WorkIcon className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                    <Typography variant="body2" className="text-gray-500">
+                      No projects found
+                    </Typography>
+                  </Box>
+                )}
+              </Box>
+            </Box>
+          </Card>
+        </Grid>
 
-                      <div className="flex gap-2 mt-2 items-center whitespace-nowrap">
-                        <ListAltIcon className="shrink-0 aspect-[1.22] text-orange-500 w-[11px]" />
-                        <div className="flex-auto my-auto">
-                          {totalInProgressSubtasksLength}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="workedon-container-box flex  flex-col py-1 mt-5 bg-white rounded-2xl border-solid  max-md:px-5 border-x-2 border-y-2 border-gray-200">
-                  <div className="workedon-titl text-xl ml-6 font-bold text-blue-950">
-                    Worked on
-                  </div>
-                  <div className="relative">
-                    {loadingProjects && (
-                      <LinearProgress
-                        color="primary"
-                        className="absolute top-0 left-0 right-0"
-                      />
-                    )}
-                    <div className="content">
-                      <div
-                        className={`workedon-container ${
-                          projects && projects.length > 4
-                            ? "   overflow-y-auto"
-                            : ""
-                        }   flex flex-col px-2  ml-6 mt-2.5 mr-4 bg-white rounded-lg border-0 border-solid h-64  shadow-sm border-black border-opacity-50`}
-                      >
-                        {projects &&
-                          projects.map((project, index) => (
-                            <div key={index} className="flex gap-2">
-                              <div className="flex flex-col justify-center mt-1 text-lg font-semibold text-white whitespace-nowrap">
-                                <div className="initial pl-2 mb-3 justify-center items-center w-7 h-7 rounded bg-slate-500">
-                                  {project.name.charAt(0).toUpperCase()}
-                                </div>
-                              </div>
-                              <div className="project-title flex-1 my-auto text-xs font-medium text-black">
-                                {project.name.charAt(0).toUpperCase() +
-                                  project.name.slice(1).toLowerCase()}
-                              </div>
-                              <div className="project-title flex-1 my-auto text-xs font-medium text-black">
-                                {project.overall_progress}
-                              </div>
-                            </div>
-                          ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col ml-5 h-screen   w-2/5  max-md:ml-0 max-md:w-full">
-              <div className="currenttask-box flex flex-col h-fit px-9 py-5 mt-3 rounded-2xl border-solid max-md:px-5 border-x-2 border-y-2 border-gray-200 mb-36 overflow-y-auto">
-                <div className="text-xl font-bold text-blue-950">
+        {/* Right Column - Current Tasks */}
+        <Grid item xs={12} lg={7}>
+          <Card className="rounded-2xl shadow-lg border-0 h-full">
+            <Box className="p-6">
+              <Box className="flex items-center gap-2 mb-6">
+                <TrendingUpIcon className="text-gray-700" />
+                <Typography variant="h6" className="font-bold text-gray-900">
                   Current Sub Tasks
-                </div>
-                <div className="relative">
-                  {loadingProjects && (
-                    <LinearProgress
-                      color="primary"
-                      className="absolute top-0 left-0 right-0"
-                    />
-                  )}
-                  <div className="content">
-                    <div>
-                      {projectsWithSubtasks.map((project, index) => (
-                        <div
-                          key={project.project_id}
-                          className="project-container-box  flex flex-col px-1 py-5 mt-2.5  bg-white rounded-lg border-solid shadow-sm border-black border-opacity-50"
-                        >
-                          {project.activity.map((activity) => (
-                            <div key={activity.activity_id}>
-                              {activity.Task.map((task) => (
-                                <div key={task.task_id}>
-                                  {task.subTask.map((subTask, index) => (
-                                    <div
-                                      key={index}
-                                      className="flex gap-24 mb-4 justify-between px-0.5"
-                                    >
-                                      <div className="flex gap-2">
-                                        <div className="flex flex-col text-lg font-semibold text-white whitespace-nowrap">
-                                          <div className="initial px-2 justify-center items-center bg-blue-600 rounded-sm">
-                                            {subTask.name
-                                              .charAt(0)
-                                              .toUpperCase()}
-                                          </div>
-                                        </div>
-                                        <div className="project-title text-xs font-medium text-black">
-                                          {subTask.name
-                                            .charAt(0)
-                                            .toUpperCase() +
-                                            subTask.name.slice(1).toLowerCase()}
-                                        </div>
-                                      </div>
-                                      <div className="px-2 py-2 text-xs font-medium whitespace-nowrap  rounded-2xl">
-                                        {subTask.subtask_status}
-                                      </div>
-                                    </div>
-                                  ))}
-                                </div>
-                              ))}
-                            </div>
-                          ))}
+                </Typography>
+                <Chip
+                  label={`${totalSubtasksLength} tasks`}
+                  size="small"
+                  sx={{
+                    backgroundColor: "#E0F2FE",
+                    color: "#0369A1",
+                    fontWeight: 600,
+                  }}
+                />
+              </Box>
 
-                          <div className="milestone justify-center w-fit px-1.5 py-1.5 mt-6 text-base  font-semibold bg-sky-200 rounded-md inline-block text-slate-900">
-                            {project.name.charAt(0).toUpperCase() +
-                              project.name.slice(1).toLowerCase()}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+              {loadingProjects && (
+                <LinearProgress color="primary" className="mb-4" />
+              )}
+
+              <Box className="space-y-4 max-h-[calc(100vh-300px)] overflow-y-auto pr-2">
+                {projectsWithSubtasks.length > 0 ? (
+                  projectsWithSubtasks.map((project, index) => (
+                    <Box key={index} className="mb-6">
+                      {/* Project Header */}
+                      <Box className="flex items-center gap-2 mb-4">
+                        <Avatar
+                          className="w-8 h-8"
+                          sx={{
+                            bgcolor: "primary.main",
+                            fontSize: "0.875rem",
+                          }}
+                        >
+                          {project.name.charAt(0).toUpperCase()}
+                        </Avatar>
+                        <Typography
+                          variant="subtitle1"
+                          className="font-semibold text-gray-900"
+                        >
+                          {project.name.charAt(0).toUpperCase() +
+                            project.name.slice(1).toLowerCase()}
+                        </Typography>
+                      </Box>
+
+                      {/* SubTasks List */}
+                      <Box className="space-y-2">
+                        {project.activity.map((activity) => (
+                          <React.Fragment key={activity.activity_id}>
+                            {activity.Task.map((task) => (
+                              <React.Fragment key={task.task_id}>
+                                {task.subTask.map((subTask, subIndex) => (
+                                  <SubTaskCard
+                                    key={`${task.task_id}-${subIndex}`}
+                                    subTask={subTask}
+                                    projectName={project.name}
+                                  />
+                                ))}
+                              </React.Fragment>
+                            ))}
+                          </React.Fragment>
+                        ))}
+                      </Box>
+                    </Box>
+                  ))
+                ) : (
+                  <Box className="text-center py-12">
+                    <AssignmentIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                    <Typography variant="h6" className="text-gray-600 mb-2">
+                      No active sub-tasks
+                    </Typography>
+                    <Typography variant="body2" className="text-gray-500">
+                      You don't have any assigned sub-tasks at the moment
+                    </Typography>
+                  </Box>
+                )}
+              </Box>
+            </Box>
+          </Card>
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 

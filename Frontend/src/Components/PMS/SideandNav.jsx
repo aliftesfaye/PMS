@@ -36,10 +36,11 @@ import "./Sidebar.css";
 import Structure from "./Structure";
 import Teams from "./Teams";
 import Trash from "./Trashtry";
-import Try2 from "./Try2";
+
 import Profile from "./Userprofile";
 import Users from "./Users";
 import Workspace from "./Workspace";
+import MembersDashboard from "./ProjectMembers";
 
 const SideandNav = (props) => {
   const navigate = useNavigate();
@@ -1550,7 +1551,9 @@ const SideandNav = (props) => {
           <React.Fragment>
             <Route
               path={`${selectedProjectInfo.name}/members`}
-              element={<Try2 selectedProjectInfo={selectedProjectInfo} />}
+              element={
+                <MembersDashboard selectedProjectInfo={selectedProjectInfo} />
+              }
             />
           </React.Fragment>
         )}

@@ -1,5 +1,25 @@
-import { Box, Tooltip, Typography } from "@material-ui/core";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  Box,
+  Tooltip,
+  Typography,
+  Badge,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Backdrop,
+  FormControl,
+  MenuItem,
+  Select,
+} from "@mui/material";
 import { makeStyles } from "@material-ui/core/styles";
+import { Helmet } from "react-helmet-async";
+import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
+import { TreeItem } from "@mui/x-tree-view/TreeItem";
+import Swal from "sweetalert2";
+import PuffLoader from "react-spinners/ClipLoader";
+
+// Icons
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import CommentIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import FlagIcon from "@mui/icons-material/Flag";
@@ -8,22 +28,13 @@ import AddCommentIcon from "@mui/icons-material/MapsUgcOutlined";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import SearchIcon from "@mui/icons-material/Search";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
-import { Badge, IconButton, InputAdornment, TextField } from "@mui/material";
-import Backdrop from "@mui/material/Backdrop";
-import FormControl from "@mui/material/FormControl";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import { Helmet } from "react-helmet-async";
-
-import PuffLoader from "react-spinners/ClipLoader";
-// import AddCommentIcon from '@mui/icons-material/MapsUgcOutlined';
-import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
-import { TreeItem } from "@mui/x-tree-view/TreeItem";
-import React, { useEffect, useRef, useState } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import Swal from "sweetalert2";
+
+// Config & Services
 import { PERMISSIONS } from "../../config";
 import apiService from "../services/apiServices";
+
+// Components
 import Subtaskcomment from "./Subtaskcomment.jsx";
 import WorkspaceAddMajorTask from "./WorkspaceAddMajorTask.jsx";
 import WorkspaceAddSubTask from "./WorkspaceAddSubTask.jsx";
@@ -32,7 +43,6 @@ import WorkspaceEditMajorTask from "./WorkspaceEditMajorTask.jsx";
 import WorkspaceEditSubtask from "./WorkspaceEditSubtask.jsx";
 import WorkspaceSubtasktrash from "./WorkspaceSubtasktrash.jsx";
 import WorkspaceTaskTrash from "./WorkspaceTaskTrash.jsx";
-// import Subtaskcomment from "./Subtaskcomment.jsx";
 import Subtaskcommentview from "./Subtaskcommentview.jsx";
 
 const useStyles = makeStyles({
@@ -47,6 +57,7 @@ const useStyles = makeStyles({
       },
   },
 });
+
 const Workspace = (props) => {
   const [formData, setFormData] = useState({
     subtask_status: "",
@@ -543,611 +554,580 @@ const Workspace = (props) => {
       >
         <PuffLoader color="#fff" />
       </Backdrop>
-      <div className="flex gap-3 px-5 py-5 ">
-        <div className="flex flex-col justify-center text-3xl font-semibold text-white whitespace-nowrap">
-          <div className="justify-center items-center px-3 py-1 bg-blue-900 rounded">
-            {props.setSelectedProjectInfo.name.charAt(0).toUpperCase()}
+
+      {/* Header */}
+      <div className="bg-gradient-to-r from-blue-900 to-blue-700 text-white p-6">
+        <div className="flex flex-col md:flex-row md:items-center gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center text-2xl font-bold backdrop-blur-sm">
+              {props.setSelectedProjectInfo.name.charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold">
+                {props.setSelectedProjectInfo.name}
+              </h1>
+              <p className="text-blue-100 opacity-90">Project Workspace</p>
+            </div>
           </div>
-        </div>
-        <div className="flex-auto my-auto text-xl font-medium text-blue-950">
-          {props.setSelectedProjectInfo.name} - workspace
         </div>
       </div>
 
-      <div>
-        <ul class="my-5 flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-200 dark:text-gray-400">
-          <li class="me-2 " onClick={() => handleFilterClick("All")}>
-            <a
-              href="#"
-              aria-current="page"
-              className={`cursor-pointer ${
-                statusFilter === "All"
-                  ? "font-bold text-blue-900 bg-gray-100 inline-block p-4 rounded-t-lg"
-                  : "inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 "
+      {/* Filter Tabs */}
+      <div className="border-b border-gray-200 bg-gray-50 px-4 md:px-6 overflow-x-auto">
+        <div className="flex space-x-1 min-w-max">
+          {["All", "Completed", "On Progress", "Pending"].map((status) => (
+            <button
+              key={status}
+              onClick={() => handleFilterClick(status)}
+              className={`px-4 py-3 text-sm font-medium transition-all duration-200 whitespace-nowrap ${
+                statusFilter === status
+                  ? "text-blue-700 border-b-2 border-blue-700 bg-blue-50"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
               }`}
             >
-              <div>All</div>
-            </a>
-          </li>
+              {status}
+            </button>
+          ))}
+        </div>
+      </div>
 
-          <li class="me-2" onClick={() => handleFilterClick("Completed")}>
-            <a
-              href="#"
-              className={`cursor-pointer ${
-                statusFilter === "Completed"
-                  ? "font-bold text-blue-900 bg-gray-100 inline-block p-4  rounded-t-lg "
-                  : "inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 "
-              }`}
-            >
-              <div>Completed</div>
-            </a>
-          </li>
-          <li class="me-2" onClick={() => handleFilterClick("On Progress")}>
-            <a
-              href="#"
-              className={`cursor-pointer ${
-                statusFilter === "On Progress"
-                  ? "font-bold text-blue-900 bg-gray-100 inline-block p-4   rounded-t-lg "
-                  : "inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 "
-              }`}
-            >
-              <div>On Progress</div>
-            </a>
-          </li>
+      {/* Search and Filters */}
+      <div className="p-4 md:p-6 border-b border-gray-200 bg-white">
+        <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+          <TextField
+            type="text"
+            placeholder="Search activities..."
+            size="small"
+            className="bg-white rounded-lg w-full md:w-auto md:min-w-[300px]"
+            variant="outlined"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon className="text-gray-400" />
+                </InputAdornment>
+              ),
+              className: "rounded-lg",
+            }}
+          />
 
-          <li class="me-2" onClick={() => handleFilterClick("Pending")}>
-            <a
-              href="#"
-              className={`cursor-pointer ${
-                statusFilter === "Pending"
-                  ? "font-bold text-blue-900 bg-gray-100 inline-block p-4   rounded-t-lg "
-                  : "inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 "
-              }`}
-            >
-              <div>Pending</div>
-            </a>
-          </li>
-          <li class="me-2" onClick={() => handleFilterClick("Pending")}></li>
-        </ul>
-        <div className="flex flex-wrap gap-6 items-center mb-4">
-          <div className="flex flex-wrap relative gap-6 items-center">
-            <div class=" self-center">
-              <TextField
-                type="text"
-                placeholder="Search by Activity Name"
-                size="small"
-                class="bg-white rounded-lg"
-                variant="outlined"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </div>
-            <div className="flex flex-row ">
+          <div className="flex items-center gap-4 flex-wrap">
+            <label className="flex items-center gap-2 cursor-pointer group">
               <input
                 type="checkbox"
                 id="is_milestone"
                 name="is_milestone"
                 checked={formData.is_milestone}
                 onChange={handleInputChange}
-                className="h-4 w-4 mt-1 text-blue-600 focus:ring-blue-500 border-gray-300 rounded-md"
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
-              <label htmlFor="is_milestone" className="ml-3">
-                Is Milestone?
-              </label>
-            </div>
-            <button onClick={fetchAllActivities}>Show All Activities</button>
+              <span className="text-sm text-gray-700 group-hover:text-gray-900">
+                Show Milestones Only
+              </span>
+            </label>
+
+            <button
+              onClick={fetchAllActivities}
+              className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200"
+            >
+              Show All Activities
+            </button>
           </div>
         </div>
       </div>
 
-      {activities.length !== 0 ? (
-        <Box
-          sx={{
-            border: "2px solid #ccc",
-            borderRadius: "4px",
-            padding: "30px",
-          }}
-          style={{
-            minWidth: "900px", // Default minWidth for all screen sizes
-            "@media (max-width: 640px)": {
-              minWidth: "initial", // Reset minWidth for screens less than 640px
-            },
-          }}
-        >
-          <SimpleTreeView>
-            {currentActivities.map((activityItem, activityIndex) => (
-              <TreeItem
-                key={`activity-${activityIndex}`}
-                itemId={`activity-${activityIndex}`}
-                label={
-                  <div className="flex">
-                    <div className=" flex flex-row justify-center self-stretch px-4 py-1.5 my-auto whitespace-nowrap  rounded-md cursor-pointer">
-                      {activityItem.activity.name}
-                      {activityItem.activity.is_milestone === true && (
-                        <div className=" w-fit  right-2 text-xs  px-2  rounded">
-                          <FlagIcon fontSize="small" />
-                        </div>
+      {/* Main Content */}
+      <div className="p-4 md:p-6">
+        {activities.length !== 0 ? (
+          <Box
+            sx={{
+              border: "1px solid #e5e7eb",
+              borderRadius: "8px",
+              padding: "24px",
+              backgroundColor: "white",
+            }}
+            className="overflow-x-auto"
+          >
+            <SimpleTreeView>
+              {currentActivities.map((activityItem, activityIndex) => (
+                <TreeItem
+                  key={`activity-${activityIndex}`}
+                  itemId={`activity-${activityIndex}`}
+                  label={
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                      <div className="flex items-center gap-3">
+                        <span className="font-semibold text-gray-900">
+                          {activityItem.activity.name}
+                        </span>
+                        {activityItem.activity.is_milestone === true && (
+                          <span className="inline-flex items-center gap-1 px-2 py-1 bg-purple-100 text-purple-700 text-xs font-medium rounded">
+                            <FlagIcon fontSize="small" />
+                            Milestone
+                          </span>
+                        )}
+                      </div>
+
+                      {createTask !== 0 && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleAddTaskModal();
+                            setSelectedActivity(activityItem);
+                          }}
+                          className="flex items-center gap-2 px-3 py-2 bg-green-500 text-white text-sm font-medium rounded-lg hover:bg-green-600 transition-colors duration-200"
+                        >
+                          <AddCircleOutlineIcon style={{ fontSize: 18 }} />
+                          Add Task
+                        </button>
                       )}
                     </div>
-                    {createTask !== 0 && (
-                      <div
-                        className="flex gap-2 justify-center items-center self-stretch px-3 py-2 rounded-md text-black text-opacity-50"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleAddTaskModal();
-                          setSelectedActivity(activityItem);
-                        }}
-                      >
-                        <AddCircleOutlineIcon style={{ fontSize: 20 }} />
-                        <div className="cursor-pointer">Add Task</div>
-                      </div>
-                    )}
-                  </div>
-                }
-              >
-                {activityItem.tasks.map((taskItem, taskIndex) => (
-                  <>
-                    <TreeItem
-                      key={`task-${activityIndex}-${taskIndex}`}
-                      itemId={`task-${activityIndex}-${taskIndex}`}
-                      label={
-                        <Box className="grid grid-cols-4 gap-4 py-4 items-center text-sm max-md:flex-wrap max-md:px-5 ml-8">
-                          <div className="flex space-x-2 items-center">
-                            <div
-                              className="text-sm text-black"
-                              style={{ wordWrap: "break-word" }}
-                              onClick={() =>
-                                toggleTask(activityIndex, taskIndex)
-                              }
-                            >
-                              <div className="flex flex-row font-medium items-center gap-1 ">
-                                <TaskAltIcon style={{ fontSize: 17 }} />{" "}
-                                {taskItem.name}
+                  }
+                >
+                  {activityItem.tasks.map((taskItem, taskIndex) => (
+                    <React.Fragment key={`task-${activityIndex}-${taskIndex}`}>
+                      <TreeItem
+                        itemId={`task-${activityIndex}-${taskIndex}`}
+                        label={
+                          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 py-4 px-4 items-center text-sm border-b border-gray-100 hover:bg-gray-50 transition-colors duration-150 ml-4 md:ml-8">
+                            <div className="lg:col-span-4 flex items-start gap-3">
+                              <TaskAltIcon
+                                className="text-blue-600 mt-0.5 flex-shrink-0"
+                                style={{ fontSize: 18 }}
+                              />
+                              <div>
+                                <div className="font-medium text-gray-900 mb-1">
+                                  {taskItem.name}
+                                </div>
                                 {taskItem.is_milestone === true && (
-                                  <div className="  right-2 text-xs  pb-6  rounded">
-                                    <FlagIcon style={{ fontSize: 14 }} />
-                                  </div>
+                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-50 text-purple-600 text-xs font-medium rounded">
+                                    <FlagIcon style={{ fontSize: 12 }} />
+                                    Milestone
+                                  </span>
                                 )}
                               </div>
                             </div>
 
-                            <div>
-                              {taskItem && (
-                                <div>
-                                  {createSubTask !== 0 && (
-                                    // {}
-                                    <div
-                                      className="flex gap-2 justify-center text-xs items-center self-stretch px-3 py-2 rounded-md text-black text-opacity-50"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        toggleAddSubTaskModal();
-                                        setSelectedTask(taskItem);
-                                      }}
-                                    >
-                                      {taskItem.members.some(
-                                        (member) =>
-                                          member.user_id ===
-                                          userInfo.foundUser.user_id
-                                      ) && (
-                                        <>
-                                          <AddCircleOutlineIcon
-                                            style={{ fontSize: 17 }}
-                                          />
-                                          <div className="cursor-pointer">
-                                            Add Sub Task
-                                          </div>
-                                        </>
-                                      )}
-                                    </div>
-                                  )}
-                                </div>
-                              )}
+                            <div className="lg:col-span-3 flex items-center gap-2 text-gray-600">
+                              <PendingActionsIcon style={{ fontSize: 16 }} />
+                              <span className="text-sm">
+                                {new Date(
+                                  taskItem.start_date
+                                ).toLocaleDateString()}{" "}
+                                -{" "}
+                                {new Date(
+                                  taskItem.end_date
+                                ).toLocaleDateString()}
+                              </span>
                             </div>
-                          </div>
-                          <div className="flex gap-2 items-center">
-                            <PendingActionsIcon />
-                            {new Date(
-                              taskItem.start_date
-                            ).toLocaleDateString()}{" "}
-                            - {new Date(taskItem.end_date).toLocaleDateString()}
-                          </div>
 
-                          <div
-                            className={` px-3 text-xs py-2 w-fit whitespace-nowrap rounded-md ${
-                              taskItem.task_status === "Completed"
-                                ? "text-green-700 bg-green-200"
-                                : taskItem.task_status === "On Progress"
-                                ? "text-orange-700 bg-orange-200"
-                                : taskItem.task_status === "Canceled"
-                                ? "text-red-700 bg-red-200"
-                                : ""
-                            }`}
-                          >
-                            {taskItem.task_status}
-                          </div>
+                            <div className="lg:col-span-2">
+                              <span
+                                className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium ${
+                                  taskItem.task_status === "Completed"
+                                    ? "bg-green-100 text-green-800"
+                                    : taskItem.task_status === "On Progress"
+                                    ? "bg-orange-100 text-orange-800"
+                                    : taskItem.task_status === "Canceled"
+                                    ? "bg-red-100 text-red-800"
+                                    : "bg-gray-100 text-gray-800"
+                                }`}
+                              >
+                                {taskItem.task_status}
+                              </span>
+                            </div>
 
-                          {(updateTask !== 0 || deleteTask !== 0) && (
-                            <div className="flex flex-row  right-0 mt-2  rounded-lg ">
-                              {updateTask !== 0 && (
-                                <div className="py-2">
-                                  <div
+                            <div className="lg:col-span-2">
+                              {createSubTask !== 0 &&
+                                taskItem.members.some(
+                                  (member) =>
+                                    member.user_id ===
+                                    userInfo.foundUser.user_id
+                                ) && (
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      toggleAddSubTaskModal();
+                                      setSelectedTask(taskItem);
+                                    }}
+                                    className="flex items-center gap-1 text-blue-600 hover:text-blue-800 text-sm font-medium"
+                                  >
+                                    <AddCircleOutlineIcon
+                                      style={{ fontSize: 16 }}
+                                    />
+                                    Add Sub Task
+                                  </button>
+                                )}
+                            </div>
+
+                            {(updateTask !== 0 || deleteTask !== 0) && (
+                              <div className="lg:col-span-1 flex items-center gap-3 justify-end">
+                                {updateTask !== 0 && (
+                                  <button
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       toggleEditMajorTaskModal(taskIndex);
                                       setSelectedTask(taskItem);
                                     }}
+                                    className="text-green-600 hover:text-green-800 p-1 rounded hover:bg-green-50"
                                   >
-                                    <FaEdit
-                                      className="cursor-pointer text-green-500"
-                                      size={17}
-                                    />
-                                  </div>
-                                </div>
-                              )}
-                              {deleteTask !== 0 && (
-                                <div className="py-2">
-                                  <div
+                                    <FaEdit size={16} />
+                                  </button>
+                                )}
+                                {deleteTask !== 0 && (
+                                  <button
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       toggleMajorTaskTrashModal(taskIndex);
                                       setSelectedTask(taskItem);
                                     }}
+                                    className="text-red-600 hover:text-red-800 p-1 rounded hover:bg-red-50"
                                   >
-                                    <FaTrash
-                                      className="ml-1 cursor-pointer text-red-500"
-                                      size={17}
-                                    />
+                                    <FaTrash size={16} />
+                                  </button>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        }
+                      >
+                        {taskItem.subTask.map((subtaskItem, subtaskIndex) => (
+                          <TreeItem
+                            key={`subtask-${activityIndex}-${taskIndex}-${subtaskIndex}`}
+                            itemId={`subtask-${activityIndex}-${taskIndex}-${subtaskIndex}`}
+                            label={
+                              <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 py-4 px-4 items-center text-sm bg-blue-50/50 border-b border-blue-100 hover:bg-blue-50 transition-colors duration-150 ml-8 md:ml-16">
+                                <div className="lg:col-span-3 flex items-start gap-3">
+                                  <ListAltIcon
+                                    className="text-gray-600 mt-0.5 flex-shrink-0"
+                                    style={{ fontSize: 16 }}
+                                  />
+                                  <div>
+                                    <div className="font-medium text-gray-900">
+                                      {subtaskItem.name}
+                                    </div>
+                                    {subtaskItem.is_milestone === true && (
+                                      <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-50 text-purple-600 text-xs font-medium rounded mt-1">
+                                        <FlagIcon style={{ fontSize: 12 }} />
+                                        Milestone
+                                      </span>
+                                    )}
                                   </div>
                                 </div>
-                              )}
-                            </div>
-                          )}
-                        </Box>
-                      }
-                    >
-                      {taskItem.subTask.map((subtaskItem, subtaskIndex) => (
-                        <TreeItem
-                          style={{ backgroundColor: "#edf4fb" }}
-                          key={`subtask-${activityIndex}-${taskIndex}-${subtaskIndex}`}
-                          itemId={`subtask-${activityIndex}-${taskIndex}-${subtaskIndex}`}
-                          label={
-                            <Box className="grid grid-cols-5 gap-4 py-4 items-center text-sm max-md:flex-wrap max-md:px-5 ml-16">
-                              <div
-                                className="flex gap-2 self-stretch my-auto"
-                                onClick={() =>
-                                  handlefetchSubTasks(subtaskItem.task_id)
-                                }
-                              >
-                                <div className="taskname flex flex-col gap-1 justify-between py-0.5 overflow-hidden">
-                                  <div
-                                    className="text-sm text-black"
-                                    style={{
-                                      wordWrap: "break-word",
-                                    }}
-                                    onClick={() =>
-                                      toggleSubtask(
-                                        activityIndex,
-                                        taskIndex,
-                                        subtaskIndex
-                                      )
-                                    }
-                                  >
-                                    <div className="flex flex-row gap-2">
-                                      <ListAltIcon /> {subtaskItem.name}
-                                      {subtaskItem.is_milestone === true && (
-                                        <div className=" right-2 text-xs pb-2 rounded">
-                                          <FlagIcon style={{ fontSize: 14 }} />
-                                        </div>
-                                      )}
-                                    </div>{" "}
-                                  </div>
+
+                                <div className="lg:col-span-2 flex items-center gap-2 text-gray-600">
+                                  <PendingActionsIcon
+                                    style={{ fontSize: 14 }}
+                                  />
+                                  <span className="text-sm">
+                                    {new Date(
+                                      subtaskItem.start_date
+                                    ).toLocaleDateString()}{" "}
+                                    -{" "}
+                                    {new Date(
+                                      subtaskItem.end_date
+                                    ).toLocaleDateString()}
+                                  </span>
                                 </div>
-                              </div>
 
-                              <div className="flex gap-2 items-center">
-                                <PendingActionsIcon />
-                                {new Date(
-                                  subtaskItem.start_date
-                                ).toLocaleDateString()}{" "}
-                                -{" "}
-                                {new Date(
-                                  subtaskItem.end_date
-                                ).toLocaleDateString()}
-                              </div>
-
-                              <div className="flex gap-2">
-                                <div>
+                                <div className="lg:col-span-2 flex items-center gap-3">
                                   {viewCommentOnSubtask !== 0 && (
-                                    <div className="flex  cursor-pointer">
-                                      <Tooltip
-                                        title="View comments"
-                                        placement="bottom"
-                                      >
-                                        <IconButton
-                                          onClick={() => {
-                                            handleViewCommentOnSubtaskClick(
-                                              subtaskItem
-                                            );
-                                            setSelectedSubTask(subtaskItem);
-                                          }}
-                                          style={{
-                                            backgroundColor: "transparent",
-                                          }}
-                                        >
-                                          <Badge
-                                            badgeContent={
-                                              subtaskItem.Coments.length
-                                            }
-                                            color="info"
-                                          >
-                                            <CommentIcon />
-                                          </Badge>
-                                        </IconButton>
-                                      </Tooltip>
-                                    </div>
-                                  )}
-                                </div>
-                                <div>
-                                  {commentOnSubtask !== 0 && (
-                                    <div
-                                      className="flex  cursor-pointer"
-                                      onClick={() => {
-                                        handleCommentOnSubtaskClick(
-                                          subtaskItem
-                                        );
-                                        setSelectedSubTask(subtaskItem);
-                                      }}
+                                    <Tooltip
+                                      title="View comments"
+                                      placement="top"
                                     >
-                                      <AddCommentIcon />
-                                    </div>
+                                      <IconButton
+                                        onClick={() => {
+                                          handleViewCommentOnSubtaskClick(
+                                            subtaskItem
+                                          );
+                                          setSelectedSubTask(subtaskItem);
+                                        }}
+                                        size="small"
+                                        className="hover:bg-blue-100"
+                                      >
+                                        <Badge
+                                          badgeContent={
+                                            subtaskItem.Coments?.length || 0
+                                          }
+                                          color="info"
+                                          size="small"
+                                        >
+                                          <CommentIcon fontSize="small" />
+                                        </Badge>
+                                      </IconButton>
+                                    </Tooltip>
+                                  )}
+                                  {commentOnSubtask !== 0 && (
+                                    <Tooltip
+                                      title="Add comment"
+                                      placement="top"
+                                    >
+                                      <IconButton
+                                        onClick={() => {
+                                          handleCommentOnSubtaskClick(
+                                            subtaskItem
+                                          );
+                                          setSelectedSubTask(subtaskItem);
+                                        }}
+                                        size="small"
+                                        className="hover:bg-blue-100"
+                                      >
+                                        <AddCommentIcon fontSize="small" />
+                                      </IconButton>
+                                    </Tooltip>
                                   )}
                                 </div>
-                              </div>
-                              <div className="z-50 flex items-center gap-2">
-                                {taskItem.members.some(
-                                  (member) =>
-                                    member.user_id ===
-                                    userInfo.foundUser.user_id
-                                ) ? (
-                                  <>
-                                    <FormControl variant="outlined">
+
+                                <div className="lg:col-span-3">
+                                  {taskItem.members.some(
+                                    (member) =>
+                                      member.user_id ===
+                                      userInfo.foundUser.user_id
+                                  ) ? (
+                                    <FormControl
+                                      size="small"
+                                      className="min-w-[140px]"
+                                    >
                                       <Select
                                         value={subtaskItem.subtask_status}
                                         onChange={handleChange(subtaskItem)}
-                                        className={`h-8 rounded-md text-xs`}
-                                        style={{
-                                          color:
-                                            statusOptions.find(
-                                              (option) =>
-                                                option.value ===
-                                                subtaskItem.subtask_status
-                                            )?.color || "inherit",
-                                          backgroundColor: statusOptions.find(
-                                            (option) =>
-                                              option.value ===
-                                              subtaskItem.subtask_status
-                                          )?.color
-                                            ? `${
-                                                statusOptions.find(
-                                                  (option) =>
-                                                    option.value ===
-                                                    subtaskItem.subtask_status
-                                                )?.color
-                                              }-200`
-                                            : "inherit",
-                                        }}
+                                        className={`rounded-lg text-sm ${
+                                          subtaskItem.subtask_status ===
+                                          "Completed"
+                                            ? "bg-green-100 text-green-800"
+                                            : subtaskItem.subtask_status ===
+                                              "On Progress"
+                                            ? "bg-orange-100 text-orange-800"
+                                            : "bg-gray-100 text-gray-800"
+                                        }`}
                                       >
                                         {statusOptions.map((option) => (
                                           <MenuItem
                                             key={option.value}
                                             value={option.value}
+                                            className="text-sm"
                                           >
                                             {option.label}
                                           </MenuItem>
                                         ))}
                                       </Select>
                                     </FormControl>
-                                  </>
-                                ) : (
-                                  <div>{subtaskItem.subtask_status}</div>
+                                  ) : (
+                                    <span
+                                      className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium ${
+                                        subtaskItem.subtask_status ===
+                                        "Completed"
+                                          ? "bg-green-100 text-green-800"
+                                          : subtaskItem.subtask_status ===
+                                            "On Progress"
+                                          ? "bg-orange-100 text-orange-800"
+                                          : "bg-gray-100 text-gray-800"
+                                      }`}
+                                    >
+                                      {subtaskItem.subtask_status}
+                                    </span>
+                                  )}
+                                </div>
+
+                                {subtaskItem.members.some(
+                                  (member) =>
+                                    member.user_id ===
+                                    userInfo.foundUser.user_id
+                                ) && (
+                                  <div className="lg:col-span-2 flex items-center gap-3 justify-end">
+                                    {updateSubTask !== 0 && (
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          toggleEditSubtaskModal(subtaskIndex);
+                                          setSelectedSubTask(subtaskItem);
+                                        }}
+                                        className="text-green-600 hover:text-green-800 p-1 rounded hover:bg-green-50"
+                                      >
+                                        <FaEdit size={15} />
+                                      </button>
+                                    )}
+                                    {deleteSubTask !== 0 && (
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setShowSubtasktrashModal(true);
+                                          setSelectedSubTask(subtaskItem);
+                                        }}
+                                        className="text-red-600 hover:text-red-800 p-1 rounded hover:bg-red-50"
+                                      >
+                                        <FaTrash size={15} />
+                                      </button>
+                                    )}
+                                  </div>
                                 )}
                               </div>
-                              {subtaskItem.members.some(
-                                (member) =>
-                                  member.user_id === userInfo.foundUser.user_id
-                              ) && (
-                                <>
-                                  {(updateSubTask !== 0 ||
-                                    deleteSubTask !== 0) && (
-                                    <div className="flex flex-row mr-20 absolute right-0  ">
-                                      {updateSubTask !== 0 && (
-                                        <div className="py-2">
-                                          <div
-                                            onClick={(e) => {
-                                              e.stopPropagation();
-                                              toggleEditSubtaskModal(
-                                                subtaskIndex
-                                              );
-                                              setSelectedSubTask(subtaskItem);
-                                            }}
-                                          >
-                                            <FaEdit
-                                              className="cursor-pointer text-green-500"
-                                              size={17}
-                                            />
-                                          </div>
-                                        </div>
-                                      )}
-                                      {deleteSubTask !== 0 && (
-                                        <div className="py-2">
-                                          <div
-                                            onClick={(e) => {
-                                              e.stopPropagation();
-                                              setShowSubtasktrashModal(true);
-                                              setSelectedSubTask(subtaskItem);
-                                            }}
-                                          >
-                                            <FaTrash
-                                              className="ml-1 cursor-pointer text-red-500"
-                                              size={17}
-                                            />
-                                          </div>
-                                        </div>
-                                      )}
-                                    </div>
-                                  )}
-                                </>
-                              )}
-                            </Box>
-                          }
-                        />
-                      ))}
-                    </TreeItem>
-                  </>
-                ))}
-              </TreeItem>
-            ))}
-          </SimpleTreeView>
-        </Box>
-      ) : (
-        <div class="text-center">
-          <Typography>{noActivity}</Typography>
+                            }
+                          />
+                        ))}
+                      </TreeItem>
+                    </React.Fragment>
+                  ))}
+                </TreeItem>
+              ))}
+            </SimpleTreeView>
+          </Box>
+        ) : (
+          <div className="text-center py-16">
+            <Typography className="text-gray-500 text-lg">
+              {noActivity || "No activities found"}
+            </Typography>
+          </div>
+        )}
+      </div>
+
+      {/* Modal Components */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div
+            ref={modalRef}
+            className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+          >
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-semibold text-gray-900">
+                  Assign Member
+                </h3>
+                <button
+                  onClick={toggleModal}
+                  className="text-gray-400 hover:text-gray-600 text-2xl"
+                >
+                  ×
+                </button>
+              </div>
+              <WorkspaceAssignMember />
+            </div>
+          </div>
         </div>
       )}
 
-      {/* Modals */}
-      {showModal && (
-        <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div
-            ref={modalRef}
-            className="bg-white w-2/3 p-8 rounded-md relative"
-          >
-            <span
-              className="absolute top-4 right-8 cursor-pointer text-gray-500"
-              onClick={toggleModal}
-            >
-              X
-            </span>
-            <WorkspaceAssignMember />
-          </div>
-        </div>
-      )}
       {showEditMajorTaskModal && (
-        <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div ref={modalRef} className="bg-white rounded-md relative">
-            <span
-              className="absolute top-4 right-8 cursor-pointer text-gray-500"
-              onClick={toggleEditMajorTaskModal}
-            >
-              X
-            </span>
-            <WorkspaceEditMajorTask
-              selectedTask={selectedTask}
-              selectedActivity={selectedActivity}
-              selectedProject={props.setSelectedProjectInfo}
-              handlefetchActivity={fetchActivities}
-              handleCloseModal={handleEditTaskModalClose}
-            />
-          </div>
-        </div>
-      )}
-      {showEditSubtaskModal && (
-        <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div ref={modalRef} className="bg-white rounded-md relative">
-            <span
-              className="absolute top-4 right-10 cursor-pointer text-gray-500"
-              onClick={toggleEditSubtaskModal}
-            >
-              X
-            </span>
-            <WorkspaceEditSubtask
-              selectedTask={selectedSubTask}
-              selectedActivity={selectedActivity}
-              selectedProject={props.setSelectedProjectInfo}
-              handlefetchSubTask={fetchActivities}
-              handleCloseModal={handleEditSubTaskModalClose}
-            />{" "}
-          </div>
-        </div>
-      )}
-      {showAddTaskModal && (
-        <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
           <div
             ref={modalRef}
-            className="bg-white mt-20 p-8 rounded-md relative"
+            className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto"
           >
-            <span
-              className="absolute top-4 right-8 cursor-pointer text-gray-500"
-              onClick={toggleAddTaskModal}
-            >
-              X
-            </span>
-            <WorkspaceAddMajorTask
-              selectedActivity={selectedActivity}
-              selectedProject={props.setSelectedProjectInfo}
-              handlefetchTask={fetchActivities}
-              handleCloseModal={handleAddTaskModalClose}
-            />
-          </div>
-        </div>
-      )}
-      {showAddSubTaskModal && (
-        <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div
-            ref={modalRef}
-            className="bg-white mt-20 p-8 rounded-md relative"
-          >
-            <span
-              className="absolute top-4 right-8 cursor-pointer text-gray-500"
-              onClick={toggleAddSubTaskModal}
-            >
-              X
-            </span>
-            <WorkspaceAddSubTask
-              selectedTask={selectedTask}
-              selectedProject={props.setSelectedProjectInfo}
-              handlefetchSubTask={fetchActivities}
-              handleCloseModal={handleAddSubModalClose}
-            />
-          </div>
-        </div>
-      )}
-      {showMajorTaskTrashModal && (
-        <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div
-            ref={modalRef}
-            className="bg-white w-2/3 p-8 rounded-md relative"
-          >
-            <span
-              className="absolute top-4 right-8 cursor-pointer text-gray-500"
-              onClick={toggleMajorTaskTrashModal}
-            >
-              X
-            </span>
-            <WorkspaceTaskTrash
-              selectedRow={selectedTask}
-              handleDeleteModalClose={toggleMajorTaskTrashModal}
-              handlefetchActivity={fetchActivities}
-            />
-          </div>
-        </div>
-      )}
-      {commentSubModalOpen && (
-        <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div className="bg-white w-1/4 rounded-md relative" ref={modalRef}>
-            <div
-              className="close cursor-pointer text-end mr-12 mt-5"
-              onClick={handleCommentModalClose}
-            >
-              X
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-semibold text-gray-900">
+                  Edit Task
+                </h3>
+                <button
+                  onClick={toggleEditMajorTaskModal}
+                  className="text-gray-400 hover:text-gray-600 text-2xl"
+                >
+                  ×
+                </button>
+              </div>
+              <WorkspaceEditMajorTask
+                selectedTask={selectedTask}
+                selectedActivity={selectedActivity}
+                selectedProject={props.setSelectedProjectInfo}
+                handlefetchActivity={fetchActivities}
+                handleCloseModal={handleEditTaskModalClose}
+              />
             </div>
+          </div>
+        </div>
+      )}
+
+      {showEditSubtaskModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div
+            ref={modalRef}
+            className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+          >
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-semibold text-gray-900">
+                  Edit Subtask
+                </h3>
+                <button
+                  onClick={toggleEditSubtaskModal}
+                  className="text-gray-400 hover:text-gray-600 text-2xl"
+                >
+                  ×
+                </button>
+              </div>
+              <WorkspaceEditSubtask
+                selectedTask={selectedSubTask}
+                selectedActivity={selectedActivity}
+                selectedProject={props.setSelectedProjectInfo}
+                handlefetchSubTask={fetchActivities}
+                handleCloseModal={handleEditSubTaskModalClose}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showAddTaskModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div
+            ref={modalRef}
+            className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+          >
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-semibold text-gray-900">
+                  Add New Task
+                </h3>
+                <button
+                  onClick={toggleAddTaskModal}
+                  className="text-gray-400 hover:text-gray-600 text-2xl"
+                >
+                  ×
+                </button>
+              </div>
+              <WorkspaceAddMajorTask
+                selectedActivity={selectedActivity}
+                selectedProject={props.setSelectedProjectInfo}
+                handlefetchTask={fetchActivities}
+                handleCloseModal={handleAddTaskModalClose}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showAddSubTaskModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div
+            ref={modalRef}
+            className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+          >
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-semibold text-gray-900">
+                  Add New Subtask
+                </h3>
+                <button
+                  onClick={toggleAddSubTaskModal}
+                  className="text-gray-400 hover:text-gray-600 text-2xl"
+                >
+                  ×
+                </button>
+              </div>
+              <WorkspaceAddSubTask
+                selectedTask={selectedTask}
+                selectedProject={props.setSelectedProjectInfo}
+                handlefetchSubTask={fetchActivities}
+                handleCloseModal={handleAddSubModalClose}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {commentSubModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="p-6">
             <Subtaskcomment
               handlefetchActivity={fetchActivities}
               subtaskId={selectedSubTask?.sub_task_id}
@@ -1156,15 +1136,10 @@ const Workspace = (props) => {
           </div>
         </div>
       )}
+
       {viewCommentSubModalOpen && (
-        <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div className="bg-white w-1/4 rounded-md relative" ref={modalRef}>
-            <div
-              className="close cursor-pointer text-end mr-12 mt-5"
-              onClick={handleViewCommentModalClose}
-            >
-              X
-            </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="p-6">
             <Subtaskcommentview
               handlefetchActivity={fetchActivities}
               subtaskId={selectedSubTask?.sub_task_id}
@@ -1174,23 +1149,59 @@ const Workspace = (props) => {
           </div>
         </div>
       )}
-      {showSubtasktrashModal && (
-        <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
+
+      {showMajorTaskTrashModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
           <div
             ref={modalRef}
-            className="bg-white w-2/3 p-8 rounded-md relative"
+            className="bg-white rounded-xl shadow-2xl w-full max-w-2xl"
           >
-            <span
-              className="absolute top-4 right-8 cursor-pointer text-gray-500"
-              onClick={toggleSubtasktrashModal}
-            >
-              X
-            </span>
-            <WorkspaceSubtasktrash
-              selectedRow={selectedSubTask}
-              handleDeleteModalClose={toggleSubtasktrashModal}
-              handlefetchActivity={fetchActivities}
-            />
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-semibold text-gray-900">
+                  Delete Task
+                </h3>
+                <button
+                  onClick={toggleMajorTaskTrashModal}
+                  className="text-gray-400 hover:text-gray-600 text-2xl"
+                >
+                  ×
+                </button>
+              </div>
+              <WorkspaceTaskTrash
+                selectedRow={selectedTask}
+                handleDeleteModalClose={toggleMajorTaskTrashModal}
+                handlefetchActivity={fetchActivities}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showSubtasktrashModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div
+            ref={modalRef}
+            className="bg-white rounded-xl shadow-2xl w-full max-w-2xl"
+          >
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-semibold text-gray-900">
+                  Delete Subtask
+                </h3>
+                <button
+                  onClick={toggleSubtasktrashModal}
+                  className="text-gray-400 hover:text-gray-600 text-2xl"
+                >
+                  ×
+                </button>
+              </div>
+              <WorkspaceSubtasktrash
+                selectedRow={selectedSubTask}
+                handleDeleteModalClose={toggleSubtasktrashModal}
+                handlefetchActivity={fetchActivities}
+              />
+            </div>
           </div>
         </div>
       )}

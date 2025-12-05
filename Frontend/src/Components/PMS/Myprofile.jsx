@@ -206,19 +206,45 @@ const ProfileUpdate = ({ closeModal }) => {
             required
           />
           <ul className="mt-2 text-sm text-gray-600">
-            <li className={passwordValidation.minLength ? "text-green-500" : "text-red-500"}>
+            <li
+              className={
+                passwordValidation.minLength ? "text-green-500" : "text-red-500"
+              }
+            >
               At least 8 characters long
             </li>
-            <li className={passwordValidation.hasUpperCase ? "text-green-500" : "text-red-500"}>
+            <li
+              className={
+                passwordValidation.hasUpperCase
+                  ? "text-green-500"
+                  : "text-red-500"
+              }
+            >
               At least one uppercase letter
             </li>
-            <li className={passwordValidation.hasLowerCase ? "text-green-500" : "text-red-500"}>
+            <li
+              className={
+                passwordValidation.hasLowerCase
+                  ? "text-green-500"
+                  : "text-red-500"
+              }
+            >
               At least one lowercase letter
             </li>
-            <li className={passwordValidation.hasNumber ? "text-green-500" : "text-red-500"}>
+            <li
+              className={
+                passwordValidation.hasNumber ? "text-green-500" : "text-red-500"
+              }
+            >
               At least one number
             </li>
-            <li className={passwordValidation.hasSpecialChar ? "text-green-500" : "text-red-500"}>
+            <li
+              className={
+                passwordValidation.hasSpecialChar
+                  ? "text-green-500"
+                  : "text-red-500"
+              }
+            >
               At least one special character
             </li>
           </ul>

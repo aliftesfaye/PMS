@@ -2,7 +2,13 @@ import SearchIcon from "@mui/icons-material/Search";
 import { Backdrop, InputAdornment, TextField } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { FaDownload, FaEdit, FaFile, FaTrash } from "react-icons/fa";
+import {
+  FaDownload,
+  FaEdit,
+  FaFile,
+  FaTrash,
+  FaEllipsisV,
+} from "react-icons/fa";
 import PuffLoader from "react-spinners/ClipLoader";
 import Swal from "sweetalert2";
 import { BASE_URL, PERMISSIONS } from "../../config";
@@ -16,7 +22,6 @@ const Docs = (props) => {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [activeDocument, setActiveDocument] = useState(null);
   const [activeDropdownIndex, setActiveDropdownIndex] = useState(null);
   const dropdownStates = useRef({});
   const [documents, setDocuments] = useState([]);
@@ -28,14 +33,13 @@ const Docs = (props) => {
   const [deleteDocument, setDeleteDocument] = useState(0);
   const [editDocumentModal, setEditDocumentModal] = useState(false);
   const [documentToEdit, setDocumentToEdit] = useState(null);
-  const [userInfo, setUserInfo] = useState(() => {
+  const [userInfo] = useState(() => {
     return JSON.parse(localStorage.getItem("userInfo")) || [];
   });
-  const [permissions, setPermissions] = useState(() => {
+  const [permissions] = useState(() => {
     return JSON.parse(localStorage.getItem("permissions")) || [];
   });
-
-  const [projectPermissions, setProjectPermissions] = useState(() => {
+  const [projectPermissions] = useState(() => {
     return JSON.parse(localStorage.getItem("project_permissions")) || [];
   });
 
@@ -57,18 +61,6 @@ const Docs = (props) => {
     setShowModal(false);
   };
 
-  const handleClickOutsideDropdown = (event) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setActiveDropdownIndex(null);
-    }
-  };
-
-  const handleClickOutsideModal = (event) => {
-    if (modalRef.current && !modalRef.current.contains(event.target)) {
-      closeModal();
-    }
-  };
-
   const handleDropdownClick = (index) => {
     setActiveDropdownIndex(activeDropdownIndex === index ? null : index);
   };
@@ -77,6 +69,10 @@ const Docs = (props) => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setActiveDropdownIndex(null);
+      }
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        closeModal();
+        setEditDocumentModal(false);
       }
     };
 
@@ -105,7 +101,7 @@ const Docs = (props) => {
       setLoading(false);
     } catch (error) {
       console.error("Error fetching Documents:", error);
-      setLoading(false); // Ensure loading is set to false even on error
+      setLoading(false);
     }
   };
 
@@ -114,32 +110,15 @@ const Docs = (props) => {
   }, [showModal]);
 
   useEffect(() => {
-    async function fetchUsers() {
-      localStorage.setItem("userInfo", JSON.stringify(userInfo));
-    }
-    async function fetchPermissions() {
-      localStorage.setItem("permissions", JSON.stringify(permissions));
-    }
-    async function fetchProjectPermissions() {
-      localStorage.setItem(
-        "project_permissions",
-        JSON.stringify(projectPermissions)
-      );
-    }
-    fetchUsers();
-    fetchProjectPermissions();
-    fetchPermissions();
-
-    const nonProjectRelatedRoles = userInfo.foundUser.Roles.filter(
-      (role) => !role.project_related
-    ).map((role) => role.name);
+    const nonProjectRelatedRoles =
+      userInfo.foundUser?.Roles?.filter((role) => !role.project_related).map(
+        (role) => role.name
+      ) || [];
 
     const isDepartmentAdminRolePresent =
       nonProjectRelatedRoles.includes("Department Admin");
-
     const isClusterAdminRolePresent =
       nonProjectRelatedRoles.includes("Cluster Admin");
-
     const isOrganizationAdminRolePresent =
       nonProjectRelatedRoles.includes("Organization Admin");
 
@@ -153,6 +132,7 @@ const Docs = (props) => {
     } else {
       selectedPermission = projectPermissions;
     }
+
     const VIEW_DOCUMENT = selectedPermission.filter(
       (permission) => permission.name === PERMISSIONS.VIEW_DOCUMENT
     );
@@ -170,50 +150,27 @@ const Docs = (props) => {
     setEditDocument(EDIT_DOCUMENT.length);
     setDownloadDocument(DOWNLOAD_DOCUMENT.length);
     setDeleteDocument(DELETE_DOCUMENT.length);
-  }, [userInfo]);
+  }, [userInfo, permissions, projectPermissions]);
 
   const handleDownload = (fileUrl, fileName) => {
     console.log("Downloading document:", fileName);
 
-    // Create a new XMLHttpRequest object
     const xhr = new XMLHttpRequest();
-
-    // Set up the request
     xhr.open("GET", `${BASE_URL}/documents/${fileName}`, true);
     xhr.responseType = "blob";
 
-    // Handle the load event
     xhr.onload = function () {
-      // Check if the request was successful
       if (this.status === 200) {
-        // Create a new blob object from the response data
         const blob = new Blob([xhr.response], {
           type: "application/octet-stream",
         });
-
-        // Create a temporary URL for the blob
         const url = window.URL.createObjectURL(blob);
-
-        // Create a new link element
         const link = document.createElement("a");
         link.href = url;
         link.setAttribute("download", fileName);
-
-        // Trigger a click event on the link to initiate the download
         link.click();
-
-        // Cleanup: remove the temporary URL and link element
         window.URL.revokeObjectURL(url);
-
-        // Show success message
-        // Swal.fire({
-        //   icon: "success",
-        //   title: "Downloaded successfully!",
-        //   showConfirmButton: false,
-        //   timer: 1500,
-        // });
       } else {
-        // Show error message if the request was not successful
         Swal.fire({
           icon: "error",
           title: "Download failed!",
@@ -222,9 +179,7 @@ const Docs = (props) => {
       }
     };
 
-    // Handle the error event
     xhr.onerror = function () {
-      // Show error message if an error occurred during the request
       Swal.fire({
         icon: "error",
         title: "Download failed!",
@@ -266,9 +221,6 @@ const Docs = (props) => {
 
   const handleViewDocument = (document) => {
     console.log("Viewing document:", document);
-    const fileType = getFileType(document.document);
-
-    // Open the document in the default application
     const fileUrl = `${BASE_URL}/documents/${document.document}`;
     window.open(fileUrl, "_blank");
   };
@@ -277,43 +229,56 @@ const Docs = (props) => {
     doc.document.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const getInitials = (name) => {
+    if (!name) return "";
+    return name.charAt(0).toUpperCase();
+  };
+
   return (
-    <div className="ml-auto w-4/5 mr-5 mt-24 ">
+    <div className="docs-container ml-auto mr-5 mt-24 px-4 lg:px-6 xl:px-8 w-full lg:w-4/5">
       <Helmet>
         <title>{props.setSelectedProjectInfo.name} - Documents</title>
       </Helmet>
-      <div className="flex gap-3 mt-10">
-        <div className="flex flex-col justify-center text-3xl font-semibold text-white whitespace-nowrap">
+
+      {/* Project Header */}
+      <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6 mt-10 mb-8">
+        <div className="flex items-center gap-4">
           <div
-            className="justify-center items-center px-3.5 w-11 h-11 rounded"
+            className="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center text-white text-xl font-bold shadow-md"
             style={{ backgroundColor: "#082f49" }}
           >
-            {props.setSelectedProjectInfo.name.charAt(0)}
+            {getInitials(props.setSelectedProjectInfo.name)}
+          </div>
+          <div>
+            <h1 className="text-2xl md:text-3xl font-semibold text-gray-800">
+              {props.setSelectedProjectInfo.name}
+            </h1>
+            <p className="text-sm text-gray-600 mt-1">Project Documents</p>
           </div>
         </div>
-        <div className="flex-auto my-auto text-xl font-medium text-blue-950">
-          {props.setSelectedProjectInfo.name}
-        </div>
       </div>
-      <div className="flex py-8 justify-between">
+
+      {/* Search and Add Button Section */}
+      <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 py-6 border-b border-gray-200">
         <TextField
           type="text"
-          placeholder="Search by Document Type"
+          placeholder="Search documents..."
           size="small"
-          className="border-gray-300 rounded-lg mt-4 px-4 mr-7 py-2 pl-10"
+          className="flex-1 max-w-md"
           variant="outlined"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <SearchIcon />
+                <SearchIcon className="text-gray-400" />
               </InputAdornment>
             ),
+            className: "bg-white rounded-lg shadow-sm",
           }}
         />
         <button
-          className=" hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
+          className="hover:bg-blue-800 text-white font-semibold py-2.5 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg whitespace-nowrap"
           style={{ backgroundColor: "#082f49" }}
           onClick={openModal}
         >
@@ -321,119 +286,187 @@ const Docs = (props) => {
         </button>
       </div>
 
-      <div className="flex flex-wrap gap-5 'ml-[207px] mt-3 mb-16">
+      {/* Documents Grid */}
+      <div className="py-6">
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={loading}
         >
           <PuffLoader color="#fff" />
         </Backdrop>
-        {filteredDocuments.map((document, index) => (
-          <div
-            key={index}
-            className="flex flex-col  w-64 rounded-xl border-2 border-gray-200 p-4"
-          >
-            <div className="flex justify-between items-center px-2 rounded-lg border-2 border-gray-200">
-              <div className="flex gap-2 items-center">
-                <div className="text-xs font-semibold text-black w-36 overflow-hidden text-ellipsis whitespace-nowrap">
-                  {document.document}
-                </div>
-              </div>
+
+        {filteredDocuments.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="text-gray-400 text-6xl mb-4">
+              <FaFile />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-600 mb-2">
+              No documents found
+            </h3>
+            <p className="text-gray-500">
+              {searchTerm
+                ? "Try a different search term"
+                : "Add your first document to get started"}
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredDocuments.map((document, index) => (
               <div
-                className="cursor-pointer bg-white w-12 h-12 flex flex-wrap justify-center items-center text-base  text-slate-900 rounded-sm z-50"
-                onClick={() => handleDropdownClick(index)}
+                key={index}
+                className="group bg-white rounded-xl border border-gray-200 p-5 hover:shadow-lg transition-all duration-200 hover:border-blue-200"
               >
-                <span className=" font-extrabold">...</span>
-                {activeDropdownIndex === index && (
-                  <div
-                    ref={dropdownRef}
-                    className="mt-2 w-32 bg-white rounded-md shadow-md border border-gray-200"
-                  >
-                    {viewDocument !== 0 && (
+                {/* Document Header with Actions */}
+                <div className="flex justify-between items-center mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-lg">
+                      {getIcon(document.document)}
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-900 truncate max-w-[140px]">
+                        {document.document}
+                      </h3>
+                    </div>
+                  </div>
+
+                  {/* Actions Dropdown */}
+                  <div className="relative">
+                    <button
+                      className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
+                      onClick={() => handleDropdownClick(index)}
+                    >
+                      <FaEllipsisV />
+                    </button>
+
+                    {activeDropdownIndex === index && (
                       <div
-                        className="py-2 px-3 hover:bg-gray-100 cursor-pointer flex items-center"
-                        onClick={() => handleViewDocument(document)}
+                        ref={dropdownRef}
+                        className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50"
                       >
-                        <FaFile className="mr-2" />
-                        View
-                      </div>
-                    )}
-                    {editDocument !== 0 && (
-                      <div
-                        className="py-2 px-3 hover:bg-gray-100 cursor-pointer flex items-center"
-                        onClick={() => openEditModal(document)}
-                      >
-                        <FaEdit className="mr-2 text-blue-500" />
-                        Edit
-                      </div>
-                    )}
-                    {downloadDocument !== 0 && (
-                      <div
-                        className="py-2 px-3 hover:bg-gray-100 cursor-pointer flex items-center"
-                        onClick={() =>
-                          handleDownload(document.fileUrl, document.document)
-                        }
-                      >
-                        <FaDownload className="mr-2" />
-                        Download
-                      </div>
-                    )}
-                    {deleteDocument !== 0 && (
-                      <div className="py-2 px-3 hover:bg-gray-100 cursor-pointer flex items-center">
-                        <FaTrash className="mr-2 text-red-500" />
-                        Delete
+                        {viewDocument !== 0 && (
+                          <button
+                            className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 flex items-center gap-3"
+                            onClick={() => handleViewDocument(document)}
+                          >
+                            <FaFile className="text-gray-400" />
+                            View Document
+                          </button>
+                        )}
+                        {editDocument !== 0 && (
+                          <button
+                            className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 flex items-center gap-3"
+                            onClick={() => openEditModal(document)}
+                          >
+                            <FaEdit className="text-blue-500" />
+                            Edit Details
+                          </button>
+                        )}
+                        {downloadDocument !== 0 && (
+                          <button
+                            className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 flex items-center gap-3"
+                            onClick={() =>
+                              handleDownload(
+                                document.fileUrl,
+                                document.document
+                              )
+                            }
+                          >
+                            <FaDownload className="text-gray-400" />
+                            Download
+                          </button>
+                        )}
+                        {deleteDocument !== 0 && (
+                          <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 flex items-center gap-3">
+                            <FaTrash className="text-red-500" />
+                            Delete
+                          </button>
+                        )}
                       </div>
                     )}
                   </div>
-                )}
+                </div>
+
+                {/* Document Details */}
+                <div className="space-y-3">
+                  <div>
+                    <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Type
+                    </span>
+                    <p className="text-sm font-semibold text-gray-800 mt-1">
+                      {document.Document_type?.document_type || "N/A"}
+                    </p>
+                  </div>
+
+                  {document.description && (
+                    <div>
+                      <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Description
+                      </span>
+                      <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                        {document.description}
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-            <div className="mt-3 text-xs font-semibold text-black">
-              {document.Document_type.document_type}
-            </div>
-            <div className="mt-2 text-xs text-black">
-              {document.description}
-            </div>
+            ))}
           </div>
-        ))}
+        )}
       </div>
+
+      {/* Edit Document Modal */}
       {editDocumentModal && (
-        <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div
             ref={modalRef}
-            className="bg-white py-2 px-4 h-4/5 w-fit rounded-md overflow-y-scroll"
+            className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden"
           >
-            <div className="flex justify-end">
-              <div
-                className="cursor-pointer w-fit mt-3"
+            <div className="flex justify-between items-center p-6 border-b border-gray-200">
+              <h2 className="text-xl font-semibold text-gray-800">
+                Edit Document
+              </h2>
+              <button
                 onClick={closeEditModal}
+                className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
               >
-                X
-              </div>
+                ×
+              </button>
             </div>
-            <DocsEdit
-              closeModal={closeEditModal}
-              selectedProject={props.setSelectedProjectInfo}
-              documentToEdit={documentToEdit}
-            />
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
+              <DocsEdit
+                closeModal={closeEditModal}
+                selectedProject={props.setSelectedProjectInfo}
+                documentToEdit={documentToEdit}
+              />
+            </div>
           </div>
         </div>
       )}
+
+      {/* Add Document Modal */}
       {showModal && (
-        <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div
             ref={modalRef}
-            className="bg-white py-2 px-4 h-4/5 w-fit rounded-md overflow-y-scroll"
+            className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden"
           >
-            <div className="flex justify-end">
-              <div className="cursor-pointer w-fit mt-3" onClick={closeModal}>
-                X
-              </div>
+            <div className="flex justify-between items-center p-6 border-b border-gray-200">
+              <h2 className="text-xl font-semibold text-gray-800">
+                Add New Document
+              </h2>
+              <button
+                onClick={closeModal}
+                className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                ×
+              </button>
             </div>
-            <DocsAdd
-              closeModal={closeModal}
-              selectedProject={props.setSelectedProjectInfo}
-            />
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
+              <DocsAdd
+                closeModal={closeModal}
+                selectedProject={props.setSelectedProjectInfo}
+              />
+            </div>
           </div>
         </div>
       )}

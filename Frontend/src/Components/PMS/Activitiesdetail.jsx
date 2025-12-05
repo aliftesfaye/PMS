@@ -32,14 +32,14 @@ const ActivitiesDetail = ({
         ),
         label: "Active",
       },
-      completed: {
+      Completed: {
         color: "text-blue-600",
         bgColor: "bg-blue-50",
         borderColor: "border-blue-200",
         icon: <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />,
         label: "Completed",
       },
-      pending: {
+      Pending: {
         color: "text-amber-600",
         bgColor: "bg-amber-50",
         borderColor: "border-amber-200",
@@ -54,7 +54,7 @@ const ActivitiesDetail = ({
         label: "Cancelled",
       },
     };
-    return configs[status?.toLowerCase()] || configs.pending;
+    return configs[status?.toLowerCase()] || configs.Pending;
   };
 
   const formatDate = (dateString) => {
@@ -73,7 +73,7 @@ const ActivitiesDetail = ({
     const tasks = selectedRowAllData.tasks || [];
     if (tasks.length === 0) return 0;
     const completedTasks = tasks.filter(
-      (task) => task.status === "completed"
+      (task) => task.task_status === "Completed"
     ).length;
     return Math.round((completedTasks / tasks.length) * 100);
   };
@@ -371,9 +371,9 @@ const ActivitiesDetail = ({
                 </div>
                 <div className="text-xs text-slate-500 mt-1">
                   {selectedRowAllData.tasks?.filter(
-                    (t) => t.status === "completed"
+                    (t) => t.task_status === "Completed"
                   ).length || 0}{" "}
-                  of {selectedRowAllData.tasks?.length || 0} tasks completed
+                  of {selectedRowAllData.tasks?.length || 0} tasks Completed
                 </div>
               </div>
             </div>
@@ -406,12 +406,12 @@ const ActivitiesDetail = ({
                       <div className="flex items-start gap-3 sm:gap-4">
                         <div
                           className={`p-1.5 sm:p-2 rounded-lg ${
-                            task.status === "completed"
+                            task.task_status === "Completed"
                               ? "bg-emerald-50"
                               : "bg-amber-50"
                           } flex-shrink-0`}
                         >
-                          {task.status === "completed" ? (
+                          {task.task_status === "Completed" ? (
                             <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-500" />
                           ) : (
                             <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500" />
@@ -424,12 +424,12 @@ const ActivitiesDetail = ({
                             </h4>
                             <span
                               className={`text-xs font-medium px-2 py-1 rounded-full w-fit ${
-                                task.status === "completed"
+                                task.task_status === "Completed"
                                   ? "bg-emerald-100 text-emerald-700"
                                   : "bg-amber-100 text-amber-700"
                               }`}
                             >
-                              {task.status || "pending"}
+                              {task.task_status || "Pending"}
                             </span>
                           </div>
                           {task.description && (
