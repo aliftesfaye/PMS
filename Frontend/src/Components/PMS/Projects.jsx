@@ -2,7 +2,6 @@ import Tooltip from "@material-ui/core/Tooltip";
 import SearchIcon from "@mui/icons-material/Search";
 import { InputAdornment, Pagination, TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
-
 import Box from "@mui/material/Box";
 import Fade from "@mui/material/Fade";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -27,6 +26,10 @@ import Projectsedit from "./Projectsedit";
 const BoldTableCell = styled(TableCell)({
   "& .header-cell": {
     fontWeight: "bold",
+    color: "#1e3a8a",
+    fontSize: "0.875rem",
+    textTransform: "uppercase",
+    letterSpacing: "0.05em",
   },
 });
 
@@ -41,7 +44,7 @@ const Projects = (props) => {
   const [openRowMenu, setOpenRowMenu] = useState(null);
   const [statusFilter, setStatusFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [projects, setProjects] = useState([]);
   const [createProject, setCreateProject] = useState(0);
   const [updateProject, setUpdateProject] = useState(0);
@@ -117,6 +120,7 @@ const Projects = (props) => {
       console.error("Error fetching projects:", error);
     }
   };
+
   const formatBudget = (budget) => {
     if (budget == null || isNaN(budget)) {
       return "N/A";
@@ -124,23 +128,23 @@ const Projects = (props) => {
 
     if (budget >= 1000000000) {
       const billions = budget / 1000000000;
-      return `${(Math.round(billions * 100) / 100).toFixed(2)}B`;
+      return `${(Math.round(billions * 100) / 100).toFixed(2)}B ETB`;
     } else if (budget >= 1000000) {
       const millions = budget / 1000000;
-      return `${(Math.round(millions * 100) / 100).toFixed(2)}M`;
+      return `${(Math.round(millions * 100) / 100).toFixed(2)}M ETB`;
     }
-    return budget.toLocaleString();
+    return `${budget.toLocaleString()} ETB`;
   };
 
   const getColorByRange = (value) => {
-    if (!value) return "black";
+    if (!value) return "#1e3a8a";
 
     const colorRanges = [
-      { range: ["a".charCodeAt(0), "e".charCodeAt(0)], color: "red" },
-      { range: ["f".charCodeAt(0), "j".charCodeAt(0)], color: "green" },
-      { range: ["k".charCodeAt(0), "o".charCodeAt(0)], color: "purple" },
-      { range: ["p".charCodeAt(0), "t".charCodeAt(0)], color: "blue" },
-      { range: ["u".charCodeAt(0), "z".charCodeAt(0)], color: "gray" },
+      { range: ["a".charCodeAt(0), "e".charCodeAt(0)], color: "#dc2626" },
+      { range: ["f".charCodeAt(0), "j".charCodeAt(0)], color: "#059669" },
+      { range: ["k".charCodeAt(0), "o".charCodeAt(0)], color: "#7c3aed" },
+      { range: ["p".charCodeAt(0), "t".charCodeAt(0)], color: "#1d4ed8" },
+      { range: ["u".charCodeAt(0), "z".charCodeAt(0)], color: "#475569" },
     ];
     const charCode = value.toLowerCase().charCodeAt(0);
     const rangeMatch = colorRanges.find(
@@ -489,171 +493,166 @@ const Projects = (props) => {
   const currentItems = search.slice(indexOfFirstItem, indexOfLastItem);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    height: 50,
+    height: 60,
+    "&:hover": {
+      backgroundColor: "#f8fafc",
+      transition: "background-color 0.2s ease",
+    },
   }));
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    padding: "0px 20px",
+    padding: "16px 24px",
+    fontSize: "0.875rem",
+    color: "#334155",
   }));
+
   const handleChange = (event, value) => {
     paginate(value);
   };
+
   return (
-    <div className="ml-auto w-4/5 mr-5 mt-24 relative">
+    <div className="ml-auto w-full lg:w-4/5 mr-0 lg:mr-5 mt-24 px-4 lg:px-0 relative">
       <Helmet>
         <title>PMS - Projects</title>
       </Helmet>
 
       <div className="mb-6">
-        <h1 className="text-2xl font-bold">Projects</h1>
+        <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
+          Projects
+        </h1>
+        <p className="text-gray-600 mt-1">
+          Manage and monitor all your projects
+        </p>
       </div>
-      <div>
-        <ul class="my-5 flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-200 dark:text-gray-400">
-          <li class="me-2 " onClick={() => handleFilterClick("All")}>
-            <a
-              href="#"
-              aria-current="page"
-              className={`cursor-pointer ${
-                statusFilter === "All"
-                  ? "font-bold text-blue-900 bg-gray-100 inline-block p-4 rounded-t-lg"
-                  : "inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 "
-              }`}
-            >
-              <div>All</div>
-            </a>
-          </li>
 
-          <li class="me-2" onClick={() => handleFilterClick("Completed")}>
-            <a
-              href="#"
-              className={`cursor-pointer ${
-                statusFilter === "Completed"
-                  ? "font-bold text-blue-900 bg-gray-100 inline-block p-4  rounded-t-lg "
-                  : "inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 "
+      {/* Status Filter Tabs */}
+      <div className="mb-6 overflow-x-auto">
+        <div className="flex space-x-1 bg-white rounded-lg border border-gray-200 p-1 w-fit">
+          {["All", "Completed", "On Progress", "Canceled"].map((status) => (
+            <button
+              key={status}
+              onClick={() => handleFilterClick(status)}
+              className={`px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                statusFilter === status
+                  ? "bg-blue-900 text-white shadow-sm"
+                  : "text-gray-600 hover:text-blue-900 hover:bg-blue-50"
               }`}
             >
-              <div>Completed</div>
-            </a>
-          </li>
-          <li class="me-2" onClick={() => handleFilterClick("On Progress")}>
-            <a
-              href="#"
-              className={`cursor-pointer ${
-                statusFilter === "On Progress"
-                  ? "font-bold text-blue-900 bg-gray-100 inline-block p-4   rounded-t-lg "
-                  : "inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50 "
-              }`}
-            >
-              <div>On Progress</div>
-            </a>
-          </li>
-          <li class="me-2" onClick={() => handleFilterClick("Canceled")}>
-            <a
-              href="#"
-              className={`cursor-pointer ${
-                statusFilter === "Canceled"
-                  ? "font-bold text-blue-900 bg-gray-100 inline-block p-4   rounded-t-lg "
-                  : "inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50  "
-              }`}
-            >
-              <div>Canceled</div>
-            </a>
-          </li>
-        </ul>
+              {status}
+            </button>
+          ))}
+        </div>
+      </div>
 
-        <div>
-          <div className="flex mb-7 justify-between">
-            <div class=" self-center ">
-              <TextField
-                type="text"
-                placeholder="Search by Project Name"
-                size="small"
-                class="  rounded-lg "
-                variant="outlined"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </div>
-            {createProject !== 0 && (
-              <button
-                className="text-white font-bold py-2 px-4 rounded"
-                onClick={() => handleAddClick()}
-                style={{ backgroundColor: "#082f49" }}
+      {/* Search and Create Section */}
+      <div className="bg-white rounded-xl border border-gray-200 p-4 lg:p-6 mb-6 shadow-sm">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+          <div className="w-full lg:w-auto">
+            <TextField
+              type="text"
+              placeholder="Search projects..."
+              size="small"
+              className="w-full lg:w-64"
+              variant="outlined"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon className="text-gray-400" />
+                  </InputAdornment>
+                ),
+                classes: {
+                  root: "rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors",
+                },
+              }}
+            />
+          </div>
+          {createProject !== 0 && (
+            <button
+              className="bg-blue-900 hover:bg-blue-800 text-white font-semibold py-2.5 px-6 rounded-lg transition-all duration-200 flex items-center gap-2 shadow-sm hover:shadow whitespace-nowrap"
+              onClick={() => handleAddClick()}
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
-                + Create New Project
-              </button>
-            )}
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              Create New Project
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Rows per page selector */}
+      {projects.length !== 0 && (
+        <div className="flex justify-between items-center mb-4">
+          <div className="text-sm text-gray-600">
+            Showing {indexOfFirstItem + 1} to{" "}
+            {Math.min(indexOfLastItem, filteredRows.length)} of{" "}
+            {filteredRows.length} projects
+          </div>
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            Rows per page:
+            <select
+              value={rowsPerPage}
+              onChange={handleRowsPerPageChange}
+              className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-transparent bg-white"
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+            </select>
           </div>
         </div>
-        {projects.length !== 0 && (
-          <div className="rows-per-page flex ml-2 justify-start my-6 text-sm">
-            Rows per page
-            <div>
-              <select
-                value={rowsPerPage}
-                onChange={handleRowsPerPageChange}
-                className="w-fit pl-3 text-sm border-none outline-none bg-white focus:border-none focus:outline-none"
-              >
-                <option value={5}>5</option>
-                <option value={10}>10</option>
-                <option value={100}>100</option>
-              </select>
-            </div>
-          </div>
-        )}
-      </div>
-      <div>
-        <TableContainer
-          component={Paper}
-          sx={{
-            width: "100%",
-          }}
-        >
-          <Box sx={{ width: "100%" }}>
-            <Fade
-              in={loading}
-              style={{
-                transitionDelay: loading ? "100ms" : "0ms",
-              }}
-              unmountOnExit
-            >
-              <LinearProgress />
-            </Fade>
-          </Box>
-          {currentItems.length !== 0 ? (
-            <Table
-              sx={{
-                minWidth: 900,
-                borderBottom: "none",
-              }}
-              stickyHeader
-            >
+      )}
+
+      {/* Table Section */}
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <Box sx={{ width: "100%" }}>
+          <Fade
+            in={loading}
+            style={{
+              transitionDelay: loading ? "100ms" : "0ms",
+            }}
+            unmountOnExit
+          >
+            <LinearProgress sx={{ height: 2 }} />
+          </Fade>
+        </Box>
+
+        {currentItems.length !== 0 ? (
+          <div className="overflow-x-auto">
+            <Table sx={{ minWidth: 900 }}>
               <TableHead>
-                <TableRow>
-                  <BoldTableCell>
+                <TableRow sx={{ backgroundColor: "#f8fafc" }}>
+                  <BoldTableCell sx={{ padding: "20px 24px" }}>
                     <div className="header-cell">Project Name</div>
                   </BoldTableCell>
                   <BoldTableCell>
-                    <div className="header-cell">Start date</div>
+                    <div className="header-cell">Start Date</div>
                   </BoldTableCell>
                   <BoldTableCell>
-                    <div className="header-cell">End date</div>
+                    <div className="header-cell">End Date</div>
                   </BoldTableCell>
                   <BoldTableCell>
                     <div className="header-cell">Budget</div>
                   </BoldTableCell>
                   <BoldTableCell>
-                    <div className="header-cell">Project Members</div>
+                    <div className="header-cell">Members</div>
                   </BoldTableCell>
-
                   <BoldTableCell>
                     <div className="header-cell">Status</div>
                   </BoldTableCell>
@@ -666,229 +665,340 @@ const Projects = (props) => {
               </TableHead>
               <TableBody>
                 {currentItems.map((row, index) => {
-                  {
-                    return (
-                      <StyledTableRow
-                        key={row.project_id}
-                        style={
-                          index % 2
-                            ? { background: "white" }
-                            : { background: "#f7f6fe" }
-                        }
-                      >
-                        <StyledTableCell
-                          onClick={() => handleProjectClick(row)}
-                        >
-                          <div className="flex  cursor-pointer">
-                            <Tooltip
-                              title={`Open Project ${row.name}`}
-                              placement="right"
-                            >
-                              <div>
-                                <span
-                                  className="initials"
-                                  style={{
-                                    backgroundColor: getColorByRange(
-                                      row.name.charAt(0)
-                                    ),
-                                    borderRadius: "50%",
-                                    width: "30px",
-                                    height: "30px",
-                                    display: "inline-flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    marginRight: "10px",
-                                    color: "#fff",
-                                    fontWeight: "bold",
-                                  }}
-                                >
-                                  {row.name.charAt(0).toUpperCase()}
-                                </span>
-                                <span className="">{row.name}</span>
-                              </div>
-                            </Tooltip>
+                  return (
+                    <StyledTableRow key={row.project_id}>
+                      <StyledTableCell onClick={() => handleProjectClick(row)}>
+                        <div className="flex items-center cursor-pointer group">
+                          <div
+                            className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold mr-3 transition-all duration-200 group-hover:scale-105"
+                            style={{
+                              backgroundColor: getColorByRange(
+                                row.name.charAt(0)
+                              ),
+                            }}
+                          >
+                            {row.name.charAt(0).toUpperCase()}
                           </div>
-                        </StyledTableCell>
-                        <StyledTableCell>
-                          {new Date(row.start_date).toLocaleDateString()}
-                        </StyledTableCell>
-                        <StyledTableCell>
-                          {new Date(row.end_date).toLocaleDateString()}
-                        </StyledTableCell>
-
-                        <StyledTableCell>
+                          <div>
+                            <div className="font-medium text-gray-900 group-hover:text-blue-900 transition-colors">
+                              {row.name}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              ID: {row.project_id.slice(0, 7)}
+                            </div>
+                          </div>
+                        </div>
+                      </StyledTableCell>
+                      <StyledTableCell>
+                        <div className="font-medium text-gray-900">
+                          {new Date(row.start_date).toLocaleDateString(
+                            "en-US",
+                            {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            }
+                          )}
+                        </div>
+                      </StyledTableCell>
+                      <StyledTableCell>
+                        <div className="font-medium text-gray-900">
+                          {new Date(row.end_date).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })}
+                        </div>
+                      </StyledTableCell>
+                      <StyledTableCell>
+                        <div className="font-semibold text-gray-900">
                           {formatBudget(row.budget)}
-                        </StyledTableCell>
+                        </div>
+                      </StyledTableCell>
+                      <StyledTableCell>
                         {viewProjectMembers !== 0 ? (
-                          <StyledTableCell>
-                            <div className="group w-fit">
-                              <div className="text-blue-900 w-fit cursor-pointer ml-11   ">
-                                <Tooltip
-                                  title="View Project Members"
-                                  placement="right"
-                                >
-                                  <div
-                                    className=" hover:bg-gray-200 rounded-lg"
-                                    onClick={() => handleViewClick(row)}
-                                  >
-                                    <FaUsers size={30} />
-                                  </div>
-                                </Tooltip>
-                              </div>
-                            </div>
-                          </StyledTableCell>
-                        ) : (
-                          <StyledTableCell>
-                            <div className="group w-fit">
-                              <div className="text-blue-900 w-fit cursor-pointer ml-11   "></div>
-                            </div>
-                          </StyledTableCell>
-                        )}
-                        <StyledTableCell>
-                          <div className="">
-                            <div
-                              className={`cursor-pointer w-fit py-2 text-xs font-medium rounded-2xl ${
-                                row.overall_progress === "Completed"
-                                  ? "text-green-600 bg-emerald-50"
-                                  : row.overall_progress === "On Progress"
-                                  ? "text-orange-600 bg-orange-50"
-                                  : row.overall_progress === "Canceled"
-                                  ? "text-red-600 bg-red-50"
-                                  : ""
-                              }`}
+                          <Tooltip title="View Project Members" placement="top">
+                            <button
+                              onClick={() => handleViewClick(row)}
+                              className="text-blue-900 hover:text-blue-700 hover:bg-blue-50 p-2 rounded-lg transition-colors"
                             >
-                              {row.overall_progress}
-                            </div>
+                              <FaUsers size={20} />
+                            </button>
+                          </Tooltip>
+                        ) : (
+                          <span className="text-gray-400 text-sm">-</span>
+                        )}
+                      </StyledTableCell>
+                      <StyledTableCell>
+                        <div
+                          className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold ${
+                            row.overall_progress === "Completed"
+                              ? "bg-green-100 text-green-800"
+                              : row.overall_progress === "On Progress"
+                              ? "bg-blue-100 text-blue-800"
+                              : row.overall_progress === "Canceled"
+                              ? "bg-red-100 text-red-800"
+                              : "bg-gray-100 text-gray-800"
+                          }`}
+                        >
+                          {row.overall_progress}
+                        </div>
+                      </StyledTableCell>
+                      {(updateProject !== 0 || deleteProject !== 0) && (
+                        <StyledTableCell>
+                          <div className="flex items-center gap-2">
+                            {updateProject !== 0 && (
+                              <Tooltip title="Edit Project" placement="top">
+                                <button
+                                  onClick={() => handleEditClick(row)}
+                                  className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 p-2 rounded-lg transition-colors"
+                                >
+                                  <FaEdit size={16} />
+                                </button>
+                              </Tooltip>
+                            )}
+                            {deleteProject !== 0 && (
+                              <Tooltip title="Delete Project" placement="top">
+                                <button
+                                  onClick={() => handleDeleteClick(row)}
+                                  className="text-red-600 hover:text-red-800 hover:bg-red-50 p-2 rounded-lg transition-colors"
+                                >
+                                  <FaTrash size={16} />
+                                </button>
+                              </Tooltip>
+                            )}
                           </div>
                         </StyledTableCell>
-                        {(updateProject !== 0 || deleteProject !== 0) && (
-                          <StyledTableCell>
-                            <div className="cursor-pointer flex gap-2 text-white flex-row relative">
-                              <div className="cursor-pointer flex-row shadow-sm rounded-md flex gap-2">
-                                {updateProject !== 0 && (
-                                  <Tooltip
-                                    title="Edit Project"
-                                    placement="right"
-                                  >
-                                    <div className="p-2 hover:bg-gray-200 rounded-lg">
-                                      <div
-                                        className="text-blue-900"
-                                        onClick={() => handleEditClick(row)}
-                                      >
-                                        <FaEdit fontSize={16} />
-                                      </div>
-                                    </div>
-                                  </Tooltip>
-                                )}
-                                {deleteProject !== 0 && (
-                                  <Tooltip
-                                    title="Delete Project"
-                                    placement="right"
-                                  >
-                                    <div className="p-2 hover:bg-gray-200 rounded-lg">
-                                      <div
-                                        className="text-red-600"
-                                        onClick={() => handleDeleteClick(row)}
-                                      >
-                                        <FaTrash fontSize={16} />
-                                      </div>
-                                    </div>
-                                  </Tooltip>
-                                )}
-                              </div>
-                            </div>
-                          </StyledTableCell>
-                        )}
-                      </StyledTableRow>
-                    );
-                  }
+                      )}
+                    </StyledTableRow>
+                  );
                 })}
               </TableBody>
             </Table>
-          ) : (
-            <div class="m-10 flex items-center justify-center">{noProject}</div>
-          )}
-        </TableContainer>
-        {projects.length !== 0 && (
-          <Box className="text-sm flex justify-end mt-1 pb-20 pt-5">
+          </div>
+        ) : (
+          <div className="py-16 text-center">
+            <div className="text-gray-400 mb-2">
+              <svg
+                className="w-16 h-16 mx-auto"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1}
+                  d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-1">
+              No projects found
+            </h3>
+            <p className="text-gray-600 max-w-md mx-auto">
+              {noProject === "No Project Found"
+                ? "No projects match your current filters. Try adjusting your search or filters."
+                : "Loading projects..."}
+            </p>
+            {noProject === "No Project Found" && createProject !== 0 && (
+              <button
+                onClick={() => handleAddClick()}
+                className="mt-4 bg-blue-900 hover:bg-blue-800 text-white font-medium py-2 px-6 rounded-lg transition-colors inline-flex items-center gap-2"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+                Create your first project
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Pagination */}
+      {projects.length !== 0 && search.length > 0 && (
+        <div className="mt-6 flex justify-center mb-20">
+          <div className="bg-white rounded-lg border border-gray-200 px-4 py-3 shadow-sm">
             <Pagination
               count={pageCount}
               page={currentPage}
               onChange={handleChange}
               variant="outlined"
               shape="rounded"
-              size="small"
               color="primary"
-              sx={{ "& .MuiPaginationItem-root": { margin: "0 4px" } }}
+              showFirstButton
+              showLastButton
+              sx={{
+                "& .MuiPaginationItem-root": {
+                  fontSize: "0.875rem",
+                  margin: "0 2px",
+                  "&.Mui-selected": {
+                    backgroundColor: "#1e3a8a",
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "#1e40af",
+                    },
+                  },
+                  "&:hover": {
+                    backgroundColor: "#f1f5f9",
+                  },
+                },
+              }}
             />
-          </Box>
-        )}
-      </div>
+          </div>
+        </div>
+      )}
 
+      {/* Modals */}
       {addModalOpen && (
-        <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div className="bg-white h-4/5   overflow-y-auto rounded-md">
-            <div
-              className="close cursor-pointer text-end mr-12 mt-3"
-              onClick={handleAddModalClose}
-            >
-              X
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-opacity">
+          <div className="bg-white rounded-2xl shadow-2xl w-11/12 lg:w-4/5 max-h-[90vh] overflow-hidden mx-4">
+            <div className="flex justify-between items-center border-b border-gray-200 px-6 py-4">
+              <h2 className="text-xl font-bold text-gray-900">
+                Create New Project
+              </h2>
+              <button
+                onClick={handleAddModalClose}
+                className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
             </div>
-            <Projectscreate
-              selectedRow={selectedRow}
-              handlefetchProjects={handlefetchProjects}
-              handleCloseModal={handleAddModalClose}
-            />
+            <div className="overflow-y-auto max-h-[calc(90vh-80px)]">
+              <Projectscreate
+                selectedRow={selectedRow}
+                handlefetchProjects={handlefetchProjects}
+                handleCloseModal={handleAddModalClose}
+              />
+            </div>
           </div>
         </div>
       )}
 
       {editModalOpen && (
-        <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div className="bg-white h-4/5   overflow-y-auto rounded-md">
-            <div
-              className="close cursor-pointer text-end mr-12 mt-5"
-              onClick={handleEditModalClose}
-            >
-              X
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-opacity">
+          <div className="bg-white rounded-2xl shadow-2xl w-11/12 lg:w-4/5 max-h-[90vh] overflow-hidden mx-4">
+            <div className="flex justify-between items-center border-b border-gray-200 px-6 py-4">
+              <h2 className="text-xl font-bold text-gray-900">Edit Project</h2>
+              <button
+                onClick={handleEditModalClose}
+                className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
             </div>
-            <Projectsedit
-              selectedRow={selectedRow}
-              handlefetchProjects={handlefetchProjects}
-              handleCloseModal={handleEditModalClose}
-            />
+            <div className="overflow-y-auto max-h-[calc(90vh-80px)]">
+              <Projectsedit
+                selectedRow={selectedRow}
+                handlefetchProjects={handlefetchProjects}
+                handleCloseModal={handleEditModalClose}
+              />
+            </div>
           </div>
         </div>
       )}
 
       {viewModalOpen && (
-        <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div className="bg-white w-2/3 rounded-md relative">
-            <div
-              className="close cursor-pointer text-end mr-12 mt-5"
-              onClick={handleViewModalClose}
-            >
-              X
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-opacity">
+          <div className="bg-white rounded-2xl shadow-2xl w-11/12 lg:w-2/3 max-h-[90vh] overflow-hidden mx-4">
+            <div className="flex justify-between items-center border-b border-gray-200 px-6 py-4">
+              <h2 className="text-xl font-bold text-gray-900">
+                Project Details
+              </h2>
+              <button
+                onClick={handleViewModalClose}
+                className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
             </div>
-            <Projectsview selectedRow={selectedRow} />
+            <div className="overflow-y-auto max-h-[calc(90vh-80px)]">
+              <Projectsview selectedRow={selectedRow} />
+            </div>
           </div>
         </div>
       )}
 
       {deleteModalOpen && (
-        <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div className="bg-white w-1/2 pt-4 rounded-md relative">
-            <div
-              className="close cursor-pointer text-end mr-12"
-              onClick={handleDeleteModalClose}
-            >
-              X
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-opacity">
+          <div className="bg-white rounded-2xl shadow-2xl w-11/12 lg:w-1/2 max-h-[90vh] overflow-hidden mx-4">
+            <div className="flex justify-between items-center border-b border-gray-200 px-6 py-4">
+              <h2 className="text-xl font-bold text-gray-900">
+                Delete Project
+              </h2>
+              <button
+                onClick={handleDeleteModalClose}
+                className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
             </div>
-            <Projectdelete
-              selectedRow={selectedRow}
-              handleDeleteModalClose={handleDeleteModalClose}
-              handlefetchProjects={handlefetchProjects}
-            />
+            <div className="overflow-y-auto max-h-[calc(90vh-80px)]">
+              <Projectdelete
+                selectedRow={selectedRow}
+                handleDeleteModalClose={handleDeleteModalClose}
+                handlefetchProjects={handlefetchProjects}
+              />
+            </div>
           </div>
         </div>
       )}

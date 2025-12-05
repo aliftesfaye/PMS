@@ -829,8 +829,10 @@ const Activity = (props) => {
                             />
                           </svg>
                           <div className="absolute inset-0 flex items-center justify-center">
-                            <span className="text-sm font-bold text-slate-700">
-                              {progress_result}%
+                            <span className="text-xs font-bold text-slate-700 text-center px-1">
+                              {activity_progress === "Completed"
+                                ? "Done"
+                                : `${parseInt(progress_result)}%`}
                             </span>
                           </div>
                         </div>
@@ -853,10 +855,56 @@ const Activity = (props) => {
                             isLabelVisible={false}
                           />
 
-                          {/* Deadline Indicator */}
-                          {days_left <= 0 &&
-                            activity_progress !== "Completed" && (
-                              <div className="flex items-center gap-1 mt-1 text-xs text-red-600">
+                          {/* Show time information based on days_left */}
+                          <div className="mt-1 text-xs text-slate-600">
+                            {activity_progress === "Completed" ? (
+                              <div className="text-green-600 flex items-center gap-1">
+                                <svg
+                                  className="w-3 h-3"
+                                  fill="currentColor"
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                                Completed
+                              </div>
+                            ) : days_left > 0 ? (
+                              <div className="flex items-center gap-1">
+                                <svg
+                                  className="w-3 h-3"
+                                  fill="currentColor"
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                                {days_left}{" "}
+                                {days_left === 1 ? "day left" : "days left"}
+                              </div>
+                            ) : days_left === 0 ? (
+                              <div className="text-amber-600 flex items-center gap-1">
+                                <svg
+                                  className="w-3 h-3"
+                                  fill="currentColor"
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                                Due today
+                              </div>
+                            ) : (
+                              <div className="text-red-600 flex items-center gap-1">
                                 <svg
                                   className="w-3 h-3"
                                   fill="currentColor"
@@ -868,11 +916,20 @@ const Activity = (props) => {
                                     clipRule="evenodd"
                                   />
                                 </svg>
-                                <span>
-                                  Deadline passed by {Math.abs(days_left)} days
-                                </span>
+                                {Math.abs(days_left)}{" "}
+                                {Math.abs(days_left) === 1
+                                  ? "day overdue"
+                                  : "days overdue"}
                               </div>
                             )}
+                          </div>
+
+                          {/* Show percentage progress as small text */}
+                          {activity_progress !== "Completed" && (
+                            <div className="text-xs text-slate-500 mt-0.5">
+                              {parseFloat(progress_result).toFixed(1)}% complete
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -972,10 +1029,10 @@ const Activity = (props) => {
       {/* Modals */}
       {addModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-xl w-11/12 md:w-3/5 max-w-4xl max-h-[90vh] overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-2xl w-11/12 lg:w-2/3 max-h-[90vh] overflow-hidden mx-4">
             <div className="flex justify-between items-center p-4 border-b border-slate-200">
               <h3 className="text-lg font-semibold text-slate-800">
-                Add New Activity
+                {/* Add New Activity */}
               </h3>
               <button
                 onClick={handleAddModalClose}
@@ -984,7 +1041,7 @@ const Activity = (props) => {
                 ✕
               </button>
             </div>
-            <div className="p-4 md:p-6">
+            <div className="overflow-y-auto max-h-[calc(90vh-80px)]">
               <ActivityAdd
                 handlefetchActivity={handlefetchActivity}
                 handleCloseModal={handleAddModalClose}
@@ -997,13 +1054,10 @@ const Activity = (props) => {
 
       {editModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div
-            className="bg-white rounded-xl w-11/12 md:w-3/5 max-w-4xl max-h-[90vh] overflow-auto"
-            ref={modalRef}
-          >
-            <div className="sticky top-0 bg-white z-10 flex justify-between items-center p-4 border-b border-slate-200">
+          <div className="bg-white rounded-2xl shadow-2xl w-11/12 lg:w-2/3 max-h-[90vh] overflow-hidden mx-4">
+            <div className="flex justify-between items-center p-4 border-b border-slate-200">
               <h3 className="text-lg font-semibold text-slate-800">
-                Edit Activity
+                {/* Edit Activity */}
               </h3>
               <button
                 onClick={handleEditModalClose}
@@ -1012,7 +1066,7 @@ const Activity = (props) => {
                 ✕
               </button>
             </div>
-            <div className="p-4 md:p-6">
+            <div className="overflow-y-auto max-h-[calc(90vh-80px)]">
               <Activitiesedit
                 selectedRow={selectedRow}
                 handlefetchActivity={handlefetchActivity}

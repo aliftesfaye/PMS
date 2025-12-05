@@ -556,17 +556,17 @@ const Workspace = (props) => {
       </Backdrop>
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-900 to-blue-700 text-white p-6">
+      <div className="bg-gradient-to-r  text-blue-900 p-6">
         <div className="flex flex-col md:flex-row md:items-center gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center text-2xl font-bold backdrop-blur-sm">
+            <div className="w-14 h-14 bg-white/20 rounded-xl border-gray-600 border flex items-center justify-center text-2xl font-bold backdrop-blur-sm">
               {props.setSelectedProjectInfo.name.charAt(0).toUpperCase()}
             </div>
             <div>
               <h1 className="text-2xl md:text-3xl font-bold">
                 {props.setSelectedProjectInfo.name}
               </h1>
-              <p className="text-blue-100 opacity-90">Project Workspace</p>
+              <p className="text-blue-400 opacity-90">Project Workspace</p>
             </div>
           </div>
         </div>
@@ -1011,13 +1011,11 @@ const Workspace = (props) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
           <div
             ref={modalRef}
-            className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-2xl shadow-2xl w-11/12 lg:w-2/3 max-h-[90vh] overflow-hidden mx-4"
           >
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-xl font-semibold text-gray-900">
-                  Edit Task
-                </h3>
+                <h3 className="text-xl font-semibold text-gray-900"></h3>
                 <button
                   onClick={toggleEditMajorTaskModal}
                   className="text-gray-400 hover:text-gray-600 text-2xl"
@@ -1025,13 +1023,15 @@ const Workspace = (props) => {
                   ×
                 </button>
               </div>
-              <WorkspaceEditMajorTask
-                selectedTask={selectedTask}
-                selectedActivity={selectedActivity}
-                selectedProject={props.setSelectedProjectInfo}
-                handlefetchActivity={fetchActivities}
-                handleCloseModal={handleEditTaskModalClose}
-              />
+              <div className="overflow-y-auto max-h-[calc(90vh-80px)]">
+                <WorkspaceEditMajorTask
+                  selectedTask={selectedTask}
+                  selectedActivity={selectedActivity}
+                  selectedProject={props.setSelectedProjectInfo}
+                  handlefetchActivity={fetchActivities}
+                  handleCloseModal={handleEditTaskModalClose}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -1071,12 +1071,12 @@ const Workspace = (props) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
           <div
             ref={modalRef}
-            className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-2xl shadow-2xl w-11/12 lg:w-2/3 max-h-[90vh] overflow-hidden mx-4"
           >
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-xl font-semibold text-gray-900">
-                  Add New Task
+                  {/* Add New Task */}
                 </h3>
                 <button
                   onClick={toggleAddTaskModal}
@@ -1085,12 +1085,14 @@ const Workspace = (props) => {
                   ×
                 </button>
               </div>
-              <WorkspaceAddMajorTask
-                selectedActivity={selectedActivity}
-                selectedProject={props.setSelectedProjectInfo}
-                handlefetchTask={fetchActivities}
-                handleCloseModal={handleAddTaskModalClose}
-              />
+              <div className="overflow-y-auto max-h-[calc(90vh-80px)]">
+                <WorkspaceAddMajorTask
+                  selectedActivity={selectedActivity}
+                  selectedProject={props.setSelectedProjectInfo}
+                  handlefetchTask={fetchActivities}
+                  handleCloseModal={handleAddTaskModalClose}
+                />
+              </div>
             </div>
           </div>
         </div>

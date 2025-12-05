@@ -3,6 +3,7 @@ import DatePicker from "react-datepicker";
 import Select from "react-select";
 import Swal from "sweetalert2";
 import apiService from "../services/apiServices";
+import "react-datepicker/dist/react-datepicker.css";
 
 const Activitiesedit = ({
   selectedRow,
@@ -10,13 +11,6 @@ const Activitiesedit = ({
   handlefetchActivity,
   selectedProject,
 }) => {
-  const dummyTitle = "Smart Court System";
-  const dummyStartDate = "2024-02-23";
-  const dummyEndDate = "2025-03-15";
-  const dummyProjectManager = "Henok Mulatu";
-  const dummyTechnicalManager = "Abebe Kebede";
-  const dummyProjectMembers = ["Member 1", "Member 2", "Member 3"];
-  const [title, setTitle] = useState(dummyTitle);
   const [memberOptions, setMemberOptions] = useState([]);
   const [members, setMembers] = useState(
     selectedRow.members.map((user) => ({
@@ -24,13 +18,7 @@ const Activitiesedit = ({
       label: user.UserInfo.full_name,
     }))
   );
-  const [projectManager, setProjectManager] = useState(dummyProjectManager);
-  const [technicalManager, setTechnicalManager] = useState(
-    dummyTechnicalManager
-  );
   const [description, setDescription] = useState("");
-
-  const [selectedProjectMember, setSelectedProjectMember] = useState(null);
   const [formData, setFormData] = useState({
     project_id: selectedProject.project_id,
     name: selectedRow.name,
@@ -41,14 +29,6 @@ const Activitiesedit = ({
     is_milestone: selectedRow.is_milestone,
     description: selectedRow.description,
   });
-  const handleInputChange = (event) => {
-    const { name, value, type, checked } = event.target;
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
-    });
-  };
-
   const [selectedStartDate, setSelectedStartDate] = useState(
     new Date(selectedRow.start_date)
   );
@@ -59,6 +39,95 @@ const Activitiesedit = ({
     new Date(selectedProject.start_date)
   );
   const [endDate, setEndDate] = useState(new Date(selectedProject.end_date));
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const customStyles = {
+    control: (provided, state) => ({
+      ...provided,
+      backgroundColor: "#f8fafc",
+      border: "1px solid #e2e8f0",
+      borderRadius: "0.5rem",
+      minHeight: "44px",
+      boxShadow: state.isFocused ? "0 0 0 2px rgba(30, 58, 138, 0.2)" : "none",
+      "&:hover": {
+        borderColor: "#94a3b8",
+      },
+    }),
+    menu: (provided) => ({
+      ...provided,
+      borderRadius: "0.5rem",
+      boxShadow:
+        "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+      zIndex: 9999,
+    }),
+    menuList: (provided) => ({
+      ...provided,
+      padding: "0.25rem",
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isSelected
+        ? "#1e3a8a"
+        : state.isFocused
+        ? "#f1f5f9"
+        : "white",
+      color: state.isSelected ? "white" : "#1e293b",
+      padding: "0.625rem 0.75rem",
+      fontSize: "0.875rem",
+      borderRadius: "0.25rem",
+      margin: "0.125rem 0",
+      "&:active": {
+        backgroundColor: "#1e3a8a",
+      },
+    }),
+    multiValue: (provided) => ({
+      ...provided,
+      backgroundColor: "#e0f2fe",
+      borderRadius: "0.375rem",
+    }),
+    multiValueLabel: (provided) => ({
+      ...provided,
+      color: "#0369a1",
+      fontWeight: "500",
+      padding: "0.25rem 0.5rem",
+    }),
+    multiValueRemove: (provided) => ({
+      ...provided,
+      color: "#0369a1",
+      borderRadius: "0 0.375rem 0.375rem 0",
+      "&:hover": {
+        backgroundColor: "#bae6fd",
+        color: "#0c4a6e",
+      },
+    }),
+    placeholder: (provided) => ({
+      ...provided,
+      color: "#94a3b8",
+      fontSize: "0.875rem",
+    }),
+    dropdownIndicator: (provided) => ({
+      ...provided,
+      color: "#64748b",
+      "&:hover": {
+        color: "#475569",
+      },
+    }),
+    clearIndicator: (provided) => ({
+      ...provided,
+      color: "#64748b",
+      "&:hover": {
+        color: "#475569",
+      },
+    }),
+  };
+
+  const handleInputChange = (event) => {
+    const { name, value, type, checked } = event.target;
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? checked : value,
+    });
+  };
 
   const handleMemberChange = (selectedOption) => {
     const selectedValues = selectedOption.map((option) => option);
@@ -67,27 +136,25 @@ const Activitiesedit = ({
 
   const handleUpdateActivity = async (e) => {
     e.preventDefault();
-    formData.start_date = selectedStartDate;
-    formData.end_date = selectedEndDate;
-    const newMembers = members.map((item) => {
-      return {
-        ...item,
+    setIsSubmitting(true);
+
+    const activityData = {
+      ...formData,
+      start_date: selectedStartDate,
+      end_date: selectedEndDate,
+      projectmembers: members.map((item) => ({
         project_member_id: item.value,
         UserInfo: { full_name: item.label },
-      };
-    });
-    formData.projectmembers.push(...newMembers);
+      })),
+    };
+
     try {
       const response = await apiService.updateActivity(
-        formData,
+        activityData,
         selectedRow.activity_id
       );
-      console.log("Activity edit response:", response);
 
-      // Check if the registration was successful based on the response
       if (response.status === 200) {
-        // Assuming the response contains a "success" property
-        // Clear the form data
         const Toast = Swal.mixin({
           toast: true,
           position: "top-end",
@@ -108,47 +175,23 @@ const Activitiesedit = ({
           handlefetchActivity();
         });
       } else {
-        console.error(" failed");
-        Swal.fire({
-          position: "center",
-          icon: "error",
-          title: "Activity Update Failed",
-          showConfirmButton: true,
-          timer: 1500,
-          customClass: {
-            popup: "custom-popup-style",
-          },
-        });
+        throw new Error("Activity update failed");
       }
     } catch (error) {
-      console.error("Registration failed:", error);
+      console.error("Activity update failed:", error);
       Swal.fire({
         position: "center",
         icon: "error",
         title: "Activity Update Failed",
-        showConfirmButton: true,
-        timer: 1500,
-        customClass: {
-          popup: "custom-popup-style",
-        },
+        text: error.response?.data?.message || "An error occurred",
+        showConfirmButton: false,
+        timer: 2500,
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const customStyles = {
-    control: (provided, state) => ({
-      ...provided,
-      backgroundColor: "#f3f4f6",
-    }),
-    dropdownIndicator: (provided, state) => ({
-      ...provided,
-      marginTop: "-5px",
-    }),
-    indicatorSeparator: (provided, state) => ({
-      ...provided,
-      display: "none",
-    }),
-  };
   useEffect(() => {
     async function fetchUsers() {
       try {
@@ -164,13 +207,12 @@ const Activitiesedit = ({
 
         setMemberOptions(options);
       } catch (error) {
-        console.error("Error fetching users and document types:", error);
+        console.error("Error fetching project members:", error);
       }
     }
 
     fetchUsers();
 
-    // Event listener for Esc key to close modal
     const handleEsc = (event) => {
       if (event.key === "Escape") {
         handleCloseModal();
@@ -182,7 +224,7 @@ const Activitiesedit = ({
     return () => {
       document.removeEventListener("keydown", handleEsc);
     };
-  }, [handleCloseModal]);
+  }, [handleCloseModal, selectedProject.project_id]);
 
   const resetFormData = () => {
     setFormData({
@@ -191,10 +233,7 @@ const Activitiesedit = ({
       activity_status: selectedRow.activity_status,
       start_date: selectedRow.start_date,
       end_date: selectedRow.end_date,
-      projectmembers: selectedRow.members.map((user) => ({
-        value: user.project_member_id,
-        label: user.UserInfo.full_name,
-      })),
+      projectmembers: [],
       is_milestone: selectedRow.is_milestone,
       description: selectedRow.description,
     });
@@ -207,158 +246,461 @@ const Activitiesedit = ({
     setSelectedStartDate(new Date(selectedRow.start_date));
     setSelectedEndDate(new Date(selectedRow.end_date));
   };
-  
+
+  const getStatusColor = (status) => {
+    switch (status.toLowerCase()) {
+      case "completed":
+        return "bg-green-100 text-green-800";
+      case "on progress":
+        return "bg-blue-100 text-blue-800";
+      case "pending":
+        return "bg-yellow-100 text-yellow-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
 
   return (
-    <div>
-      <div className="flex flex-col  pr-9 pl-10 bg-white rounded-2xl max-w-[925px] max-md:px-5">
-        <div className=" text-2xl font-bold text-blue-950">Edit Activity</div>
-        <div className="justify-end  max-md:max-w-full">
-          <div className="flex gap-5 max-md:flex-col max-md:gap-0">
-            <div className="flex flex-col w-6/12 max-md:ml-0 max-md:w-full">
-              <div className="flex flex-col  py-1 text-base text-slate-950 max-md:mt-10">
-                <div className=" my-4">
-                  Name <span className="text-red-600">*</span>
-                </div>
-                <input
-                  type="text"
-                  value={formData.name}
-                  placeholder="Enter activity name"
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                  className="h-12 pl-2 w-4/5"
-                />
-
-                <div className="my-4">
-                  Activity Status <span className="text-red-600">*</span>
-                </div>
-                {/* <input
-                  type="dropdown"
-                  value={formData.activity_status}
-                  placeholder="Enter activity Status"
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                  className="h-12 pl-2"
-                /> */}
-
-                <select
-                  value={formData.activity_status}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      activity_status: e.target.value,
-                    })
-                  }
-                  className="h-12 w-4/5 pl-2 border-x-2 border-y-2"
-                >
-                  <option value={formData.activity_status}>
-                    {formData.activity_status}
-                  </option>
-                  {formData.activity_status === "on Progress" ? (
-                    <option value="Completed">Completed</option>
-                  ) : (
-                    <option value="on Progress">on Progress</option>
-                  )}
-                </select>
-
-                <div className="my-4">Member</div>
-                <Select
-                  name="members"
-                  value={members.map((member) => ({
-                    value: member.value,
-                    label: memberOptions.find(
-                      (option) => option.value === member.value
-                    )?.label,
-                  }))}
-                  onChange={handleMemberChange}
-                  options={memberOptions}
-                  isMulti
-                  className=" w-4/5 "
-                  closeMenuOnSelect={false}
-                  styles={customStyles}
-                />
-                <div className="flex flex-col ">
-                  <div className="flex flex-col grow py-1 text-base text-slate-950 max-md:mt-10">
-                    <label htmlFor="description" className=" my-4">
-                      Description
-                    </label>
-                    <textarea
-                      id="description"
-                      name="description"
-                      rows="9"
-                      cols="40"
-                      className="w-4/5 border-gray-300 rounded p-2  resize-none "
-                      style={{ backgroundColor: "#f3f3f4" }}
-                      placeholder="Write a short description about the activity that you are going to create"
-                      value={formData.description}
-                      onChange={handleInputChange}
-                    ></textarea>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col ml-5 w-6/12 max-md:ml-0 max-md:w-full">
-              <div className="flex flex-col grow py-1 text-base max-md:mt-10">
-                <div className="my-4">
-                  Activity Start Date <span className="text-red-600">*</span>
-                </div>
-
-                <DatePicker
-                  selected={selectedStartDate}
-                  onChange={(selectedStartDate) =>
-                    setSelectedStartDate(selectedStartDate)
-                  }
-                  minDate={startDate}
-                  maxDate={endDate}
-                  className="h-12 w-4/5 pl-2"
-                />
-                <div className="my-4">
-                  Activity End Date <span className="text-red-600">*</span>
-                </div>
-
-                <DatePicker
-                  selected={selectedEndDate}
-                  onChange={(selectedEndDate) =>
-                    setSelectedEndDate(selectedEndDate)
-                  }
-                  minDate={selectedStartDate}
-                  maxDate={endDate}
-                  className="h-12 w-4/5 pl-2"
-                />
-                <div className="flex flex-row mt-4">
-                  <input
-                    type="checkbox"
-                    id="is_milestone"
-                    name="is_milestone"
-                    checked={formData.is_milestone}
-                    onChange={handleInputChange}
-                    className="h-4 w-4 mt-1 text-blue-600 focus:ring-blue-500 border-gray-300 rounded-md"
-                  />
-                  <label htmlFor="is_milestone" className="ml-3">
-                    Is Milestone?
-                  </label>
-                </div>
-                <div className="flex  mr-20 justify-end self-end mt-6">
-                  <button
-                    type="button"
-                    className="flex justify-center items-center gap-2 p-2 rounded-lg text-lg w-40  border-[#d73d36] text-[#d73d36] font-bold"
-                    onClick={() => {
-                      resetFormData();
-                    }}
-                  >
-                    Reset                  </button>
-                  <div
-                    className="justify-center p-2.5 font-bold text-white bg-blue-900 rounded-lg cursor-pointer"
-                    onClick={handleUpdateActivity}
-                  >
-                    Update Activity
-                  </div>
-                </div>
-              </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6 lg:p-8">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+              Edit Activity
+            </h1>
+            <p className="text-gray-600 mt-2">
+              Update activity details for{" "}
+              <span className="font-semibold text-blue-900">
+                {selectedProject.name}
+              </span>
+            </p>
+            <div className="mt-2 text-sm text-gray-500">
+              Activity ID:{" "}
+              <span className="font-mono bg-gray-100 px-2 py-1 rounded">
+                {selectedRow.activity_id.slice(0, 8)}
+              </span>
             </div>
           </div>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+          <form onSubmit={handleUpdateActivity}>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Left Column */}
+              <div className="space-y-6">
+                {/* Activity Name */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Activity Name <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <svg
+                        className="h-5 w-5 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        />
+                      </svg>
+                    </div>
+                    <input
+                      type="text"
+                      value={formData.name}
+                      placeholder="Enter activity name"
+                      onChange={(e) =>
+                        setFormData({ ...formData, name: e.target.value })
+                      }
+                      required
+                      className="pl-10 w-full px-4 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors bg-gray-50"
+                    />
+                  </div>
+                </div>
+
+                {/* Activity Status */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Activity Status <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <svg
+                        className="h-5 w-5 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    </div>
+                    <select
+                      value={formData.activity_status}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          activity_status: e.target.value,
+                        })
+                      }
+                      className="pl-10 w-full px-4 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors bg-gray-50 appearance-none"
+                      required
+                    >
+                      <option
+                        value={formData.activity_status}
+                        className="capitalize"
+                      >
+                        {formData.activity_status}
+                      </option>
+                      {formData.activity_status.toLowerCase() !==
+                        "completed" && (
+                        <option value="Completed">Completed</option>
+                      )}
+                      {formData.activity_status.toLowerCase() !==
+                        "on progress" && (
+                        <option value="On Progress">On Progress</option>
+                      )}
+                      {formData.activity_status.toLowerCase() !== "pending" && (
+                        <option value="Pending">Pending</option>
+                      )}
+                    </select>
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                      <svg
+                        className="h-5 w-5 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="mt-2">
+                    <span
+                      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                        formData.activity_status
+                      )}`}
+                    >
+                      {formData.activity_status}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Team Members */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Assign Team Members
+                  </label>
+                  <Select
+                    name="members"
+                    value={members.map((member) => ({
+                      value: member.value,
+                      label:
+                        memberOptions.find(
+                          (option) => option.value === member.value
+                        )?.label || member.label,
+                    }))}
+                    onChange={handleMemberChange}
+                    options={memberOptions}
+                    isMulti
+                    className="w-full"
+                    closeMenuOnSelect={false}
+                    styles={customStyles}
+                    placeholder="Select team members..."
+                  />
+                </div>
+
+                {/* Description */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Activity Description
+                  </label>
+                  <textarea
+                    id="description"
+                    name="description"
+                    rows="5"
+                    className="w-full px-4 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors bg-gray-50 resize-none"
+                    placeholder="Describe the activity objectives, requirements, and expected outcomes..."
+                    value={formData.description}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+
+              {/* Right Column */}
+              <div className="space-y-6">
+                {/* Date Range */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-4">
+                    Activity Timeline <span className="text-red-500">*</span>
+                  </label>
+
+                  {/* Start Date */}
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Start Date
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg
+                          className="h-5 w-5 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />
+                        </svg>
+                      </div>
+                      <DatePicker
+                        selected={selectedStartDate}
+                        onChange={(date) => setSelectedStartDate(date)}
+                        minDate={startDate}
+                        maxDate={endDate}
+                        className="pl-10 w-full px-4 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                        dateFormat="MMMM d, yyyy"
+                      />
+                    </div>
+                  </div>
+
+                  {/* End Date */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      End Date
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg
+                          className="h-5 w-5 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />
+                        </svg>
+                      </div>
+                      <DatePicker
+                        selected={selectedEndDate}
+                        onChange={(date) => setSelectedEndDate(date)}
+                        minDate={selectedStartDate}
+                        maxDate={endDate}
+                        className="pl-10 w-full px-4 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                        dateFormat="MMMM d, yyyy"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Milestone Toggle */}
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div
+                        className={`w-10 h-5 flex items-center rounded-full p-1 cursor-pointer transition-colors ${
+                          formData.is_milestone ? "bg-blue-600" : "bg-gray-300"
+                        }`}
+                        onClick={() =>
+                          setFormData({
+                            ...formData,
+                            is_milestone: !formData.is_milestone,
+                          })
+                        }
+                      >
+                        <div
+                          className={`bg-white w-3 h-3 rounded-full shadow-md transform transition-transform ${
+                            formData.is_milestone
+                              ? "translate-x-5"
+                              : "translate-x-0"
+                          }`}
+                        />
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="is_milestone"
+                          className="text-sm font-medium text-gray-700"
+                        >
+                          Mark as Milestone
+                        </label>
+                        <p className="text-xs text-gray-500 mt-1">
+                          Important checkpoints that mark significant progress
+                        </p>
+                      </div>
+                    </div>
+                    {formData.is_milestone && (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                        <svg
+                          className="w-3 h-3 mr-1"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        Milestone
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Activity Information */}
+                <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                  <div className="flex items-center space-x-2 mb-3">
+                    <svg
+                      className="w-5 h-5 text-blue-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    <span className="text-sm font-medium text-blue-900">
+                      Activity Information
+                    </span>
+                  </div>
+                  <div className="text-sm text-blue-800">
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>Created:</div>
+                      <div className="font-medium">
+                        {new Date(selectedRow.createdAt).toLocaleDateString(
+                          "en-US",
+                          {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          }
+                        )}
+                      </div>
+                      <div>Last Updated:</div>
+                      <div className="font-medium">
+                        {new Date(selectedRow.updatedAt).toLocaleDateString(
+                          "en-US",
+                          {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          }
+                        )}
+                      </div>
+                      <div>Project:</div>
+                      <div className="font-medium truncate">
+                        {selectedProject.name}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="mt-10 pt-6 border-t border-gray-200 flex flex-col sm:flex-row justify-end gap-4">
+              <button
+                type="button"
+                onClick={resetFormData}
+                className="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
+                disabled={isSubmitting}
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                  />
+                </svg>
+                Reset Form
+              </button>
+              <button
+                type="submit"
+                onClick={handleUpdateActivity}
+                disabled={isSubmitting}
+                className="px-8 py-3 bg-blue-900 text-white font-medium rounded-lg hover:bg-blue-800 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? (
+                  <>
+                    <svg
+                      className="animate-spin h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    Updating...
+                  </>
+                ) : (
+                  <>
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                    Update Activity
+                  </>
+                )}
+              </button>
+            </div>
+
+            {/* Required Fields Note */}
+            <div className="mt-6 text-sm text-gray-500">
+              <span className="text-red-500">*</span> Indicates required fields
+            </div>
+          </form>
         </div>
       </div>
     </div>
