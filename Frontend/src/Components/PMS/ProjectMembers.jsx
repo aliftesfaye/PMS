@@ -268,7 +268,7 @@ const MembersDashboard = ({ selectedProjectInfo }) => {
       >
         {/* Card Header with Gradient */}
         <Box
-          className="relative p-6 pb-8"
+          className="relative p-6 pb-3"
           sx={{
             background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
           }}
@@ -324,7 +324,7 @@ const MembersDashboard = ({ selectedProjectInfo }) => {
         </Box>
 
         {/* Card Body */}
-        <Box className="p-6 flex-1">
+        <Box className="px-6 flex-1">
           {/* Progress Bar */}
           <Box className="mb-6">
             <Box className="flex justify-between items-center mb-2">
@@ -357,7 +357,7 @@ const MembersDashboard = ({ selectedProjectInfo }) => {
           {/* Stats Grid */}
           <Typography
             variant="subtitle2"
-            className="font-semibold text-gray-700 mb-4 uppercase tracking-wide"
+            className="font-semibold text-gray-700 mb-4 pb-2 uppercase tracking-wide"
           >
             Task Statistics
           </Typography>
@@ -447,17 +447,11 @@ const MembersDashboard = ({ selectedProjectInfo }) => {
           </Box>
 
           {/* Footer */}
-          <Box className="mt-6 pt-4 border-t border-gray-200 flex justify-between items-center">
+          <Box className="mt-6 pt-4 border-t border-gray-200 py-4 flex justify-between items-center">
             <Typography variant="caption" className="text-gray-500">
               ID: {member.user_id?.slice(-6) || "N/A"}
             </Typography>
-            <IconButton
-              size="small"
-              className="text-gray-400 hover:text-blue-600 transition-colors"
-              onClick={toggleViewModal}
-            >
-              <ArrowForwardIcon />
-            </IconButton>
+
           </Box>
         </Box>
       </Card>
