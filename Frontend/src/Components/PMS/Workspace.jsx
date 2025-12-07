@@ -1037,7 +1037,7 @@ const Workspace = (props) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
           <div
             ref={modalRef}
-            className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-2xl shadow-2xl w-11/12 lg:w-2/3 max-h-[90vh] overflow-hidden mx-4"
           >
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
@@ -1051,13 +1051,15 @@ const Workspace = (props) => {
                   ×
                 </button>
               </div>
-              <WorkspaceEditSubtask
-                selectedTask={selectedSubTask}
-                selectedActivity={selectedActivity}
-                selectedProject={props.setSelectedProjectInfo}
-                handlefetchSubTask={fetchActivities}
-                handleCloseModal={handleEditSubTaskModalClose}
-              />
+              <div className="overflow-y-auto max-h-[calc(90vh-80px)]">
+                <WorkspaceEditSubtask
+                  selectedTask={selectedSubTask}
+                  selectedActivity={selectedActivity}
+                  selectedProject={props.setSelectedProjectInfo}
+                  handlefetchSubTask={fetchActivities}
+                  handleCloseModal={handleEditSubTaskModalClose}
+                />
+              </div>
             </div>
           </div>
         </div>
