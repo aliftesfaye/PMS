@@ -59,8 +59,8 @@ const Activityadd = ({
       backgroundColor: state.isSelected
         ? "#1e3a8a"
         : state.isFocused
-        ? "#f1f5f9"
-        : "white",
+          ? "#f1f5f9"
+          : "white",
       color: state.isSelected ? "white" : "#1e293b",
       padding: "0.625rem 0.75rem",
       fontSize: "0.875rem",
@@ -130,9 +130,9 @@ const Activityadd = ({
 
     const isSameDates =
       selectedStartDate.getTime() ===
-        new Date(selectedProject.start_date).getTime() &&
+      new Date(selectedProject.start_date).getTime() &&
       selectedEndDate.getTime() ===
-        new Date(selectedProject.end_date).getTime();
+      new Date(selectedProject.end_date).getTime();
 
     if (isSameDates) {
       const result = await Swal.fire({
@@ -277,9 +277,9 @@ const Activityadd = ({
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+            <h2 className="text-2xl md:text-2xl font-bold text-gray-900">
               Add New Activity
-            </h1>
+            </h2>
             <p className="text-gray-600 mt-2">
               Add an activity to{" "}
               <span className="font-semibold text-blue-900">
@@ -452,9 +452,8 @@ const Activityadd = ({
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <div
-                        className={`w-10 h-5 flex items-center rounded-full p-1 cursor-pointer transition-colors ${
-                          formData.is_milestone ? "bg-blue-600" : "bg-gray-300"
-                        }`}
+                        className={`w-10 h-5 flex items-center rounded-full p-1 cursor-pointer transition-colors ${formData.is_milestone ? "bg-blue-600" : "bg-gray-300"
+                          }`}
                         onClick={() =>
                           setFormData({
                             ...formData,
@@ -463,11 +462,10 @@ const Activityadd = ({
                         }
                       >
                         <div
-                          className={`bg-white w-3 h-3 rounded-full shadow-md transform transition-transform ${
-                            formData.is_milestone
-                              ? "translate-x-5"
-                              : "translate-x-0"
-                          }`}
+                          className={`bg-white w-3 h-3 rounded-full shadow-md transform transition-transform ${formData.is_milestone
+                            ? "translate-x-5"
+                            : "translate-x-0"
+                            }`}
                         />
                       </div>
                       <div>

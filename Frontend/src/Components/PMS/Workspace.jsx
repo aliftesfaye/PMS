@@ -48,13 +48,13 @@ import Subtaskcommentview from "./Subtaskcommentview.jsx";
 const useStyles = makeStyles({
   "@global": {
     ".MuiTreeItem-root.Mui-selected > .MuiTreeItem-content .MuiTreeItem-label":
-      {
-        backgroundColor: "white",
-      },
+    {
+      backgroundColor: "white",
+    },
     ".MuiTreeItem-root.Mui-selected > .MuiTreeItem-content .MuiTreeItem-label:hover, .MuiTreeItem-root.Mui-selected:focus > .MuiTreeItem-content .MuiTreeItem-label":
-      {
-        backgroundColor: "blue",
-      },
+    {
+      backgroundColor: "blue",
+    },
   },
 });
 
@@ -273,7 +273,7 @@ const Workspace = (props) => {
     setViewCommentSubModalOpen(false);
   };
 
-  const toggleAddSubSubTaskModal = () => {};
+  const toggleAddSubSubTaskModal = () => { };
 
   const handleClickOutsideModal = (e) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
@@ -432,8 +432,8 @@ const Workspace = (props) => {
     statusFilter === "All"
       ? activities
       : activities.filter(
-          (row) => row.activity.activity_status === statusFilter
-        );
+        (row) => row.activity.activity_status === statusFilter
+      );
 
   const search = filteredRows.filter(
     (row) =>
@@ -579,11 +579,10 @@ const Workspace = (props) => {
             <button
               key={status}
               onClick={() => handleFilterClick(status)}
-              className={`px-4 py-3 text-sm font-medium transition-all duration-200 whitespace-nowrap ${
-                statusFilter === status
-                  ? "text-blue-700 border-b-2 border-blue-700 bg-blue-50"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-              }`}
+              className={`px-4 py-3 text-sm font-medium transition-all duration-200 whitespace-nowrap ${statusFilter === status
+                ? "text-blue-700 border-b-2 border-blue-700 bg-blue-50"
+                : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                }`}
             >
               {status}
             </button>
@@ -723,15 +722,14 @@ const Workspace = (props) => {
 
                             <div className="lg:col-span-2">
                               <span
-                                className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium ${
-                                  taskItem.task_status === "Completed"
-                                    ? "bg-green-100 text-green-800"
-                                    : taskItem.task_status === "On Progress"
+                                className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium ${taskItem.task_status === "Completed"
+                                  ? "bg-green-100 text-green-800"
+                                  : taskItem.task_status === "On Progress"
                                     ? "bg-orange-100 text-orange-800"
                                     : taskItem.task_status === "Canceled"
-                                    ? "bg-red-100 text-red-800"
-                                    : "bg-gray-100 text-gray-800"
-                                }`}
+                                      ? "bg-red-100 text-red-800"
+                                      : "bg-gray-100 text-gray-800"
+                                  }`}
                               >
                                 {taskItem.task_status}
                               </span>
@@ -892,15 +890,14 @@ const Workspace = (props) => {
                                       <Select
                                         value={subtaskItem.subtask_status}
                                         onChange={handleChange(subtaskItem)}
-                                        className={`rounded-lg text-sm ${
-                                          subtaskItem.subtask_status ===
+                                        className={`rounded-lg text-sm ${subtaskItem.subtask_status ===
                                           "Completed"
-                                            ? "bg-green-100 text-green-800"
-                                            : subtaskItem.subtask_status ===
-                                              "On Progress"
+                                          ? "bg-green-100 text-green-800"
+                                          : subtaskItem.subtask_status ===
+                                            "On Progress"
                                             ? "bg-orange-100 text-orange-800"
                                             : "bg-gray-100 text-gray-800"
-                                        }`}
+                                          }`}
                                       >
                                         {statusOptions.map((option) => (
                                           <MenuItem
@@ -915,15 +912,14 @@ const Workspace = (props) => {
                                     </FormControl>
                                   ) : (
                                     <span
-                                      className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium ${
-                                        subtaskItem.subtask_status ===
+                                      className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium ${subtaskItem.subtask_status ===
                                         "Completed"
-                                          ? "bg-green-100 text-green-800"
-                                          : subtaskItem.subtask_status ===
-                                            "On Progress"
+                                        ? "bg-green-100 text-green-800"
+                                        : subtaskItem.subtask_status ===
+                                          "On Progress"
                                           ? "bg-orange-100 text-orange-800"
                                           : "bg-gray-100 text-gray-800"
-                                      }`}
+                                        }`}
                                     >
                                       {subtaskItem.subtask_status}
                                     </span>
@@ -935,33 +931,33 @@ const Workspace = (props) => {
                                     member.user_id ===
                                     userInfo.foundUser.user_id
                                 ) && (
-                                  <div className="lg:col-span-2 flex items-center gap-3 justify-end">
-                                    {updateSubTask !== 0 && (
-                                      <button
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          toggleEditSubtaskModal(subtaskIndex);
-                                          setSelectedSubTask(subtaskItem);
-                                        }}
-                                        className="text-green-600 hover:text-green-800 p-1 rounded hover:bg-green-50"
-                                      >
-                                        <FaEdit size={15} />
-                                      </button>
-                                    )}
-                                    {deleteSubTask !== 0 && (
-                                      <button
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          setShowSubtasktrashModal(true);
-                                          setSelectedSubTask(subtaskItem);
-                                        }}
-                                        className="text-red-600 hover:text-red-800 p-1 rounded hover:bg-red-50"
-                                      >
-                                        <FaTrash size={15} />
-                                      </button>
-                                    )}
-                                  </div>
-                                )}
+                                    <div className="lg:col-span-2 flex items-center gap-3 justify-end">
+                                      {updateSubTask !== 0 && (
+                                        <button
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            toggleEditSubtaskModal(subtaskIndex);
+                                            setSelectedSubTask(subtaskItem);
+                                          }}
+                                          className="text-green-600 hover:text-green-800 p-1 rounded hover:bg-green-50"
+                                        >
+                                          <FaEdit size={15} />
+                                        </button>
+                                      )}
+                                      {deleteSubTask !== 0 && (
+                                        <button
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            setShowSubtasktrashModal(true);
+                                            setSelectedSubTask(subtaskItem);
+                                          }}
+                                          className="text-red-600 hover:text-red-800 p-1 rounded hover:bg-red-50"
+                                        >
+                                          <FaTrash size={15} />
+                                        </button>
+                                      )}
+                                    </div>
+                                  )}
                               </div>
                             }
                           />
@@ -1102,7 +1098,7 @@ const Workspace = (props) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
           <div
             ref={modalRef}
-            className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-2xl shadow-2xl w-11/12 lg:w-2/3 max-h-[90vh] overflow-hidden mx-4"
           >
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
@@ -1116,12 +1112,14 @@ const Workspace = (props) => {
                   ×
                 </button>
               </div>
-              <WorkspaceAddSubTask
-                selectedTask={selectedTask}
-                selectedProject={props.setSelectedProjectInfo}
-                handlefetchSubTask={fetchActivities}
-                handleCloseModal={handleAddSubModalClose}
-              />
+              <div className="overflow-y-auto max-h-[calc(90vh-80px)]">
+                <WorkspaceAddSubTask
+                  selectedTask={selectedTask}
+                  selectedProject={props.setSelectedProjectInfo}
+                  handlefetchSubTask={fetchActivities}
+                  handleCloseModal={handleAddSubModalClose}
+                />
+              </div>
             </div>
           </div>
         </div>

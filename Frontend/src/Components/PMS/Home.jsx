@@ -4,133 +4,108 @@ import {
   Paper,
   TextField,
   Typography,
-} from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { Helmet } from "react-helmet-async";
-import "./Home.css";
-
-//icons
-import ChecklistIcon from "@mui/icons-material/Checklist";
-import HistoryToggleOffIcon from "@mui/icons-material/HistoryToggleOff";
-import ListAltIcon from "@mui/icons-material/ListAlt";
-import {
+  Box,
+  Container,
+  IconButton,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
+  Pagination,
+  useTheme,
+  styled,
+  tableCellClasses,
+  Card,
+  CardContent,
 } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import "./Home.css";
+
+// Icons
+import ChecklistIcon from "@mui/icons-material/Checklist";
+import HistoryToggleOffIcon from "@mui/icons-material/HistoryToggleOff";
+import ListAltIcon from "@mui/icons-material/ListAlt";
+import SearchIcon from "@mui/icons-material/Search";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import TaskIcon from "@mui/icons-material/Task";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import PieChartIcon from "@mui/icons-material/PieChart";
+
+// Charts
 import { PieChart } from "@mui/x-charts/PieChart";
 
-import Container from "@mui/material/Container";
-import "react-dropdown/style.css";
-
-// Table
-import FirstPageIcon from "@mui/icons-material/FirstPage";
-import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
-import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
-import LastPageIcon from "@mui/icons-material/LastPage";
-import { Pagination } from "@mui/material";
-import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
-import { tableCellClasses } from "@mui/material/TableCell";
-import { styled, useTheme } from "@mui/material/styles";
-import PropTypes from "prop-types";
+// Services
 import apiService from "../services/apiServices";
+import PropTypes from "prop-types";
 
-//Charts
+// Custom styled components
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.common.white,
+    fontSize: 14,
+    fontWeight: 600,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+  padding: theme.spacing(1.5),
+}));
 
-//
-import SearchIcon from "@mui/icons-material/Search";
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover,
+  },
+  '&:hover': {
+    backgroundColor: theme.palette.action.selected,
+    cursor: 'pointer',
+    transition: 'background-color 0.2s ease',
+  },
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+}));
 
-const projectOptions = [
-  "Smart Court System",
-  "Police Commission System",
-  "Project Managment System",
-  "User Managment System",
-  "Customs Commision System",
-  "Planning and Monitoring",
-];
+const StatCard = styled(Card)(({ theme }) => ({
+  height: '100%',
+  borderRadius: 12,
+  boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+  '&:hover': {
+    transform: 'translateY(-4px)',
+    boxShadow: '0 8px 30px rgba(0,0,0,0.12)',
+  },
+}));
 
-function TablePaginationActions(props) {
+const ProgressBar = styled('div')(({ theme, progress, color }) => ({
+  position: 'relative',
+  width: '100%',
+  height: 8,
+  backgroundColor: theme.palette.grey[200],
+  borderRadius: 4,
+  overflow: 'hidden',
+  '&::after': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    height: '100%',
+    width: `${progress}%`,
+    backgroundColor: color,
+    borderRadius: 4,
+    transition: 'width 0.5s ease',
+  },
+}));
+
+function Home() {
   const theme = useTheme();
-  const { count, page, rowsPerPage, onPageChange } = props;
-
-  const handleFirstPageButtonClick = (event) => {
-    onPageChange(event, 0);
-  };
-
-  const handleBackButtonClick = (event) => {
-    onPageChange(event, page - 1);
-  };
-
-  const handleNextButtonClick = (event) => {
-    onPageChange(event, page + 1);
-  };
-
-  const handleLastPageButtonClick = (event) => {
-    onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
-  };
-
-  return (
-    <div className="ml-auto w-4/5 mr-5 mt-24 relative">
-      <Helmet>
-        <title>PMS - Home</title>
-      </Helmet>
-      <Box sx={{ flexShrink: 0, ml: 2.5 }}>
-        <IconButton
-          onClick={handleFirstPageButtonClick}
-          disabled={page === 0}
-          aria-label="first page"
-        >
-          {theme.direction === "rtl" ? <LastPageIcon /> : <FirstPageIcon />}
-        </IconButton>
-        <IconButton
-          onClick={handleBackButtonClick}
-          disabled={page === 0}
-          aria-label="previous page"
-        >
-          {theme.direction === "rtl" ? (
-            <KeyboardArrowRight />
-          ) : (
-            <KeyboardArrowLeft />
-          )}
-        </IconButton>
-        <IconButton
-          onClick={handleNextButtonClick}
-          disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-          aria-label="next page"
-        >
-          {theme.direction === "rtl" ? (
-            <KeyboardArrowLeft />
-          ) : (
-            <KeyboardArrowRight />
-          )}
-        </IconButton>
-        <IconButton
-          onClick={handleLastPageButtonClick}
-          disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-          aria-label="last page"
-        >
-          {theme.direction === "rtl" ? <FirstPageIcon /> : <LastPageIcon />}
-        </IconButton>
-      </Box>
-    </div>
-  );
-}
-
-TablePaginationActions.propTypes = {
-  count: PropTypes.number.isRequired,
-  onPageChange: PropTypes.func.isRequired,
-  page: PropTypes.number.isRequired,
-  rowsPerPage: PropTypes.number.isRequired,
-};
-
-const Home = (props) => {
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [page2, setPage2] = useState(0);
+  const [page2, setPage2] = useState(1);
   const [rowsPerPage2, setRowsPerPage2] = useState(5);
   const [selectedProject, setSelectedProject] = useState();
   const [userInfo, setUserInfo] = useState(() => {
@@ -139,11 +114,11 @@ const Home = (props) => {
   const [projects, setProjects] = useState([]);
   const [projects2, setProjects2] = useState([]);
   const [projectsAssigned, setProjectsAssigned] = useState([]);
-
   const [totalProjects, setTotalProjects] = useState(0);
   const [completedProjects, setCompletedProjects] = useState(0);
   const [onProgressProjects, setOnProgressProjects] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const fetchData = async () => {
     try {
@@ -166,6 +141,8 @@ const Home = (props) => {
       console.error("Error fetching user data:", error);
     }
   };
+
+  // Calculate subtask statistics
   const projectsWithSubtasks = projects.filter((project) =>
     project.activity.some((activity) =>
       activity.Task.some((task) => task.subTask.length > 0)
@@ -197,12 +174,7 @@ const Home = (props) => {
               return (
                 sum +
                 task.subTask.reduce((subtaskSum, subtask) => {
-                  // Check if the subtask is completed
-                  if (subtask.subtask_status === "Completed") {
-                    return subtaskSum + 1; // Increment the count if completed
-                  } else {
-                    return subtaskSum; // Otherwise, return the current count
-                  }
+                  return subtask.subtask_status === "Completed" ? subtaskSum + 1 : subtaskSum;
                 }, 0)
               );
             }, 0)
@@ -224,12 +196,7 @@ const Home = (props) => {
               return (
                 sum +
                 task.subTask.reduce((subtaskSum, subtask) => {
-                  // Check if the subtask is completed
-                  if (subtask.subtask_status === "Pending") {
-                    return subtaskSum + 1; // Increment the count if completed
-                  } else {
-                    return subtaskSum; // Otherwise, return the current count
-                  }
+                  return subtask.subtask_status === "Pending" ? subtaskSum + 1 : subtaskSum;
                 }, 0)
               );
             }, 0)
@@ -251,12 +218,7 @@ const Home = (props) => {
               return (
                 sum +
                 task.subTask.reduce((subtaskSum, subtask) => {
-                  // Check if the subtask is completed
-                  if (subtask.subtask_status === "On Progress") {
-                    return subtaskSum + 1; // Increment the count if completed
-                  } else {
-                    return subtaskSum; // Otherwise, return the current count
-                  }
+                  return subtask.subtask_status === "On Progress" ? subtaskSum + 1 : subtaskSum;
                 }, 0)
               );
             }, 0)
@@ -266,165 +228,6 @@ const Home = (props) => {
     },
     0
   );
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  }));
-  const projectsData = [
-    {
-      name: "Project 1",
-      dueDate: "2024-03-01",
-      startDate: "2020-03-01",
-      status: "Completed",
-      projmanager: "Leader",
-      completion: "50",
-      members: ["Member1", "Leader", "Member1"],
-    },
-    {
-      name: "Project 2",
-      dueDate: "2024-03-01",
-      startDate: "2024-03-01",
-      status: "Process",
-      projmanager: "Member1",
-      completion: "15",
-      members: ["Member1", "Member1", "Leader"],
-    },
-    {
-      name: "Project 3",
-      dueDate: "2024-03-01",
-      startDate: "2020-03-01",
-      status: "Canceled",
-      projmanager: "Leader",
-      completion: "20",
-      members: ["Member1", "Member1", "Leader"],
-    },
-    {
-      name: "Project 4",
-      dueDate: "2024-03-01",
-      startDate: "2024-01-01",
-      status: "Canceled",
-      projmanager: "Member1",
-      completion: "25",
-      members: ["Member1", "Member1", "Leader"],
-    },
-    {
-      name: "Hoject 5",
-      dueDate: "2024-03-01",
-      startDate: "2024-02-01",
-      status: "Process",
-      projmanager: "Member1",
-      completion: "35",
-      members: ["Member1", "Member1", "Leader"],
-    },
-    {
-      name: "apbc 6",
-      dueDate: "2024-03-01",
-      startDate: "2024-03-01",
-      status: "Process",
-      projmanager: "Leader",
-      completion: "30",
-      members: ["Member1", "Member1", "Leader"],
-    },
-    {
-      name: "Hoject 5",
-      dueDate: "2024-03-01",
-      startDate: "2019-03-01",
-      status: "Process",
-      projmanager: "Member1",
-      completion: "40",
-      members: ["Member1", "Member1", "Leader"],
-    },
-    {
-      name: "Hoject 5",
-      dueDate: "2024-03-01",
-      startDate: "2018-03-01",
-      status: "Process",
-      projmanager: "Member1",
-      completion: "50",
-      members: ["Member1", "Member1", "Leader"],
-    },
-  ];
-  const data2 = [
-    {
-      label: "Total Completed",
-      value: totalCompletedSubtasksLength,
-      color: "green",
-    },
-    {
-      label: "Total On Progress",
-      value: totalInProgressSubtasksLength,
-      color: "#FFA500",
-    },
-    {
-      label: "Total Pending",
-      value: totalPendingSubtasksLength,
-      color: "#808080",
-    },
-  ];
-
-  const itemsPerPage = 6;
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [currentPage2, setCurrentPage2] = useState(1);
-  const [selectedStatus, setSelectedStatus] = useState("All");
-  const [performance, setPerformance] = useState(true);
-  const [performanceDetail, setPerformanceDetail] = useState(false);
-  const [showCreateProjectContainer, setShowCreateProjectContainer] =
-    useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const handlePerformanceDetail = () => {
-    setPerformance(false);
-    setPerformanceDetail(true);
-  };
-
-  const handleTableClose = () => {
-    setPerformance(true);
-    setPerformanceDetail(false);
-  };
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  const handlePreviousPage = () => {
-    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
-  };
-
-  const handleNextPage = () => {
-    setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
-  };
-
-  const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    [`&.${tableCellClasses.head}`]: {
-      fontSize: 15,
-    },
-    [`&.${tableCellClasses.body}`]: {
-      fontSize: 14,
-    },
-  }));
-
-  const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    "&:nth-of-type(odd)": {
-      backgroundColor: theme.palette.action.hover,
-    },
-    // hide last border
-    "&:last-child td, &:last-child th": {
-      border: 0,
-    },
-  }));
 
   const calculateProgress = (startDate, endDate) => {
     const currentDate = new Date();
@@ -439,16 +242,45 @@ const Home = (props) => {
 
   const getProgressColor = (progress, taskStatus) => {
     if (taskStatus === "Completed") {
-      return "green"; // Completed tasks are green
+      return theme.palette.success.main;
+    } else if (taskStatus === "Pending") {
+      return theme.palette.warning.main;
     } else if (progress < 75) {
-      return "orange"; // Less than 75% progress is orange
-    } else if (progress <= 100 && taskStatus !== "Completed") {
-      return "#A52A2A"; // In progress tasks (75-100%) are dark red
+      return theme.palette.warning.main;
     } else {
-      return "blue"; // Default color for other cases
+      return theme.palette.error.main;
     }
   };
 
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Completed":
+        return theme.palette.success.main;
+      case "On Progress":
+        return theme.palette.warning.main;
+      case "Pending":
+        return theme.palette.info.main;
+      case "Canceled":
+        return theme.palette.error.main;
+      default:
+        return theme.palette.grey[500];
+    }
+  };
+
+  const getInitialsColor = (char) => {
+    const colors = [
+      theme.palette.primary.main,
+      theme.palette.secondary.main,
+      theme.palette.success.main,
+      theme.palette.warning.main,
+      theme.palette.error.main,
+      theme.palette.info.main,
+    ];
+    const index = char.toLowerCase().charCodeAt(0) % colors.length;
+    return colors[index];
+  };
+
+  // Filter and sort logic
   const filteredProjects = projects.filter((project) =>
     project.activity.some((activity) =>
       activity.Task.some(
@@ -457,9 +289,7 @@ const Home = (props) => {
           task.subTask.some(
             (subTask) =>
               subTask.name &&
-              subTask.name
-                .toLowerCase()
-                .includes(searchTerm ? searchTerm.toLowerCase() : "")
+              subTask.name.toLowerCase().includes(searchTerm.toLowerCase())
           )
       )
     )
@@ -470,17 +300,13 @@ const Home = (props) => {
       activity.Task.flatMap((task) =>
         task.subTask
           ? task.subTask
-              .filter(
-                (subTask) =>
-                  subTask.name &&
-                  subTask.name
-                    .toLowerCase()
-                    .includes(searchTerm ? searchTerm.toLowerCase() : "")
-              )
-              .map((subTask) => ({
-                ...subTask,
-                projectName: project.name,
-              }))
+            .filter((subTask) =>
+              subTask.name.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+            .map((subTask) => ({
+              ...subTask,
+              projectName: project.name,
+            }))
           : []
       )
     )
@@ -499,657 +325,689 @@ const Home = (props) => {
       activity.Task.flatMap((task) =>
         task.subTask
           ? task.subTask
-              .filter(
-                (subTask) =>
-                  subTask.end_date && isDueWithin15Days(subTask.end_date)
-              )
-              .map((subTask) => ({
-                ...subTask,
-                projectName: project.name,
-              }))
+            .filter((subTask) => subTask.end_date && isDueWithin15Days(subTask.end_date))
+            .map((subTask) => ({
+              ...subTask,
+              projectName: project.name,
+            }))
           : []
       )
     )
   );
 
   const sortedSubTasks = filteredProjects2.sort((a, b) => {
-    const dueDateA = new Date(a.end_date);
-    const dueDateB = new Date(b.end_date);
-    return dueDateA - dueDateB;
+    return new Date(a.end_date) - new Date(b.end_date);
   });
   const limitedSubTasks = sortedSubTasks.slice(0, 10);
 
-  const indexOfLastItem = currentPage * rowsPerPage;
+  // Pagination
+  const indexOfLastItem = page * rowsPerPage;
   const indexOfFirstItem = indexOfLastItem - rowsPerPage;
   const currentItems = allSubTasks.slice(indexOfFirstItem, indexOfLastItem);
   const pageCount = Math.ceil(allSubTasks.length / rowsPerPage);
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-  const handleChange = (event, value) => {
-    paginate(value);
+
+  const indexOfLastItem2 = page2 * rowsPerPage2;
+  const indexOfFirstItem2 = indexOfLastItem2 - rowsPerPage2;
+  const currentItems2 = projectsAssigned.slice(indexOfFirstItem2, indexOfLastItem2);
+  const pageCount2 = Math.ceil(projectsAssigned.length / rowsPerPage2);
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
   };
 
-  const indexOfLastItem2 = currentPage2 * rowsPerPage2;
-  const indexOfFirstItem2 = indexOfLastItem2 - rowsPerPage2;
-  const currentItems2 = projectsAssigned.slice(
-    indexOfFirstItem2,
-    indexOfLastItem2
-  );
-  const pageCount2 = Math.ceil(projectsAssigned.length / rowsPerPage2);
-  const paginate2 = (pageNumber) => {
-    setCurrentPage2(pageNumber);
+  const handlePageChange2 = (event, value) => {
+    setPage2(value);
   };
-  const handleChange2 = (event, value) => {
-    paginate2(value);
-  };
+
   const handleRowsPerPageChange = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setCurrentPage(1);
+    setPage(1);
   };
 
   const handleRowsPerPageChange2 = (event) => {
     setRowsPerPage2(parseInt(event.target.value, 10));
-    setCurrentPage2(1);
+    setPage2(1);
   };
 
-  const totalPages = Math.ceil(projectsData.length / itemsPerPage);
-
-  const startIndex = currentPage * itemsPerPage;
-  const endIndex = Math.min(startIndex + itemsPerPage, projectsData.length);
-
-  const getColorByRange = (value) => {
-    if (!value) return "black";
-
-    const colorRanges = [
-      { range: ["a".charCodeAt(0), "e".charCodeAt(0)], color: "red" },
-      { range: ["f".charCodeAt(0), "j".charCodeAt(0)], color: "green" },
-      { range: ["k".charCodeAt(0), "o".charCodeAt(0)], color: "purple" },
-      { range: ["p".charCodeAt(0), "t".charCodeAt(0)], color: "blue" },
-      { range: ["u".charCodeAt(0), "z".charCodeAt(0)], color: "gray" },
-    ];
-    const charCode = value.toLowerCase().charCodeAt(0);
-    const rangeMatch = colorRanges.find(
-      (range) => charCode >= range.range[0] && charCode <= range.range[1]
-    );
-    return rangeMatch ? rangeMatch.color : "";
-  };
-
-  const sortByEndDate = (subTasks) => {
-    return subTasks
-      .slice()
-      .sort((a, b) => new Date(a.end_date) - new Date(b.end_date));
-  };
+  // Chart data
+  const chartData = [
+    {
+      label: "Completed",
+      value: totalCompletedSubtasksLength,
+      color: theme.palette.success.main,
+    },
+    {
+      label: "In Progress",
+      value: totalInProgressSubtasksLength,
+      color: theme.palette.warning.main,
+    },
+    {
+      label: "Pending",
+      value: totalPendingSubtasksLength,
+      color: theme.palette.grey[500],
+    },
+  ];
 
   useEffect(() => {
-    async function fetchUsers() {
-      localStorage.setItem("userInfo", JSON.stringify(userInfo));
-    }
     fetchData();
-    fetchUsers();
-  }, [userInfo]);
+  }, []);
+
   return (
-    <div className="ml-auto w-4/5 mr-5 mt-24 z-10">
-      <Container maxWidth="lg">
-        <Grid container spacing={5} className="my-6" justifyContent="center">
-          {/* Project Assigned Card */}
-          <Grid item xs={12} sm={6} md={4}>
-            <Paper
-              elevation={3}
-              sx={{ p: 2, bgcolor: "#082f49", color: "white" }}
-            >
-              <Grid container alignItems="center" spacing={2}>
-                <Grid item>
-                  <ListAltIcon fontSize="medium" />
-                </Grid>
-                <Grid item>
-                  <Typography variant="h7">Project Assigned</Typography>
-                  <Typography variant="body2">{totalProjects}</Typography>
-                </Grid>
-              </Grid>
-            </Paper>
+    <Box className="ml-auto w-full lg:w-4/5 mr-0 lg:mr-5 mt-24 lg:mt-24">
+      <Helmet>
+        <title>PMS - Dashboard</title>
+      </Helmet>
+      <Container maxWidth="xl" sx={{ py: 3 }}>
+        {/* Header */}
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="h4" sx={{
+            fontWeight: 700,
+            color: theme.palette.primary.main,
+            mb: 1
+          }}>
+            Dashboard Overview
+          </Typography>
+          <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+            Welcome back! Here's what's happening with your projects today.
+          </Typography>
+        </Box>
+
+        {/* Stats Cards */}
+        <Grid container spacing={3} sx={{ mb: 6 }}>
+          <Grid item xs={12} sm={6} md={3}>
+            <StatCard>
+              <CardContent sx={{ p: 3 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                  <Box sx={{
+                    p: 1.5,
+                    borderRadius: 2,
+                    backgroundColor: theme.palette.primary.light,
+                    color: theme.palette.primary.main,
+                    mr: 2
+                  }}>
+                    <ListAltIcon />
+                  </Box>
+                  <Typography variant="body2" color="text.secondary">
+                    Projects Assigned
+                  </Typography>
+                </Box>
+                <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
+                  {totalProjects}
+                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <TrendingUpIcon sx={{ color: 'success.main', mr: 0.5, fontSize: 16 }} />
+                  <Typography variant="caption" color="success.main">
+                    Active projects
+                  </Typography>
+                </Box>
+              </CardContent>
+            </StatCard>
           </Grid>
 
-          {/* Project Completed Card */}
-          <Grid item xs={12} sm={6} md={4}>
-            <Paper
-              elevation={3}
-              sx={{ p: 2, bgcolor: "#082f49", color: "white" }}
-            >
-              <Grid container alignItems="center" spacing={2}>
-                <Grid item>
-                  <ChecklistIcon fontSize="medium" />
-                </Grid>
-                <Grid item>
-                  <Typography variant="h7">Project Completed</Typography>
-                  <Typography variant="body2">{completedProjects}</Typography>
-                </Grid>
-              </Grid>
-            </Paper>
+          <Grid item xs={12} sm={6} md={3}>
+            <StatCard>
+              <CardContent sx={{ p: 3 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                  <Box sx={{
+                    p: 1.5,
+                    borderRadius: 2,
+                    backgroundColor: theme.palette.success.light,
+                    color: theme.palette.success.main,
+                    mr: 2
+                  }}>
+                    <ChecklistIcon />
+                  </Box>
+                  <Typography variant="body2" color="text.secondary">
+                    Projects Completed
+                  </Typography>
+                </Box>
+                <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
+                  {completedProjects}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {totalProjects > 0 ? `${Math.round((completedProjects / totalProjects) * 100)}% completion rate` : 'No projects'}
+                </Typography>
+              </CardContent>
+            </StatCard>
           </Grid>
 
-          {/* Project Inprogress Card */}
-          <Grid item xs={12} sm={6} md={4}>
-            <Paper
-              elevation={3}
-              sx={{ p: 2, bgcolor: "#082f49", color: "white" }}
-            >
-              <Grid container alignItems="center" spacing={2}>
-                <Grid item>
-                  <HistoryToggleOffIcon fontSize="medium" />
-                </Grid>
-                <Grid item>
-                  <Typography variant="h7">Project On Progress</Typography>
-                  <Typography variant="body2">{onProgressProjects}</Typography>
-                </Grid>
-              </Grid>
-            </Paper>
+          <Grid item xs={12} sm={6} md={3}>
+            <StatCard>
+              <CardContent sx={{ p: 3 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                  <Box sx={{
+                    p: 1.5,
+                    borderRadius: 2,
+                    backgroundColor: theme.palette.warning.light,
+                    color: theme.palette.warning.main,
+                    mr: 2
+                  }}>
+                    <HistoryToggleOffIcon />
+                  </Box>
+                  <Typography variant="body2" color="text.secondary">
+                    Projects In Progress
+                  </Typography>
+                </Box>
+                <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
+                  {onProgressProjects}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  Actively being worked on
+                </Typography>
+              </CardContent>
+            </StatCard>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <StatCard>
+              <CardContent sx={{ p: 3 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                  <Box sx={{
+                    p: 1.5,
+                    borderRadius: 2,
+                    backgroundColor: theme.palette.info.light,
+                    color: theme.palette.info.main,
+                    mr: 2
+                  }}>
+                    <TaskIcon />
+                  </Box>
+                  <Typography variant="body2" color="text.secondary">
+                    Total Tasks
+                  </Typography>
+                </Box>
+                <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
+                  {totalSubtasksLength}
+                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Typography variant="caption" color="success.main" sx={{ mr: 1 }}>
+                    {totalCompletedSubtasksLength} completed
+                  </Typography>
+                </Box>
+              </CardContent>
+            </StatCard>
           </Grid>
         </Grid>
-        <box>
-          {" "}
-          <div
-            class="flex flex-wrap justify-between items-center pt-8 px-8"
-            style={{ backgroundColor: "#f7f6fe" }}
-          >
-            <Typography class="font-bold text-3xl">Task List</Typography>
-            <div
-              className="self-center"
-              style={{
-                top: "0",
-                zIndex: "1",
-                padding: "10px 20px",
-              }}
-            >
-              <TextField
-                size="small"
-                className="bg-white rounded-lg"
-                variant="outlined"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </div>
-          </div>
-          <div class="lg:flex border-x-2 border-b-2 shadow-3xl">
-            <div style={{ backgroundColor: "#f7f6fe" }} class="content-center">
-              <div className="flex flex-wrap gap-18">
-                <div className="flex flex-col space-y-10 p-5">
-                  <div className="text-center space-y-5">
-                    {/* <p className="text-3xl font-medium font-sans">{totalTasks}</p> */}
-                    <p className="text-3xl font-bold font-sans text-pretty">
-                      {totalSubtasksLength}
-                    </p>
 
-                    <p className="text-xl font-bold font-sans text-pretty">
-                      My Total Tasks
-                    </p>
-                  </div>
-                  <div className="text-center space-y-5">
-                    {/* <p className="text-3xl font-medium font-sans">
-                    {completedTasks.length} 
-                  </p> */}
-                    <p className="text-3xl font-bold font-sans text-pretty">
-                      {totalCompletedSubtasksLength}
-                    </p>
-                    <p className="text-xl font-bold font-sans text-pretty">
-                      My Completed Tasks
-                    </p>
-                  </div>
-                </div>{" "}
-              </div>
-            </div>
-            <div
-              class="rounded-lg lg:py-16 lg:pr-20  w-full"
-              style={{ backgroundColor: "#f7f6fe" }}
-            >
-              <TableContainer
-                sx={{
-                  width: "100%",
-                  border: 0.5,
-                  borderRadius: 3,
-                  borderColor: "#c7c7c7",
-                  backgroundColor: "#fff",
-                }}
-              >
-                <Table
-                  sx={{
-                    // minWidth: 900,
-                    minHeight: 400,
-                    [`& .${tableCellClasses.root}`]: {
-                      borderBottom: "none",
-                    },
-                  }}
-                  size="large"
-                >
-                  {/* {totalTasks !== 0 ? ( */}
-                  <>
-                    <TableHead>
-                      <TableRow>
-                        <StyledTableCell>Task Name</StyledTableCell>
-                        <StyledTableCell>Project Name</StyledTableCell>
-                        <StyledTableCell>Task Due Date</StyledTableCell>
-                        <StyledTableCell>Completion</StyledTableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {currentItems.map((subTask, subTaskIndex) => {
-                        const progress = calculateProgress(
-                          subTask.start_date,
-                          subTask.end_date
-                        );
-                        return (
-                          <StyledTableRow
-                            key={`${subTaskIndex}`}
-                            className={
-                              subTaskIndex % 2 === 0 ? "even-row" : "odd-row"
-                            }
-                          >
-                            <StyledTableCell>{subTask.name}</StyledTableCell>
-                            <StyledTableCell>
-                              {subTask.projectName}
-                            </StyledTableCell>
-                            <StyledTableCell>
-                              {new Date(subTask.end_date).toLocaleDateString()}
-                            </StyledTableCell>
-                            <StyledTableCell>
-                              <div class="mx-5">
-                                <div className="progress-container">
-                                  <div
-                                    className="progress-bar"
-                                    style={{
-                                      width: `${progress}%`,
-                                      backgroundColor: getProgressColor(
-                                        progress,
-                                        subTask.subtask_status
-                                      ),
-                                    }}
-                                  />
-                                  <span className="progress-text">{`${progress.toFixed(
-                                    1
-                                  )}%`}</span>
-                                </div>
-                              </div>
-                            </StyledTableCell>
-                          </StyledTableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </>
-                </Table>
-              </TableContainer>
-              <div className="flex flex-wrap justify-end gap-5">
-                <div className="rows-per-page flex my-6 ml-2 justify-start text-sm ">
-                  {" "}
-                  Rows per page
-                  <div>
-                    <select
-                      value={rowsPerPage}
-                      onChange={handleRowsPerPageChange}
-                      className=" w-fit pl-3 text-sm border-none outline-none bg-white  focus:border-none focus:outline-none"
-                    >
-                      <option value={5}>5</option>
-                      <option value={10}>10</option>
-                      <option value={100}>100</option>
-                    </select>
-                  </div>
-                </div>
-                <Box className="text-sm flex  mt-1 pb-5 pt-5">
-                  <Pagination
-                    count={pageCount}
-                    page={currentPage}
-                    onChange={handleChange}
-                    variant="outlined"
-                    shape="rounded"
-                    size="small"
-                    color="primary"
-                    sx={{
-                      "& .MuiPaginationItem-root": {
-                        margin: "0 4px",
-                      },
-                    }}
-                  />
-                </Box>
-              </div>
-            </div>
-          </div>
-        </box>
-        <Grid container spacing={3} sx={{ py: 5 }}>
-          {/* Left Section: Task Table */}
-          <Grid item xs={12} md={8}>
-            <Paper elevation={1} sx={{ p: 3, height: "100%" }}>
-              <Box sx={{ mb: 3 }}>
-                <Typography variant="h6" sx={{ color: "#0066cc" }}>
-                  Near Due Date Tasks
+        {/* Task List Section */}
+        <Paper elevation={0} sx={{
+          borderRadius: 3,
+          overflow: 'hidden',
+          mb: 4,
+          border: `1px solid ${theme.palette.divider}`
+        }}>
+          <Box sx={{
+            p: 3,
+            bgcolor: 'background.default',
+            borderBottom: `1px solid ${theme.palette.divider}`
+          }}>
+            <Grid container alignItems="center" justifyContent="space-between">
+              <Grid item>
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                  Task List
                 </Typography>
-              </Box>
-              <TableContainer
-                sx={{
-                  borderRadius: 3,
-                  borderColor: "#c7c7c7",
-                }}
-              >
-                <Table
-                  sx={{
-                    minWidth: 500,
-                    [`& .${tableCellClasses.root}`]: {
-                      borderBottom: "none",
-                    },
-                  }}
+                <Typography variant="body2" color="text.secondary">
+                  Manage and track your assigned tasks
+                </Typography>
+              </Grid>
+              <Grid item>
+                <TextField
                   size="small"
-                >
-                  {/* {totalTasks !== 0 ? ( */}
-                  <>
-                    <TableHead>
-                      <TableRow>
-                        <StyledTableCell>Task Name</StyledTableCell>
-                        <StyledTableCell>Project Name</StyledTableCell>
-                        <StyledTableCell>Task Due Date</StyledTableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {limitedSubTasks.map((subTask, subTaskIndex) => (
-                        <TableRow
-                          key={`${subTaskIndex}`}
-                          sx={{
-                            background: subTaskIndex % 2 ? "white" : "#f7f6fe",
-                          }}
-                        >
-                          <TableCell>{subTask.name}</TableCell>
-                          <TableCell>{subTask.projectName}</TableCell>
-                          <TableCell>
-                            {new Date(subTask.end_date).toLocaleDateString()}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                    {/* <TableFooter>
-                      <TableRow>
-                        <TablePagination
-                          rowsPerPageOptions={[
-                            5,
-                            10,
-                            25,
-                            { label: "All", value: -1 },
-                          ]}
-                          colSpan={3}
-                          count={projectsData.length}
-                          rowsPerPage={rowsPerPage}
-                          page={page}
-                          slotProps={{
-                            select: {
-                              inputProps: {
-                                "aria-label": "rows per page",
-                              },
-                              native: true,
-                            },
-                          }}
-                          onPageChange={handleChangePage}
-                          onRowsPerPageChange={handleChangeRowsPerPage}
-                          ActionsComponent={TablePaginationActions}
-                        />
-                      </TableRow>
-                    </TableFooter> */}
-                  </>
-                </Table>
-              </TableContainer>
-              {/* <div className="flex flex-wrap justify-end gap-5">
-                <div className="rows-per-page flex my-6 ml-2 justify-start text-sm ">
-                  {" "}
-                  Rows per page
-                  <div>
-                    <select
-                      value={rowsPerPage}
-                      onChange={handleRowsPerPageChange}
-                      className=" w-fit pl-3 text-sm border-none outline-none bg-white  focus:border-none focus:outline-none"
-                    >
-                      <option value={5}>5</option>
-                      <option value={10}>10</option>
-                      <option value={100}>100</option>
-                    </select>
-                  </div>
-                </div>
-                <Box className="text-sm flex  mt-1 pb-5 pt-5">
-                  <Pagination
-                    count={pageCount}
-                    page={currentPage}
-                    onChange={handleChange}
-                    variant="outlined"
-                    shape="rounded"
-                    size="small"
-                    color="primary"
-                    sx={{
-                      "& .MuiPaginationItem-root": {
-                        margin: "0 4px",
-                      },
-                    }}
-                  />
-                </Box>
-              </div> */}
-            </Paper>
-          </Grid>
-
-          {/* Right Section: Project Statistics */}
-          <Grid item xs={12} md={4}>
-            <Paper elevation={3} sx={{ p: 3 }}>
-              <Box sx={{ mb: 3 }}>
-                <Typography variant="h6" sx={{ color: "#0066cc" }}>
-                  Project Statistics
-                </Typography>
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <PieChart
-                  margin={{ bottom: 100, left: 100, right: 100 }}
-                  series={[
-                    {
-                      data: data2,
-                      innerRadius: 60,
-                      outerRadius: 80,
-                    },
-                  ]}
-                  height={300}
-                  minWidth={350}
-                  slotProps={{
-                    legend: {
-                      direction: "column",
-                      position: { vertical: "bottom", horizontal: "middle" },
-                      padding: 0,
-                    },
+                  placeholder="Search tasks..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIcon color="action" />
+                      </InputAdornment>
+                    ),
+                    sx: { borderRadius: 2 }
                   }}
+                  sx={{ minWidth: 250 }}
                 />
-              </Box>
-            </Paper>
-          </Grid>
-        </Grid>
+              </Grid>
+            </Grid>
+          </Box>
 
-        {performance && (
-          <div class="mb-36  rounded-t-lg border-x-2 border-y-2">
-            <div class="pt-10 pb-7 px-5   text-xl font-bold text-sky-950">
-              Project Assigned
-            </div>
-            <div class="">
-              <TableContainer
-                sx={{
-                  width: "100%",
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell>Task Name</StyledTableCell>
+                  <StyledTableCell>Project</StyledTableCell>
+                  <StyledTableCell>Due Date</StyledTableCell>
+                  <StyledTableCell align="center">Progress</StyledTableCell>
+                  <StyledTableCell align="center">Status</StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {currentItems.map((subTask, index) => {
+                  const progress = calculateProgress(subTask.start_date, subTask.end_date);
+                  const progressColor = getProgressColor(progress, subTask.subtask_status);
+                  return (
+                    <StyledTableRow key={index}>
+                      <StyledTableCell>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                          <Box sx={{
+                            width: 32,
+                            height: 32,
+                            borderRadius: '50%',
+                            bgcolor: getInitialsColor(subTask.name.charAt(0)),
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'white',
+                            fontWeight: 600,
+                            mr: 2
+                          }}>
+                            {subTask.name.charAt(0).toUpperCase()}
+                          </Box>
+                          <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                            {subTask.name}
+                          </Typography>
+                        </Box>
+                      </StyledTableCell>
+                      <StyledTableCell>
+                        <Typography variant="body2">
+                          {subTask.projectName}
+                        </Typography>
+                      </StyledTableCell>
+                      <StyledTableCell>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                          <CalendarTodayIcon sx={{ fontSize: 16, mr: 1, color: 'action.active' }} />
+                          <Typography variant="body2">
+                            {new Date(subTask.end_date).toLocaleDateString()}
+                          </Typography>
+                        </Box>
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        <Box sx={{ position: 'relative', width: '100%', maxWidth: 200, mx: 'auto' }}>
+                          <ProgressBar
+                            progress={progress}
+                            color={progressColor}
+                          />
+                          <Typography variant="caption" sx={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            fontWeight: 600,
+                            color: progress > 50 ? 'white' : 'text.primary'
+                          }}>
+                            {progress.toFixed(1)}%
+                          </Typography>
+                        </Box>
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        <Box sx={{
+                          display: 'inline-flex',
+                          px: 1.5,
+                          py: 0.5,
+                          borderRadius: 1,
+                          bgcolor: `${getStatusColor(subTask.subtask_status)}15`,
+                          color: getStatusColor(subTask.subtask_status),
+                          fontWeight: 600,
+                          fontSize: '0.75rem'
+                        }}>
+                          {subTask.subtask_status}
+                        </Box>
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          <Box sx={{
+            p: 2,
+            borderTop: `1px solid ${theme.palette.divider}`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: 2
+          }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Typography variant="body2" color="text.secondary">
+                Rows per page:
+              </Typography>
+              <TextField
+                select
+                size="small"
+                value={rowsPerPage}
+                onChange={handleRowsPerPageChange}
+                SelectProps={{
+                  native: true,
                 }}
+                sx={{ minWidth: 80 }}
               >
-                <Table
-                  sx={{
-                    minWidth: 900,
-                    [`& .${tableCellClasses.root}`]: {
-                      borderBottom: "none",
-                    },
-                  }}
-                  size="midium"
-                >
+                <option value={5}>5</option>
+                <option value={10}>10</option>
+                <option value={25}>25</option>
+              </TextField>
+            </Box>
+            <Pagination
+              count={pageCount}
+              page={page}
+              onChange={handlePageChange}
+              color="primary"
+              size="small"
+              showFirstButton
+              showLastButton
+            />
+          </Box>
+        </Paper>
+
+        {/* Charts and Tables Section */}
+        <Grid container spacing={4}>
+          {/* Near Due Date Tasks */}
+          <Grid item xs={12} md={8}>
+            <Paper elevation={0} sx={{
+              p: 3,
+              height: '100%',
+              borderRadius: 3,
+              border: `1px solid ${theme.palette.divider}`
+            }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                <Box sx={{
+                  p: 1,
+                  borderRadius: 2,
+                  bgcolor: theme.palette.warning.light,
+                  color: theme.palette.warning.main,
+                  mr: 2
+                }}>
+                  <CalendarTodayIcon />
+                </Box>
+                <Box>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    Upcoming Deadlines
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Tasks due in the next 15 days
+                  </Typography>
+                </Box>
+              </Box>
+
+              <TableContainer>
+                <Table size="small">
                   <TableHead>
                     <TableRow>
-                      <StyledTableCell>Project Name</StyledTableCell>
-                      <StyledTableCell>Start Date</StyledTableCell>
-                      <StyledTableCell>End Date</StyledTableCell>
-                      {/* <StyledTableCell>Completion</StyledTableCell> */}
-                      <StyledTableCell className="project_status">
-                        Status
-                      </StyledTableCell>
+                      <StyledTableCell>Task</StyledTableCell>
+                      <StyledTableCell>Project</StyledTableCell>
+                      <StyledTableCell align="right">Due Date</StyledTableCell>
                     </TableRow>
                   </TableHead>
-                  <TableBody stripedRows>
-                    {projectsAssigned.map((project, index) => (
-                      <StyledTableRow
-                        class="clickable-row"
-                        style={
-                          index % 2
-                            ? { background: "white" }
-                            : { background: "#f7f6fe" }
-                        }
+                  <TableBody>
+                    {limitedSubTasks.map((subTask, index) => (
+                      <TableRow
+                        key={index}
+                        sx={{ '&:hover': { bgcolor: 'action.hover' } }}
                       >
-                        <StyledTableCell component="th" scope="row">
-                          <span
-                            className="initials"
-                            style={{
-                              backgroundColor: getColorByRange(
-                                project.name.charAt(0)
-                              ),
-                              borderRadius: "50%",
-                              width: "30px",
-                              height: "30px",
-                              display: "inline-flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              marginRight: "10px",
-                              color: "#fff",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            {project.name.charAt(0).toUpperCase()}
-                          </span>
-                          <span style={{ fontWeight: "bold" }}>
-                            {project.name}
-                          </span>
-                        </StyledTableCell>
-                        <StyledTableCell>
-                          {new Date(project.start_date).toLocaleDateString()}
-                        </StyledTableCell>
-                        <StyledTableCell>
-                          {new Date(project.end_date).toLocaleDateString()}
-                        </StyledTableCell>
-
-                        {/* <StyledTableCell>
-                          <div class="mx-5">
-                            <ProgressBar
-                              completed={parseInt(project.completion)}
-                              bgColor="#082f49"
-                              borderRadius="5px"
-                            />
-                          </div>
-                        </StyledTableCell> */}
-
-                        <StyledTableCell>
-                          {project.overall_progress === "Completed" && (
-                            <span
-                              style={{ color: "#4caf50", fontWeight: "bold" }}
-                            >
-                              Completed
-                            </span>
-                          )}
-                          {project.overall_progress === "Canceled" && (
-                            <span
-                              style={{ color: "#f44336", fontWeight: "bold" }}
-                            >
-                              Canceled
-                            </span>
-                          )}
-                          {project.overall_progress === "On Progress" && (
-                            <span
-                              style={{ color: "#ff9800", fontWeight: "bold" }}
-                            >
-                              On Progress
-                            </span>
-                          )}
-                        </StyledTableCell>
-                      </StyledTableRow>
+                        <TableCell>
+                          <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                            {subTask.name}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="body2" color="text.secondary">
+                            {subTask.projectName}
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="right">
+                          <Box sx={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            px: 1.5,
+                            py: 0.5,
+                            borderRadius: 1,
+                            bgcolor: theme.palette.warning.light,
+                            color: theme.palette.warning.dark
+                          }}>
+                            <CalendarTodayIcon sx={{ fontSize: 14, mr: 0.5 }} />
+                            <Typography variant="caption" sx={{ fontWeight: 600 }}>
+                              {new Date(subTask.end_date).toLocaleDateString()}
+                            </Typography>
+                          </Box>
+                        </TableCell>
+                      </TableRow>
                     ))}
                   </TableBody>
-                  {/* <TableFooter>
-                    <TableRow>
-                      <TablePagination
-                        rowsPerPageOptions={[
-                          5,
-                          10,
-                          25,
-                          { label: "All", value: -1 },
-                        ]}
-                        colSpan={3}
-                        count={projectsData.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        slotProps={{
-                          select: {
-                            inputProps: {
-                              "aria-label": "rows per page",
-                            },
-                            native: true,
-                          },
-                        }}
-                        onPageChange={handleChangePage}
-                        onRowsPerPageChange={handleChangeRowsPerPage}
-                        ActionsComponent={TablePaginationActions}
-                      />
-                    </TableRow>
-                  </TableFooter> */}
                 </Table>
               </TableContainer>
-              <div className="flex flex-wrap justify-end gap-5">
-                <div className="rows-per-page flex my-6 ml-2 justify-start text-sm ">
-                  {" "}
-                  Rows per page
-                  <div>
-                    <select
-                      value={rowsPerPage2}
-                      onChange={handleRowsPerPageChange2}
-                      className=" w-fit pl-3 text-sm border-none outline-none bg-white  focus:border-none focus:outline-none"
-                    >
-                      <option value={5}>5</option>
-                      <option value={10}>10</option>
-                      <option value={100}>100</option>
-                    </select>
-                  </div>
-                </div>
-                <Box className="text-sm flex  mt-1 pb-5 pt-5">
-                  <Pagination
-                    count={pageCount2}
-                    page={currentPage2}
-                    onChange={handleChange2}
-                    variant="outlined"
-                    shape="rounded"
-                    size="small"
-                    color="primary"
-                    sx={{
-                      "& .MuiPaginationItem-root": {
-                        margin: "0 4px",
+            </Paper>
+          </Grid>
+
+          {/* Project Statistics Chart */}
+          <Grid item xs={12} md={4}>
+            <Paper elevation={0} sx={{
+              p: 3,
+              height: '100%',
+              borderRadius: 3,
+              border: `1px solid ${theme.palette.divider}`,
+              display: 'flex',
+              flexDirection: 'column'
+            }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                <Box sx={{
+                  p: 1,
+                  borderRadius: 2,
+                  bgcolor: theme.palette.info.light,
+                  color: theme.palette.info.main,
+                  mr: 2
+                }}>
+                  <PieChartIcon />
+                </Box>
+                <Box>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    Task Distribution
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Overview of task status
+                  </Typography>
+                </Box>
+              </Box>
+
+              <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                <Box sx={{
+                  flex: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  mb: 3
+                }}>
+                  <PieChart
+                    series={[
+                      {
+                        data: chartData,
+                        innerRadius: 40,
+                        outerRadius: 70,
+                        paddingAngle: 2,
+                        cornerRadius: 4,
                       },
+                    ]}
+                    height={250}
+                    slotProps={{
+                      legend: { hidden: true },
                     }}
                   />
                 </Box>
-              </div>
-            </div>
-          </div>
-        )}
+
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                  {chartData.map((item, index) => (
+                    <Box key={index} sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      p: 1.5,
+                      borderRadius: 1,
+                      bgcolor: 'background.default',
+                      border: `1px solid ${theme.palette.divider}`
+                    }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Box sx={{
+                          width: 12,
+                          height: 12,
+                          borderRadius: '50%',
+                          bgcolor: item.color,
+                          mr: 2
+                        }} />
+                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                          {item.label}
+                        </Typography>
+                      </Box>
+                      <Typography variant="body1" sx={{ fontWeight: 600 }}>
+                        {item.value}
+                      </Typography>
+                    </Box>
+                  ))}
+                </Box>
+              </Box>
+            </Paper>
+          </Grid>
+        </Grid>
+
+        {/* Projects Assigned Section */}
+        <Paper elevation={0} sx={{
+          mt: 4,
+          mb: 10,
+          borderRadius: 3,
+          border: `1px solid ${theme.palette.divider}`,
+          overflow: 'hidden'
+        }}>
+          <Box sx={{
+            p: 3,
+            bgcolor: 'background.default',
+            borderBottom: `1px solid ${theme.palette.divider}`
+          }}>
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              Projects Assigned to You
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Overview of all projects under your responsibility
+            </Typography>
+          </Box>
+
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell>Project Name</StyledTableCell>
+                  <StyledTableCell>Start Date</StyledTableCell>
+                  <StyledTableCell>End Date</StyledTableCell>
+                  <StyledTableCell align="center">Status</StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {currentItems2.map((project, index) => (
+                  <StyledTableRow key={index}>
+                    <StyledTableCell>
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Box sx={{
+                          width: 40,
+                          height: 40,
+                          borderRadius: 2,
+                          bgcolor: getInitialsColor(project.name.charAt(0)),
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: 'white',
+                          fontWeight: 600,
+                          fontSize: '1rem',
+                          mr: 2
+                        }}>
+                          {project.name.charAt(0).toUpperCase()}
+                        </Box>
+                        <Box>
+                          <Typography variant="body1" sx={{ fontWeight: 600 }}>
+                            {project.name}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {project.overall_progress}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      <Typography variant="body2">
+                        {new Date(project.start_date).toLocaleDateString()}
+                      </Typography>
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      <Typography variant="body2">
+                        {new Date(project.end_date).toLocaleDateString()}
+                      </Typography>
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      <Box sx={{
+                        display: 'inline-flex',
+                        px: 2,
+                        py: 0.75,
+                        borderRadius: 1.5,
+                        bgcolor: `${getStatusColor(project.overall_progress)}15`,
+                        color: getStatusColor(project.overall_progress),
+                        fontWeight: 600,
+                        fontSize: '0.75rem',
+                        alignItems: 'center'
+                      }}>
+                        <Box sx={{
+                          width: 8,
+                          height: 8,
+                          borderRadius: '50%',
+                          bgcolor: getStatusColor(project.overall_progress),
+                          mr: 1
+                        }} />
+                        {project.overall_progress}
+                      </Box>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          <Box sx={{
+            p: 2,
+            borderTop: `1px solid ${theme.palette.divider}`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: 2
+          }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Typography variant="body2" color="text.secondary">
+                Rows per page:
+              </Typography>
+              <TextField
+                select
+                size="small"
+                value={rowsPerPage2}
+                onChange={handleRowsPerPageChange2}
+                SelectProps={{
+                  native: true,
+                }}
+                sx={{ minWidth: 80 }}
+              >
+                <option value={5}>5</option>
+                <option value={10}>10</option>
+                <option value={25}>25</option>
+              </TextField>
+            </Box>
+            <Pagination
+              count={pageCount2}
+              page={page2}
+              onChange={handlePageChange2}
+              color="primary"
+              size="small"
+              showFirstButton
+              showLastButton
+            />
+          </Box>
+        </Paper>
       </Container>
-    </div>
+    </Box>
   );
-};
+}
 
 export default Home;

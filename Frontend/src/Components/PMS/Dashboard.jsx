@@ -4,6 +4,14 @@ import {
   Paper,
   TextField,
   Typography,
+  Box,
+  Container,
+  Card,
+  CardContent,
+  Chip,
+  LinearProgress,
+  alpha,
+  useTheme,
 } from "@mui/material";
 import Backdrop from "@mui/material/Backdrop";
 import { BarChart } from "@mui/x-charts/BarChart";
@@ -12,183 +20,71 @@ import { Helmet } from "react-helmet-async";
 import ClipLoader from "react-spinners/ClipLoader";
 import apiService from "../services/apiServices";
 import "./Home.css";
-//icons
+
+// Icons
 import TaskIcon from "@mui/icons-material/Checklist";
 import ActivityIcon from "@mui/icons-material/ListAlt";
 import SubTaskIcon from "@mui/icons-material/Splitscreen";
-import { Pagination } from "@mui/material";
-import Container from "@mui/material/Container";
-import "react-dropdown/style.css";
-
-// Table
-import FirstPageIcon from "@mui/icons-material/FirstPage";
-import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
-import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
-import LastPageIcon from "@mui/icons-material/LastPage";
-import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-
-import TableRow from "@mui/material/TableRow";
-import { styled, useTheme } from "@mui/material/styles";
-import PropTypes from "prop-types";
-
-//Charts
-import { PieChart } from "@mui/x-charts/PieChart";
-
-//
-
 import SearchIcon from "@mui/icons-material/Search";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import ScheduleIcon from "@mui/icons-material/Schedule";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import PieChartIcon from "@mui/icons-material/PieChart";
+import TimelineIcon from "@mui/icons-material/Timeline";
 
-import {
-  ArcElement,
-  BarController,
-  BarElement,
-  CategoryScale,
-  Chart as ChartJS,
-  Legend,
-  LinearScale,
-  Title,
-  Tooltip,
-} from "chart.js";
+// Charts
+import { PieChart } from "@mui/x-charts/PieChart";
+import { styled } from "@mui/material/styles";
 
-ChartJS.register(
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  BarController
-);
-const projectOptions = [
-  "Smart Court System",
-  "Police Commission System",
-  "Project Managment System",
-  "User Managment System",
-  "Customs Commision System",
-  "Planning and Monitoring",
-];
+// Styled Components
+const StatCard = styled(Card)(({ theme }) => ({
+  borderRadius: 16,
+  boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+  transition: 'all 0.3s ease-in-out',
+  '&:hover': {
+    transform: 'translateY(-4px)',
+    boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+  },
+  position: 'relative',
+  overflow: 'hidden',
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 4,
+    background: 'linear-gradient(90deg, #3b82f6, #8b5cf6)',
+  },
+}));
 
-function TablePaginationActions(props) {
-  const theme = useTheme();
-  const { count, page, rowsPerPage, onPageChange } = props;
-
-  const handleFirstPageButtonClick = (event) => {
-    onPageChange(event, 0);
-  };
-
-  const handleBackButtonClick = (event) => {
-    onPageChange(event, page - 1);
-  };
-
-  const handleNextButtonClick = (event) => {
-    onPageChange(event, page + 1);
-  };
-
-  const handleLastPageButtonClick = (event) => {
-    onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
-  };
-
-  return (
-    <Box sx={{ flexShrink: 0, ml: 2.5 }}>
-      <IconButton
-        onClick={handleFirstPageButtonClick}
-        disabled={page === 0}
-        aria-label="first page"
-      >
-        {theme.direction === "rtl" ? <LastPageIcon /> : <FirstPageIcon />}
-      </IconButton>
-      <IconButton
-        onClick={handleBackButtonClick}
-        disabled={page === 0}
-        aria-label="previous page"
-      >
-        {theme.direction === "rtl" ? (
-          <KeyboardArrowRight />
-        ) : (
-          <KeyboardArrowLeft />
-        )}
-      </IconButton>
-      <IconButton
-        onClick={handleNextButtonClick}
-        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label="next page"
-      >
-        {theme.direction === "rtl" ? (
-          <KeyboardArrowLeft />
-        ) : (
-          <KeyboardArrowRight />
-        )}
-      </IconButton>
-      <IconButton
-        onClick={handleLastPageButtonClick}
-        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label="last page"
-      >
-        {theme.direction === "rtl" ? <FirstPageIcon /> : <LastPageIcon />}
-      </IconButton>
-    </Box>
-  );
-}
-
-TablePaginationActions.propTypes = {
-  count: PropTypes.number.isRequired,
-  onPageChange: PropTypes.func.isRequired,
-  page: PropTypes.number.isRequired,
-  rowsPerPage: PropTypes.number.isRequired,
-};
+const ProgressBar = styled(LinearProgress)(({ theme, value }) => ({
+  height: 8,
+  borderRadius: 4,
+  backgroundColor: theme.palette.grey[200],
+  '& .MuiLinearProgress-bar': {
+    borderRadius: 4,
+    background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+  },
+}));
 
 const Dashboard = (props) => {
+  const theme = useTheme();
   const [currentPage, setCurrentPage] = useState(1);
-  const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [selectedProject, setSelectedProject] = useState();
-
-  const handleChange = (event, value) => {
-    paginate(value);
-  };
   const [loading, setLoading] = useState(false);
-
-  const [userInfo, setUserInfo] = useState(() => {
+  const [userInfo] = useState(() => {
     return JSON.parse(localStorage.getItem("userInfo")) || [];
   });
   const [activities, setActivities] = useState([]);
-  const [activityLength, setActivityLength] = useState();
+  const [activityLength, setActivityLength] = useState(0);
   const [tasks, setTasks] = useState([]);
-  const [subTasks, setSubTasks] = useState([]);
-  const [totalTasks, setTotalTasks] = useState();
-  const [totalSubTasks, setTotalSubTasks] = useState();
+  const [totalTasks, setTotalTasks] = useState(0);
+  const [totalSubTasks, setTotalSubTasks] = useState(0);
   const [completedTasks, setCompletedTasks] = useState([]);
   const [onProgressTasks, setOnProgressTasks] = useState([]);
   const [pendingTask, setPendingTasks] = useState([]);
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 5));
-    setPage(0);
-  };
-
-  function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-  }
-  const data2 = [
-    { label: "Total Completed", value: completedTasks.length, color: "green" },
-    {
-      label: "Total On Progress",
-      value: onProgressTasks.length,
-      color: "#FFA500",
-    },
-    {
-      label: "Total Pending",
-      value: pendingTask.length,
-      color: "#808080",
-    },
-  ];
+  const [searchTerm, setSearchTerm] = useState("");
 
   const fetchActivities = async () => {
     try {
@@ -197,22 +93,20 @@ const Dashboard = (props) => {
         props.setSelectedProjectInfo.project_id,
         userInfo.access_token
       );
-      console.log("AD", activityData);
+
       const sortedResponse = activityData.sort((a, b) => {
         if (a.activity.createdAt > b.activity.createdAt) {
           return -1;
         }
+        return 1;
       });
-      console.log("SR", sortedResponse);
+
       const milestoneActivities = sortedResponse.filter(
         (activity) => activity.activity.is_milestone === true
       );
-      console.log("MA", milestoneActivities);
-
       setActivities(milestoneActivities);
 
       let all_tasks = [];
-
       for (const activity of sortedResponse) {
         const task = activity.tasks;
         if (task.length === 0) {
@@ -220,22 +114,21 @@ const Dashboard = (props) => {
         }
         all_tasks.push(...task);
       }
+
       setTasks(all_tasks);
       const completed_task = all_tasks.filter(
         (data) => data.task_status === "Completed"
       );
-
       setCompletedTasks(completed_task);
+
       const on_progress_task = all_tasks.filter(
         (data) => data.task_status === "On Progress"
       );
-
       setOnProgressTasks(on_progress_task);
 
       const pending_task = all_tasks.filter(
         (data) => data.task_status === "Pending"
       );
-
       setPendingTasks(pending_task);
 
       setActivityLength(sortedResponse.length);
@@ -251,29 +144,10 @@ const Dashboard = (props) => {
       setLoading(false);
     } catch (error) {
       console.error("Error fetching activity:", error);
+      setLoading(false);
     }
   };
 
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    [`&.${tableCellClasses.head}`]: {
-      fontSize: 15,
-    },
-    [`&.${tableCellClasses.body}`]: {
-      fontSize: 14,
-    },
-  }));
-
-  const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    "&:nth-of-type(odd)": {
-      backgroundColor: theme.palette.action.hover,
-    },
-    // hide last border
-    "&:last-child td, &:last-child th": {
-      border: 0,
-    },
-  }));
   const calculateProgress = (startDate, endDate) => {
     const currentDate = new Date();
     const totalDuration = new Date(endDate) - new Date(startDate);
@@ -287,470 +161,721 @@ const Dashboard = (props) => {
 
   const getProgressColor = (progress, taskStatus) => {
     if (taskStatus === "Completed") {
-      return "green"; // Completed tasks are green
+      return theme.palette.success.main;
     } else if (progress < 75) {
-      return "orange"; // Less than 75% progress is orange
+      return theme.palette.warning.main;
     } else if (progress <= 100 && taskStatus !== "Completed") {
-      return "#A52A2A"; // In progress tasks (75-100%) are dark red
+      return theme.palette.error.main;
     } else {
-      return "blue"; // Default color for other cases
+      return theme.palette.info.main;
     }
   };
-  const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-  const getColorByRange = (value) => {
-    if (!value) return "black";
 
-    const colorRanges = [
-      { range: ["a".charCodeAt(0), "e".charCodeAt(0)], color: "red" },
-      { range: ["f".charCodeAt(0), "j".charCodeAt(0)], color: "green" },
-      { range: ["k".charCodeAt(0), "o".charCodeAt(0)], color: "purple" },
-      { range: ["p".charCodeAt(0), "t".charCodeAt(0)], color: "blue" },
-      { range: ["u".charCodeAt(0), "z".charCodeAt(0)], color: "gray" },
-    ];
-    const charCode = value.toLowerCase().charCodeAt(0);
-    const rangeMatch = colorRanges.find(
-      (range) => charCode >= range.range[0] && charCode <= range.range[1]
-    );
-    return rangeMatch ? rangeMatch.color : "";
+  const getStatusChipProps = (status) => {
+    switch (status) {
+      case 'Completed':
+        return { color: 'success', icon: <CheckCircleIcon fontSize="small" /> };
+      case 'On Progress':
+        return { color: 'warning', icon: <ScheduleIcon fontSize="small" /> };
+      case 'Pending':
+        return { color: 'info', icon: <ScheduleIcon fontSize="small" /> };
+      default:
+        return { color: 'default', icon: null };
+    }
   };
+
+  const getInitialsColor = (char) => {
+    const colors = [
+      theme.palette.primary.main,
+      theme.palette.secondary.main,
+      theme.palette.success.main,
+      theme.palette.warning.main,
+      theme.palette.error.main,
+      theme.palette.info.main,
+    ];
+    const index = char.toLowerCase().charCodeAt(0) % colors.length;
+    return colors[index];
+  };
+
   const search = tasks.filter(
     (task) =>
       task.name &&
-      task.name
-        .toLowerCase()
-        .includes(searchTerm ? searchTerm.toLowerCase() : "")
+      task.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
   const indexOfLastItem = currentPage * rowsPerPage;
   const indexOfFirstItem = indexOfLastItem - rowsPerPage;
   const currentItems = search.slice(indexOfFirstItem, indexOfLastItem);
+  const pageCount = Math.ceil(search.length / rowsPerPage);
+
   useEffect(() => {
-    async function fetchUsers() {
-      localStorage.setItem("userInfo", JSON.stringify(userInfo));
-    }
-    fetchUsers();
     fetchActivities();
-  }, [userInfo]);
-  const pageCount = Math.ceil(tasks.length / rowsPerPage);
+  }, [props.setSelectedProjectInfo.project_id]);
+
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+  };
 
   const handleRowsPerPageChange = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setCurrentPage(1);
   };
 
+  const chartData = [
+    { label: "Completed", value: completedTasks.length, color: theme.palette.success.main },
+    { label: "In Progress", value: onProgressTasks.length, color: theme.palette.warning.main },
+    { label: "Pending", value: pendingTask.length, color: theme.palette.info.main },
+  ];
+
+  const barChartData = activities.map((data) => {
+    const progress = calculateProgress(
+      data.activity.start_date,
+      data.activity.end_date
+    );
+    return {
+      name: data.activity.name,
+      progress: parseInt(progress),
+      color: getProgressColor(progress, data.activity.status || 'Pending')
+    };
+  });
+
   return (
-    <div style={{ backgroundColor: "#f1f4f6" }}>
+    <Box className="ml-auto w-full lg:w-4/5 mr-0 lg:mr-5 mt-24 lg:mt-24">
+
       <Helmet>
         <title>{props.setSelectedProjectInfo.name} - Dashboard</title>
       </Helmet>
-      <div className="ml-auto w-4/5 mr-5 mt-24 z-10">
-        <Backdrop
-          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          open={loading}
-        >
-          <ClipLoader color="#fff" />
-        </Backdrop>
-        <Container maxWidth="lg" className="pb-7">
-          <Grid container spacing={5} className="my-6" justifyContent="center">
-            {/* Total Activities Card */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <Paper
-                elevation={2}
-                sx={{ p: 2, bgcolor: "#082f49", color: "white" }}
-              >
-                <Grid container alignItems="center" spacing={2}>
-                  <Grid item>
-                    <ActivityIcon fontSize="large" />
-                  </Grid>
-                  <Grid item>
-                    <Typography variant="h7">Total Activities</Typography>
-                    <Typography variant="body2">{activityLength}</Typography>
-                  </Grid>
-                </Grid>
-              </Paper>
-            </Grid>
 
-            {/* Total Tasks Card */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <Paper
-                elevation={2}
-                sx={{ p: 2, bgcolor: "#082f49", color: "white" }}
-              >
-                <Grid container alignItems="center" spacing={2}>
-                  <Grid item>
-                    <TaskIcon fontSize="large" />
-                  </Grid>
-                  <Grid item>
-                    <Typography variant="h7">Total Tasks</Typography>
-                    <Typography variant="body2">{totalTasks}</Typography>
-                  </Grid>
-                </Grid>
-              </Paper>
-            </Grid>
+      <Backdrop
+        sx={{
+          color: '#fff',
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          backgroundColor: 'rgba(0,0,0,0.8)'
+        }}
+        open={loading}
+      >
+        <Box sx={{ textAlign: 'center' }}>
+          <ClipLoader color={theme.palette.primary.main} size={60} />
+          <Typography variant="h6" sx={{ mt: 2, color: 'white' }}>
+            Loading Dashboard...
+          </Typography>
+        </Box>
+      </Backdrop>
 
-            {/* Total Sub Tasks Card */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <Paper
-                elevation={2}
-                sx={{ p: 2, bgcolor: "#082f49", color: "white" }}
-              >
-                <Grid container alignItems="center" spacing={2}>
-                  <Grid item>
-                    <SubTaskIcon fontSize="large" />
-                  </Grid>
-                  <Grid item>
-                    <Typography variant="h7">Total Sub Tasks</Typography>
-                    <Typography variant="body2">{totalSubTasks}</Typography>
-                  </Grid>
-                </Grid>
-              </Paper>
-            </Grid>
+      <Container maxWidth="xl" sx={{ pb: 6 }}>
+        {/* Header */}
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="h4" sx={{
+            fontWeight: 700,
+            color: 'text.primary',
+            mb: 1
+          }}>
+            {props.setSelectedProjectInfo.name}
+          </Typography>
+          <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+            Project Overview & Analytics Dashboard
+          </Typography>
+        </Box>
+
+        {/* Stats Cards */}
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          <Grid item xs={12} sm={6} md={3}>
+            <StatCard>
+              <CardContent sx={{ p: 3 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                  <Box sx={{
+                    p: 1.5,
+                    borderRadius: 2,
+                    backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                    color: theme.palette.primary.main,
+                    mr: 2
+                  }}>
+                    <ActivityIcon />
+                  </Box>
+                  <Box>
+                    <Typography variant="body2" color="text.secondary">
+                      Total Activities
+                    </Typography>
+                    <Typography variant="h4" sx={{ fontWeight: 700 }}>
+                      {activityLength}
+                    </Typography>
+                  </Box>
+                </Box>
+                <Typography variant="caption" color="text.secondary">
+                  Active project milestones
+                </Typography>
+              </CardContent>
+            </StatCard>
           </Grid>
-          <div
-            style={{ backgroundColor: "#f7f6fe" }}
-            class="shadow-3xl  border-x-2 border-y-2"
-          >
-            <box class="shadow-3xl my-10 rounded-lg border-t-2 ">
-              {" "}
-              <div style={{ backgroundColor: "#f7f6fe" }}>
-                <div className="flex flex-wrap items-center justify-between text-center gap-28">
-                  <text class="p-5 text-2xl font-bold text-sky-950">
-                    {props.setSelectedProjectInfo.name}
-                  </text>
 
-                  <div class=" self-center ">
-                    <TextField
-                      type="text"
-                      placeholder="Search Task"
-                      size="small"
-                      class="bg-white rounded-lg"
-                      variant="outlined"
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <SearchIcon />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-            </box>
+          <Grid item xs={12} sm={6} md={3}>
+            <StatCard>
+              <CardContent sx={{ p: 3 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                  <Box sx={{
+                    p: 1.5,
+                    borderRadius: 2,
+                    backgroundColor: alpha(theme.palette.success.main, 0.1),
+                    color: theme.palette.success.main,
+                    mr: 2
+                  }}>
+                    <TaskIcon />
+                  </Box>
+                  <Box>
+                    <Typography variant="body2" color="text.secondary">
+                      Total Tasks
+                    </Typography>
+                    <Typography variant="h4" sx={{ fontWeight: 700 }}>
+                      {totalTasks}
+                    </Typography>
+                  </Box>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <TrendingUpIcon sx={{ color: 'success.main', fontSize: 16 }} />
+                  <Typography variant="caption" color="success.main">
+                    {completedTasks.length} completed
+                  </Typography>
+                </Box>
+              </CardContent>
+            </StatCard>
+          </Grid>
 
-            <box class="shadow-3xl lg:flex rounded-lg ">
-              {" "}
-              <div class="content-center">
-                <div className="flex flex-wrap gap-18">
-                  <div className="flex flex-col space-y-10 p-5">
-                    <div className="text-center space-y-5">
-                      <p className="text-3xl font-medium font-sans">
-                        {totalTasks}
-                      </p>
-                      <p className="text-xl font-medium font-sans">
-                        Project Tasks
-                      </p>
-                    </div>
-                    <div className="text-center space-y-5">
-                      <p className="text-3xl font-medium font-sans">
-                        {completedTasks.length}
-                      </p>
-                      <p className="text-xl font-medium font-sans">
-                        Completed Tasks
-                      </p>
-                    </div>
-                    <div className="text-center space-y-5">
-                      <p className="text-3xl font-medium font-sans">
-                        {onProgressTasks.length}
-                      </p>
-                      <p className="text-xl font-medium font-sans">
-                        On Progress Tasks
-                      </p>
-                    </div>
-                  </div>{" "}
-                </div>
-              </div>
-              <div class="shadow-3xl rounded-lg mb-4">
-                <div
-                  style={{
-                    backgroundColor: "#fff",
-                    border: "0.5px solid #c7c7c7",
-                    borderRadius: 15,
+          <Grid item xs={12} sm={6} md={3}>
+            <StatCard>
+              <CardContent sx={{ p: 3 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                  <Box sx={{
+                    p: 1.5,
+                    borderRadius: 2,
+                    backgroundColor: alpha(theme.palette.info.main, 0.1),
+                    color: theme.palette.info.main,
+                    mr: 2
+                  }}>
+                    <SubTaskIcon />
+                  </Box>
+                  <Box>
+                    <Typography variant="body2" color="text.secondary">
+                      Total Sub Tasks
+                    </Typography>
+                    <Typography variant="h4" sx={{ fontWeight: 700 }}>
+                      {totalSubTasks}
+                    </Typography>
+                  </Box>
+                </Box>
+                <Typography variant="caption" color="text.secondary">
+                  Detailed task breakdown
+                </Typography>
+              </CardContent>
+            </StatCard>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <StatCard>
+              <CardContent sx={{ p: 3 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                  <Box sx={{
+                    p: 1.5,
+                    borderRadius: 2,
+                    backgroundColor: alpha(theme.palette.warning.main, 0.1),
+                    color: theme.palette.warning.main,
+                    mr: 2
+                  }}>
+                    <ScheduleIcon />
+                  </Box>
+                  <Box>
+                    <Typography variant="body2" color="text.secondary">
+                      In Progress
+                    </Typography>
+                    <Typography variant="h4" sx={{ fontWeight: 700 }}>
+                      {onProgressTasks.length}
+                    </Typography>
+                  </Box>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                  <Typography variant="caption" color="text.secondary">
+                    Completion Rate:
+                  </Typography>
+                  <Typography variant="caption" sx={{ fontWeight: 600 }}>
+                    {totalTasks > 0 ? `${Math.round((completedTasks.length / totalTasks) * 100)}%` : '0%'}
+                  </Typography>
+                </Box>
+              </CardContent>
+            </StatCard>
+          </Grid>
+        </Grid>
+
+        {/* Task Overview Section */}
+        <Paper elevation={0} sx={{
+          borderRadius: 3,
+          mb: 4,
+          border: `1px solid ${theme.palette.divider}`,
+          overflow: 'hidden'
+        }}>
+          <Box sx={{
+            p: 3,
+            backgroundColor: 'background.paper',
+            borderBottom: `1px solid ${theme.palette.divider}`
+          }}>
+            <Grid container alignItems="center" justifyContent="space-between" spacing={2}>
+              <Grid item>
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                  Task Overview
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Monitor and manage all project tasks
+                </Typography>
+              </Grid>
+              <Grid item>
+                <TextField
+                  size="small"
+                  placeholder="Search tasks..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIcon color="action" />
+                      </InputAdornment>
+                    ),
+                    sx: { borderRadius: 2, minWidth: 250 }
                   }}
-                >
-                  <TableContainer
-                    sx={{
-                      width: "100%",
-                      overflow: "auto",
-                    }}
-                  >
-                    <Table
-                      sx={{
-                        minWidth: 900,
-                        [`& .${tableCellClasses.root}`]: {
-                          borderBottom: "none",
-                        },
-                      }}
-                      size="large"
-                    >
-                      {totalTasks !== 0 ? (
-                        <>
-                          <TableHead>
-                            <TableRow>
-                              <StyledTableCell>Task Name</StyledTableCell>
-                              <StyledTableCell>Task Due Date</StyledTableCell>
-                              <StyledTableCell>Completion</StyledTableCell>
-                              <StyledTableCell>Status</StyledTableCell>
-                            </TableRow>
-                          </TableHead>
+                />
+              </Grid>
+            </Grid>
+          </Box>
 
-                          <TableBody>
-                            {currentItems.map((task, index) => {
-                              const progress = calculateProgress(
-                                task.start_date,
-                                task.end_date
-                              );
+          <Box sx={{ p: 3 }}>
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={4}>
+                <Box sx={{
+                  p: 3,
+                  borderRadius: 2,
+                  backgroundColor: alpha(theme.palette.primary.main, 0.05),
+                  border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`
+                }}>
+                  <Typography variant="h3" sx={{
+                    fontWeight: 700,
+                    color: 'text.primary',
+                    mb: 1
+                  }}>
+                    {totalTasks}
+                  </Typography>
+                  <Typography variant="body1" sx={{ fontWeight: 600, mb: 2 }}>
+                    Total Tasks
+                  </Typography>
+                  <ProgressBar
+                    variant="determinate"
+                    value={totalTasks > 0 ? 100 : 0}
+                    sx={{ mb: 2 }}
+                  />
+                </Box>
 
-                              return (
-                                <StyledTableRow
-                                  key={task.id}
-                                  className={
-                                    index % 2 === 0 ? "even-row" : "odd-row"
+                <Box sx={{
+                  p: 3,
+                  borderRadius: 2,
+                  backgroundColor: alpha(theme.palette.success.main, 0.05),
+                  border: `1px solid ${alpha(theme.palette.success.main, 0.1)}`,
+                  mt: 2
+                }}>
+                  <Typography variant="h3" sx={{
+                    fontWeight: 700,
+                    color: theme.palette.success.main,
+                    mb: 1
+                  }}>
+                    {completedTasks.length}
+                  </Typography>
+                  <Typography variant="body1" sx={{ fontWeight: 600, mb: 2 }}>
+                    Completed
+                  </Typography>
+                  <ProgressBar
+                    variant="determinate"
+                    value={totalTasks > 0 ? (completedTasks.length / totalTasks) * 100 : 0}
+                  />
+                </Box>
+
+                <Box sx={{
+                  p: 3,
+                  borderRadius: 2,
+                  backgroundColor: alpha(theme.palette.warning.main, 0.05),
+                  border: `1px solid ${alpha(theme.palette.warning.main, 0.1)}`,
+                  mt: 2
+                }}>
+                  <Typography variant="h3" sx={{
+                    fontWeight: 700,
+                    color: theme.palette.warning.main,
+                    mb: 1
+                  }}>
+                    {onProgressTasks.length}
+                  </Typography>
+                  <Typography variant="body1" sx={{ fontWeight: 600, mb: 2 }}>
+                    In Progress
+                  </Typography>
+                  <ProgressBar
+                    variant="determinate"
+                    value={totalTasks > 0 ? (onProgressTasks.length / totalTasks) * 100 : 0}
+                  />
+                </Box>
+              </Grid>
+
+              <Grid item xs={12} md={8}>
+                <Paper elevation={0} sx={{
+                  borderRadius: 2,
+                  border: `1px solid ${theme.palette.divider}`,
+                  overflow: 'hidden'
+                }}>
+                  <Box sx={{ overflowX: 'auto' }}>
+                    <Box component="table" sx={{ width: '100%', borderCollapse: 'collapse' }}>
+                      <Box component="thead">
+                        <Box component="tr" sx={{
+                          backgroundColor: 'background.default',
+                          borderBottom: `1px solid ${theme.palette.divider}`
+                        }}>
+                          <Box component="th" sx={{ p: 2, textAlign: 'left', minWidth: 200 }}>
+                            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                              Task Name
+                            </Typography>
+                          </Box>
+                          <Box component="th" sx={{ p: 2, textAlign: 'left', minWidth: 120 }}>
+                            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                              Due Date
+                            </Typography>
+                          </Box>
+                          <Box component="th" sx={{ p: 2, textAlign: 'left', minWidth: 150 }}>
+                            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                              Progress
+                            </Typography>
+                          </Box>
+                          <Box component="th" sx={{ p: 2, textAlign: 'left', minWidth: 120 }}>
+                            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                              Status
+                            </Typography>
+                          </Box>
+                        </Box>
+                      </Box>
+                      <Box component="tbody">
+                        {currentItems.length > 0 ? (
+                          currentItems.map((task, index) => {
+                            const progress = calculateProgress(task.start_date, task.end_date);
+                            const chipProps = getStatusChipProps(task.task_status);
+                            return (
+                              <Box
+                                component="tr"
+                                key={task.id}
+                                sx={{
+                                  borderBottom: `1px solid ${theme.palette.divider}`,
+                                  '&:hover': {
+                                    backgroundColor: 'action.hover'
                                   }
-                                >
-                                  <StyledTableCell component="th" scope="row">
-                                    <span
-                                      className="text-center  text-white"
-                                      style={{
-                                        backgroundColor: getColorByRange(
-                                          task.name
-                                        ),
-                                        borderRadius: "50%",
-                                        width: 24,
-                                        height: 24,
-                                        display: "inline-block",
-                                        textAlign: "center",
-                                        lineHeight: "24px",
-                                        marginRight: 8,
-                                      }}
-                                    >
+                                }}
+                              >
+                                <Box component="td" sx={{ p: 2 }}>
+                                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                    <Box sx={{
+                                      width: 36,
+                                      height: 36,
+                                      borderRadius: '50%',
+                                      backgroundColor: getInitialsColor(task.name.charAt(0)),
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                      color: 'white',
+                                      fontWeight: 600,
+                                      mr: 2,
+                                      flexShrink: 0
+                                    }}>
                                       {task.name.charAt(0).toUpperCase()}
-                                    </span>
-                                    {task.name.charAt(0).toUpperCase() +
-                                      task.name.slice(1)}
-                                  </StyledTableCell>
-                                  <StyledTableCell>
-                                    {new Date(
-                                      task.end_date
-                                    ).toLocaleDateString()}
-                                  </StyledTableCell>
-                                  <StyledTableCell>
-                                    <div className="progress-container">
-                                      <div
-                                        className="progress-bar"
-                                        style={{
-                                          width: `${progress}%`,
-                                          backgroundColor: getProgressColor(
-                                            progress,
-                                            task.task_status
-                                          ),
-                                        }}
-                                      />
-                                      <span className="progress-text">{`${progress.toFixed(
-                                        1
-                                      )}%`}</span>
-                                    </div>
-                                  </StyledTableCell>
-                                  <StyledTableCell>
-                                    {task.task_status}
-                                  </StyledTableCell>
-                                </StyledTableRow>
-                              );
-                            })}
-                          </TableBody>
-                        </>
-                      ) : (
-                        <TableBody>
-                          <TableRow>
-                            <TableCell colSpan={4} align="center">
-                              <Typography variant="h6">No Task Data</Typography>
-                            </TableCell>
-                          </TableRow>
-                        </TableBody>
-                      )}
-                    </Table>
-                  </TableContainer>
-                  <div className="flex flex-wrap justify-end gap-5">
-                    <div className="rows-per-page flex my-6 ml-2 justify-start text-sm ">
-                      {" "}
-                      Rows per page
-                      <div>
-                        <select
+                                    </Box>
+                                    <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                                      {task.name.charAt(0).toUpperCase() + task.name.slice(1)}
+                                    </Typography>
+                                  </Box>
+                                </Box>
+                                <Box component="td" sx={{ p: 2 }}>
+                                  <Typography variant="body2">
+                                    {new Date(task.end_date).toLocaleDateString()}
+                                  </Typography>
+                                </Box>
+                                <Box component="td" sx={{ p: 2 }}>
+                                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                    <Box sx={{ flexGrow: 1 }}>
+                                      <ProgressBar variant="determinate" value={progress} />
+                                    </Box>
+                                    <Typography variant="body2" sx={{
+                                      fontWeight: 600,
+                                      minWidth: 40,
+                                      color: getProgressColor(progress, task.task_status)
+                                    }}>
+                                      {progress.toFixed(1)}%
+                                    </Typography>
+                                  </Box>
+                                </Box>
+                                <Box component="td" sx={{ p: 2 }}>
+                                  <Chip
+                                    size="small"
+                                    label={task.task_status}
+                                    color={chipProps.color}
+                                    icon={chipProps.icon}
+                                    sx={{ fontWeight: 500 }}
+                                  />
+                                </Box>
+                              </Box>
+                            );
+                          })
+                        ) : (
+                          <Box component="tr">
+                            <Box component="td" colSpan={4} sx={{ p: 4, textAlign: 'center' }}>
+                              <Typography variant="body1" color="text.secondary">
+                                No tasks found
+                              </Typography>
+                            </Box>
+                          </Box>
+                        )}
+                      </Box>
+                    </Box>
+                  </Box>
+
+                  {search.length > 0 && (
+                    <Box sx={{
+                      p: 2,
+                      borderTop: `1px solid ${theme.palette.divider}`,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      flexWrap: 'wrap',
+                      gap: 2
+                    }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Typography variant="body2" color="text.secondary">
+                          Rows per page:
+                        </Typography>
+                        <TextField
+                          select
+                          size="small"
                           value={rowsPerPage}
                           onChange={handleRowsPerPageChange}
-                          className=" w-fit pl-3 text-sm border-none outline-none bg-white  focus:border-none focus:outline-none"
+                          SelectProps={{
+                            native: true,
+                          }}
+                          sx={{ minWidth: 80 }}
                         >
                           <option value={5}>5</option>
                           <option value={10}>10</option>
-                          <option value={100}>100</option>
-                        </select>
-                      </div>
-                    </div>
-                    <Box className="text-sm flex  mt-1 pb-5 pt-5">
-                      <Pagination
-                        count={pageCount}
-                        page={currentPage}
-                        onChange={handleChange}
-                        variant="outlined"
-                        shape="rounded"
-                        size="small"
-                        color="primary"
-                        sx={{
-                          "& .MuiPaginationItem-root": {
-                            margin: "0 4px",
-                          },
-                        }}
-                      />
+                          <option value={25}>25</option>
+                        </TextField>
+                      </Box>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Typography variant="body2" color="text.secondary">
+                          Page {currentPage} of {pageCount}
+                        </Typography>
+                        <Box sx={{ display: 'flex', gap: 0.5 }}>
+                          {Array.from({ length: Math.min(5, pageCount) }, (_, i) => {
+                            let pageNumber;
+                            if (pageCount <= 5) {
+                              pageNumber = i + 1;
+                            } else if (currentPage <= 3) {
+                              pageNumber = i + 1;
+                            } else if (currentPage >= pageCount - 2) {
+                              pageNumber = pageCount - 4 + i;
+                            } else {
+                              pageNumber = currentPage - 2 + i;
+                            }
+
+                            return (
+                              <Chip
+                                key={pageNumber}
+                                label={pageNumber}
+                                onClick={() => handlePageChange(null, pageNumber)}
+                                color={currentPage === pageNumber ? 'primary' : 'default'}
+                                size="small"
+                                clickable
+                              />
+                            );
+                          })}
+                        </Box>
+                      </Box>
                     </Box>
-                  </div>
-                </div>
-              </div>
-            </box>
-          </div>
-
-          <box class="lg:flex lg:flex-wrap lg:gap-5 lg:my-12 lg:rounded-lg ">
-            <div className=" max-w-3xl grow border-x-2 border-y-2 rounded-lg bg-white">
-              <div className="flex flex-wrap justify-between items-center py-5 gap-10">
-                <text class="px-5 text-xl font-bold text-sky-950 font-sans">
-                  Milestone
-                </text>
-              </div>
-
-              <box class="shadow-3xl my-10 rounded-lg">
-                {" "}
-                <div className="overflow-x-auto max-w-full">
-                  {activities.length !== 0 ? (
-                    <div className="mt-4 overflow-x-auto min-w-96">
-                      <BarChart
-                        series={[
-                          {
-                            data: activities.map((data) => {
-                              const progress = function (start_date, end_date) {
-                                const currentDate = new Date();
-                                const totalDuration =
-                                  new Date(end_date) - new Date(start_date);
-                                const elapsedDuration =
-                                  currentDate - new Date(start_date);
-                                const progress = Math.min(
-                                  Math.max(
-                                    (elapsedDuration / totalDuration) * 100,
-                                    0
-                                  ),
-                                  100
-                                );
-                                return progress;
-                              };
-
-                              const activity = data.activity;
-
-                              const progress_result = progress(
-                                activity.start_date,
-                                activity.end_date
-                              );
-
-                              return parseInt(progress_result);
-                            }),
-                            stack: "A",
-                            // label: "Activities",
-                            color: activities.map((data) => {
-                              const progress = function (start_date, end_date) {
-                                const currentDate = new Date();
-                                const totalDuration =
-                                  new Date(end_date) - new Date(start_date);
-                                const elapsedDuration =
-                                  currentDate - new Date(start_date);
-                                const progress = Math.min(
-                                  Math.max(
-                                    (elapsedDuration / totalDuration) * 100,
-                                    0
-                                  ),
-                                  100
-                                );
-                                return progress;
-                              };
-
-                              const activity = data.activity;
-
-                              const progress_result = progress(
-                                activity.start_date,
-                                activity.end_date
-                              );
-
-                              let color_check = "gray";
-
-                              return color_check;
-                            }),
-                          },
-                        ]}
-                        // width={600}
-                        height={320}
-                        xAxis={[
-                          {
-                            data: activities.map(
-                              (data, index) => data.activity.name
-                            ),
-                            scaleType: "band",
-                          },
-                        ]}
-                        margin={{ top: 50, bottom: 30, left: 40, right: 10 }}
-                      />
-                    </div>
-                  ) : (
-                    <Typography className="text-center">
-                      No Milestone Data
-                    </Typography>
                   )}
-                </div>
-              </box>
-            </div>
-            <div className=" shrink grow border-x-2 border-y-2 rounded-lg max-w-lg bg-white">
-              <div class="pt-10 pb-4 px-5 text-lg font-bold text-sky-950">
-                Project Statistics
-              </div>
-              <div>
-                {tasks.length !== 0 ? (
-                  <PieChart
-                    margin={{ bottom: 100, left: 100, right: 100 }}
-                    series={[
-                      {
-                        data: data2,
-                        innerRadius: 60,
-                        outerRadius: 80,
+                </Paper>
+              </Grid>
+            </Grid>
+          </Box>
+        </Paper>
+
+        {/* Charts Section */}
+        <Grid container spacing={3}>
+          {/* Milestone Chart */}
+          <Grid item xs={12} lg={8}>
+            <Paper elevation={0} sx={{
+              p: 3,
+              borderRadius: 3,
+              height: '100%',
+              border: `1px solid ${theme.palette.divider}`
+            }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                <Box sx={{
+                  p: 1,
+                  borderRadius: 2,
+                  backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                  color: theme.palette.primary.main,
+                  mr: 2
+                }}>
+                  <TimelineIcon />
+                </Box>
+                <Box>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    Milestone Progress
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Track milestone completion rates
+                  </Typography>
+                </Box>
+              </Box>
+
+              {activities.length > 0 ? (
+                <Box sx={{ height: 320 }}>
+                  <BarChart
+                    series={[{
+                      data: barChartData.map(d => d.progress),
+                      color: theme.palette.primary.main,
+                    }]}
+                    height={320}
+                    xAxis={[{
+                      data: barChartData.map(d => d.name),
+                      scaleType: 'band',
+                      tickLabelStyle: {
+                        angle: 45,
+                        textAnchor: 'start',
+                        fontSize: 12,
                       },
-                    ]}
-                    height={300}
-                    width={350}
-                    slotProps={{
-                      legend: {
-                        direction: "column",
-                        position: { vertical: "bottom", horizontal: "middle" },
-                        padding: 0,
-                      },
-                    }}
-                    bgColor={`green`}
+                    }]}
+                    yAxis={[{
+                      min: 0,
+                      max: 100,
+                    }]}
+                    margin={{ top: 20, bottom: 70, left: 40, right: 20 }}
+                    grid={{ vertical: true }}
+                    tooltip={{ trigger: 'item' }}
                   />
-                ) : (
-                  <Typography className="text-center">No Task Data</Typography>
-                )}
-              </div>
-            </div>
-          </box>
-        </Container>
-      </div>
-    </div>
+                </Box>
+              ) : (
+                <Box sx={{
+                  height: 320,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexDirection: 'column',
+                  gap: 2
+                }}>
+                  <TimelineIcon sx={{ fontSize: 48, color: 'text.disabled' }} />
+                  <Typography variant="body1" color="text.secondary">
+                    No milestone data available
+                  </Typography>
+                </Box>
+              )}
+            </Paper>
+          </Grid>
+
+          {/* Task Distribution Chart */}
+          <Grid item xs={12} lg={4}>
+            <Paper elevation={0} sx={{
+              p: 3,
+              borderRadius: 3,
+              height: '100%',
+              border: `1px solid ${theme.palette.divider}`
+            }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                <Box sx={{
+                  p: 1,
+                  borderRadius: 2,
+                  backgroundColor: alpha(theme.palette.info.main, 0.1),
+                  color: theme.palette.info.main,
+                  mr: 2
+                }}>
+                  <PieChartIcon />
+                </Box>
+                <Box>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    Task Distribution
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Overview by status
+                  </Typography>
+                </Box>
+              </Box>
+
+              {tasks.length > 0 ? (
+                <Box sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: 3
+                }}>
+                  <PieChart
+                    series={[{
+                      data: chartData,
+                      innerRadius: 40,
+                      outerRadius: 80,
+                      paddingAngle: 2,
+                      cornerRadius: 4,
+                      highlightScope: { fade: 'global', highlight: 'item' },
+                    }]}
+                    height={240}
+                    slotProps={{
+                      legend: { hidden: true },
+                    }}
+                  />
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, width: '100%' }}>
+                    {chartData.map((item, index) => (
+                      <Box
+                        key={index}
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          p: 2,
+                          borderRadius: 2,
+                          backgroundColor: alpha(item.color, 0.05),
+                          border: `1px solid ${alpha(item.color, 0.1)}`
+                        }}
+                      >
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                          <Box sx={{
+                            width: 12,
+                            height: 12,
+                            borderRadius: '50%',
+                            backgroundColor: item.color,
+                          }} />
+                          <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                            {item.label}
+                          </Typography>
+                        </Box>
+                        <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                          {item.value}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                </Box>
+              ) : (
+                <Box sx={{
+                  height: 240,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexDirection: 'column',
+                  gap: 2
+                }}>
+                  <PieChartIcon sx={{ fontSize: 48, color: 'text.disabled' }} />
+                  <Typography variant="body1" color="text.secondary">
+                    No task data available
+                  </Typography>
+                </Box>
+              )}
+            </Paper>
+          </Grid>
+        </Grid>
+      </Container>
+    </Box>
   );
 };
 

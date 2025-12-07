@@ -240,8 +240,8 @@ const Activity = (props) => {
     statusFilter === "All"
       ? activities
       : activities.filter(
-          (row) => row.activity.activity_status === statusFilter
-        );
+        (row) => row.activity.activity_status === statusFilter
+      );
 
   const search = filteredRows.filter(
     (row) =>
@@ -454,11 +454,10 @@ const Activity = (props) => {
               <button
                 key={status}
                 onClick={() => handleFilterClick(status)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  statusFilter === status
-                    ? "bg-slate-800 text-white shadow-sm"
-                    : "text-slate-600 hover:bg-slate-50"
-                }`}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${statusFilter === status
+                  ? "bg-slate-800 text-white shadow-sm"
+                  : "text-slate-600 hover:bg-slate-50"
+                  }`}
               >
                 {status}
               </button>
@@ -504,14 +503,12 @@ const Activity = (props) => {
                       className="sr-only"
                     />
                     <div
-                      className={`w-10 h-5 rounded-full transition-colors ${
-                        formData.is_milestone ? "bg-blue-600" : "bg-slate-300"
-                      }`}
+                      className={`w-10 h-5 rounded-full transition-colors ${formData.is_milestone ? "bg-blue-600" : "bg-slate-300"
+                        }`}
                     >
                       <div
-                        className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white transition-transform ${
-                          formData.is_milestone ? "transform translate-x-5" : ""
-                        }`}
+                        className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white transition-transform ${formData.is_milestone ? "transform translate-x-5" : ""
+                          }`}
                       ></div>
                     </div>
                   </div>
@@ -625,7 +622,7 @@ const Activity = (props) => {
                       dt2.getHours(),
                       dt2.getMinutes()
                     )) /
-                    (1000 * 60 * 60 * 24)
+                  (1000 * 60 * 60 * 24)
                 );
               };
 
@@ -817,11 +814,11 @@ const Activity = (props) => {
                               fill="none"
                               stroke={
                                 days_left <= 0 &&
-                                activity_progress !== "Completed"
+                                  activity_progress !== "Completed"
                                   ? "#EF4444" // Red color for deadline passed
                                   : getProgressBarColor(
-                                      parseInt(progress_result)
-                                    )
+                                    parseInt(progress_result)
+                                  )
                               }
                               strokeWidth="3"
                               strokeDasharray={`${progress_result}, 100`}
@@ -843,7 +840,7 @@ const Activity = (props) => {
                             completed={parseInt(progress_result)}
                             bgColor={
                               days_left <= 0 &&
-                              activity_progress !== "Completed"
+                                activity_progress !== "Completed"
                                 ? "#EF4444" // Red color for deadline passed
                                 : getProgressBarColor(parseInt(progress_result))
                             }
@@ -1031,9 +1028,9 @@ const Activity = (props) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-2xl shadow-2xl w-11/12 lg:w-2/3 max-h-[90vh] overflow-hidden mx-4">
             <div className="flex justify-between items-center p-4 border-b border-slate-200">
-              <h3 className="text-lg font-semibold text-slate-800">
-                {/* Add New Activity */}
-              </h3>
+              <h1 className="text-2xl font-bold text-slate-800">
+                Add Activity
+              </h1>
               <button
                 onClick={handleAddModalClose}
                 className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"

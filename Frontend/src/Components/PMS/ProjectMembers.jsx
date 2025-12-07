@@ -480,7 +480,11 @@ const MembersDashboard = ({ selectedProjectInfo }) => {
       {/* Header Section */}
       <Box className="mb-8">
         <Box className="flex flex-col lg:flex-row lg:items-center gap-6 mb-8">
-          <ProjectBadge name={selectedProjectInfo.name} />
+
+          <div className="flex justify-center items-center w-10 h-10 md:w-12 md:h-12 text-white font-semibold rounded-lg"
+            style={{ backgroundColor: "#082f49" }}>
+            <ProjectBadge name={selectedProjectInfo.name} />
+          </div>
           <Box>
             <Typography
               variant="h4"
