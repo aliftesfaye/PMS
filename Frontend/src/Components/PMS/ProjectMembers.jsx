@@ -451,7 +451,6 @@ const MembersDashboard = ({ selectedProjectInfo }) => {
             <Typography variant="caption" className="text-gray-500">
               ID: {member.user_id?.slice(-6) || "N/A"}
             </Typography>
-
           </Box>
         </Box>
       </Card>
@@ -459,7 +458,7 @@ const MembersDashboard = ({ selectedProjectInfo }) => {
   };
 
   return (
-    <Box className="ml-auto lg:w-4/5 w-full px-4 lg:px-8 mt-24">
+    <Box className="ml-auto lg:w-4/5 w-full px-4 lg:px-8 mt-6">
       <Helmet>
         <title>{selectedProjectInfo.name} - Members</title>
       </Helmet>
@@ -472,25 +471,26 @@ const MembersDashboard = ({ selectedProjectInfo }) => {
       </Backdrop>
 
       {/* Header Section */}
-      <Box className="mb-8">
-        <Box className="flex flex-col lg:flex-row lg:items-center gap-6 mb-8">
-
-          <div className="flex justify-center items-center w-10 h-10 md:w-12 md:h-12 text-white font-semibold rounded-lg"
-            style={{ backgroundColor: "#082f49" }}>
-            <ProjectBadge name={selectedProjectInfo.name} />
+      <Box className="mb-1">
+        <Box className="flex flex-col lg:flex-row lg:items-center gap-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6 mb-8">
+            <div className="flex items-center gap-4">
+              <div
+                className="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center text-white text-xl font-bold shadow-md"
+                style={{ backgroundColor: "#082f49" }}
+              >
+                {selectedProjectInfo.name.charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <h1 className="text-2xl md:text-3xl font-semibold text-gray-800">
+                  {selectedProjectInfo.name}
+                </h1>
+                <p className="text-sm text-gray-600 mt-1">
+                  Project Team Members
+                </p>
+              </div>
+            </div>
           </div>
-          <Box>
-            <Typography
-              variant="h4"
-              className="font-bold text-gray-900 mb-2"
-              gutterBottom
-            >
-              {selectedProjectInfo.name}
-            </Typography>
-            <Typography variant="body1" className="text-gray-600">
-              Manage your project team members and track their progress
-            </Typography>
-          </Box>
         </Box>
 
         {/* Search and Stats Bar */}

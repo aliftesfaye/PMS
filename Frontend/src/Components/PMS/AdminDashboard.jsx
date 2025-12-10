@@ -59,17 +59,17 @@ import { tableCellClasses } from "@mui/material/TableCell";
 // Styled Components
 const StatCard = styled(Card)(({ theme }) => ({
   borderRadius: 16,
-  boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-  transition: 'all 0.3s ease-in-out',
-  '&:hover': {
-    transform: 'translateY(-4px)',
-    boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+  boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+  transition: "all 0.3s ease-in-out",
+  "&:hover": {
+    transform: "translateY(-4px)",
+    boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
   },
-  position: 'relative',
-  overflow: 'hidden',
-  '&::before': {
+  position: "relative",
+  overflow: "hidden",
+  "&::before": {
     content: '""',
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
@@ -91,15 +91,15 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  '&:nth-of-type(odd)': {
+  "&:nth-of-type(odd)": {
     backgroundColor: theme.palette.action.hover,
   },
-  '&:hover': {
+  "&:hover": {
     backgroundColor: theme.palette.action.selected,
-    cursor: 'pointer',
-    transition: 'background-color 0.2s ease',
+    cursor: "pointer",
+    transition: "background-color 0.2s ease",
   },
-  '&:last-child td, &:last-child th': {
+  "&:last-child td, &:last-child th": {
     border: 0,
   },
 }));
@@ -108,15 +108,15 @@ const ProgressBar = styled(LinearProgress)(({ theme, value }) => ({
   height: 8,
   borderRadius: 4,
   backgroundColor: theme.palette.grey[200],
-  '& .MuiLinearProgress-bar': {
+  "& .MuiLinearProgress-bar": {
     borderRadius: 4,
   },
 }));
 
 const DashboardContainer = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
-  minHeight: '100vh',
-  pt: { xs: 2, md: 3 }
+  minHeight: "100vh",
+  pt: { xs: 2, md: 3 },
 }));
 
 const AdminDashboard = (props) => {
@@ -170,13 +170,13 @@ const AdminDashboard = (props) => {
 
       const filteredProjects = isClusterAdminRolePresent
         ? projectsData.filter((project) =>
-          validDivisionIds.includes(project.division_id)
-        )
+            validDivisionIds.includes(project.division_id)
+          )
         : isDepartmentAdminRolePresent
-          ? projectsData.filter(
+        ? projectsData.filter(
             (project) => project.division_id === userDivisionId
           )
-          : projectsData;
+        : projectsData;
 
       setProjects2(filteredProjects);
 
@@ -262,13 +262,28 @@ const AdminDashboard = (props) => {
 
   const getStatusChip = (status) => {
     const colors = {
-      "Completed": { bg: alpha(theme.palette.success.main, 0.1), color: theme.palette.success.main },
-      "On Progress": { bg: alpha(theme.palette.warning.main, 0.1), color: theme.palette.warning.main },
-      "Pending": { bg: alpha(theme.palette.info.main, 0.1), color: theme.palette.info.main },
-      "Canceled": { bg: alpha(theme.palette.error.main, 0.1), color: theme.palette.error.main },
+      Completed: {
+        bg: alpha(theme.palette.success.main, 0.1),
+        color: theme.palette.success.main,
+      },
+      "On Progress": {
+        bg: alpha(theme.palette.warning.main, 0.1),
+        color: theme.palette.warning.main,
+      },
+      Pending: {
+        bg: alpha(theme.palette.info.main, 0.1),
+        color: theme.palette.info.main,
+      },
+      Canceled: {
+        bg: alpha(theme.palette.error.main, 0.1),
+        color: theme.palette.error.main,
+      },
     };
 
-    const style = colors[status] || { bg: alpha(theme.palette.grey[500], 0.1), color: theme.palette.grey[500] };
+    const style = colors[status] || {
+      bg: alpha(theme.palette.grey[500], 0.1),
+      color: theme.palette.grey[500],
+    };
 
     return (
       <Chip
@@ -325,7 +340,7 @@ const AdminDashboard = (props) => {
     {
       label: "Completed",
       value: completedProjects,
-      color: theme.palette.success.main
+      color: theme.palette.success.main,
     },
     {
       label: "In Progress",
@@ -367,7 +382,11 @@ const AdminDashboard = (props) => {
       value: completedProjects,
       icon: <ChecklistIcon />,
       color: theme.palette.success.main,
-      subtitle: `${totalProjects > 0 ? Math.round((completedProjects / totalProjects) * 100) : 0}% completion rate`,
+      subtitle: `${
+        totalProjects > 0
+          ? Math.round((completedProjects / totalProjects) * 100)
+          : 0
+      }% completion rate`,
     },
     {
       title: "In Progress",
@@ -386,22 +405,22 @@ const AdminDashboard = (props) => {
   ];
 
   return (
-    <Box className="ml-auto w-full lg:w-4/5 mr-0 lg:mr-5 mt-24 lg:mt-24">
+    <Box className="ml-auto w-full lg:w-4/5 mt-6 mr-0 lg:mr-5 ">
       <Helmet>
         <title>Admin Dashboard - Project Management System</title>
       </Helmet>
 
       <Backdrop
         sx={{
-          color: '#fff',
+          color: "#fff",
           zIndex: (theme) => theme.zIndex.drawer + 1,
-          backgroundColor: 'rgba(0,0,0,0.8)'
+          backgroundColor: "rgba(0,0,0,0.8)",
         }}
         open={loading}
       >
-        <Box sx={{ textAlign: 'center' }}>
+        <Box sx={{ textAlign: "center" }}>
           <ClipLoader color={theme.palette.primary.main} size={60} />
-          <Typography variant="h6" sx={{ mt: 2, color: 'white' }}>
+          <Typography variant="h6" sx={{ mt: 2, color: "white" }}>
             Loading Dashboard...
           </Typography>
         </Box>
@@ -410,14 +429,17 @@ const AdminDashboard = (props) => {
       <Container maxWidth="xl" sx={{ pb: 6 }}>
         {/* Header */}
         <Box sx={{ mb: 4 }}>
-          <Typography variant="h4" sx={{
-            fontWeight: 700,
-            color: 'text.primary',
-            mb: 1
-          }}>
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 700,
+              color: "#0A5077",
+              mb: 1,
+            }}
+          >
             Admin Dashboard
           </Typography>
-          <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+          <Typography variant="body1" sx={{ color: "text.secondary" }}>
             Overview of all projects and team performance
           </Typography>
         </Box>
@@ -426,20 +448,27 @@ const AdminDashboard = (props) => {
         <Grid container spacing={3} sx={{ mb: 6 }}>
           {statsCards.map((stat, index) => (
             <Grid item xs={12} sm={6} md={3} key={index}>
-              <StatCard sx={{
-                '&::before': {
-                  background: `linear-gradient(90deg, ${stat.color}, ${alpha(stat.color, 0.7)})`
-                }
-              }}>
+              <StatCard
+                sx={{
+                  "&::before": {
+                    background: `linear-gradient(90deg, ${stat.color}, ${alpha(
+                      stat.color,
+                      0.7
+                    )})`,
+                  },
+                }}
+              >
                 <CardContent sx={{ p: 3 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <Box sx={{
-                      p: 1.5,
-                      borderRadius: 2,
-                      backgroundColor: alpha(stat.color, 0.1),
-                      color: stat.color,
-                      mr: 2
-                    }}>
+                  <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                    <Box
+                      sx={{
+                        p: 1.5,
+                        borderRadius: 2,
+                        backgroundColor: alpha(stat.color, 0.1),
+                        color: stat.color,
+                        mr: 2,
+                      }}
+                    >
                       {stat.icon}
                     </Box>
                     <Box sx={{ flexGrow: 1 }}>
@@ -461,18 +490,28 @@ const AdminDashboard = (props) => {
         </Grid>
 
         {/* Projects Table */}
-        <Paper elevation={0} sx={{
-          borderRadius: 3,
-          mb: 4,
-          border: `1px solid ${theme.palette.divider}`,
-          overflow: 'hidden'
-        }}>
-          <Box sx={{
-            p: 3,
-            backgroundColor: 'background.paper',
-            borderBottom: `1px solid ${theme.palette.divider}`
-          }}>
-            <Grid container alignItems="center" justifyContent="space-between" spacing={2}>
+        <Paper
+          elevation={0}
+          sx={{
+            borderRadius: 3,
+            mb: 4,
+            border: `1px solid ${theme.palette.divider}`,
+            overflow: "hidden",
+          }}
+        >
+          <Box
+            sx={{
+              p: 3,
+              backgroundColor: "background.paper",
+              borderBottom: `1px solid ${theme.palette.divider}`,
+            }}
+          >
+            <Grid
+              container
+              alignItems="center"
+              justifyContent="space-between"
+              spacing={2}
+            >
               <Grid item>
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
                   All Projects
@@ -482,7 +521,7 @@ const AdminDashboard = (props) => {
                 </Typography>
               </Grid>
               <Grid item>
-                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
                   <TextField
                     size="small"
                     placeholder="Search projects..."
@@ -494,7 +533,7 @@ const AdminDashboard = (props) => {
                           <SearchIcon color="action" />
                         </InputAdornment>
                       ),
-                      sx: { borderRadius: 2, minWidth: 250 }
+                      sx: { borderRadius: 2, minWidth: 250 },
                     }}
                   />
                   <FormControl size="small" sx={{ minWidth: 120 }}>
@@ -531,23 +570,29 @@ const AdminDashboard = (props) => {
                   currentItems.map((project, index) => (
                     <StyledTableRow key={index}>
                       <StyledTableCell>
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Box sx={{ display: "flex", alignItems: "center" }}>
                           <Avatar
                             sx={{
                               width: 40,
                               height: 40,
                               bgcolor: getInitialsColor(project.name.charAt(0)),
                               mr: 2,
-                              fontWeight: 600
+                              fontWeight: 600,
                             }}
                           >
                             {project.name.charAt(0).toUpperCase()}
                           </Avatar>
                           <Box>
-                            <Typography variant="body1" sx={{ fontWeight: 600 }}>
+                            <Typography
+                              variant="body1"
+                              sx={{ fontWeight: 600 }}
+                            >
                               {project.name}
                             </Typography>
-                            <Typography variant="caption" color="text.secondary">
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                            >
                               ID: {project.project_id?.slice(0, 8)}...
                             </Typography>
                           </Box>
@@ -564,7 +609,7 @@ const AdminDashboard = (props) => {
                         </Box>
                       </StyledTableCell>
                       <StyledTableCell>
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Box sx={{ display: "flex", alignItems: "center" }}>
                           <Typography variant="body2" sx={{ fontWeight: 600 }}>
                             {formatBudget(project.budget)} ETB
                           </Typography>
@@ -601,17 +646,21 @@ const AdminDashboard = (props) => {
           </TableContainer>
 
           {filteredRows.length > 0 && (
-            <Box sx={{
-              p: 2,
-              borderTop: `1px solid ${theme.palette.divider}`,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              flexWrap: 'wrap',
-              gap: 2
-            }}>
+            <Box
+              sx={{
+                p: 2,
+                borderTop: `1px solid ${theme.palette.divider}`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                flexWrap: "wrap",
+                gap: 2,
+              }}
+            >
               <Typography variant="body2" color="text.secondary">
-                Showing {indexOfFirstItem + 1}-{Math.min(indexOfLastItem, filteredRows.length)} of {filteredRows.length} projects
+                Showing {indexOfFirstItem + 1}-
+                {Math.min(indexOfLastItem, filteredRows.length)} of{" "}
+                {filteredRows.length} projects
               </Typography>
               <Pagination
                 count={pageCount}
@@ -630,20 +679,25 @@ const AdminDashboard = (props) => {
         <Grid container spacing={3}>
           {/* Milestone Chart */}
           <Grid item xs={12} lg={8}>
-            <Paper elevation={0} sx={{
-              p: 3,
-              borderRadius: 3,
-              height: '100%',
-              border: `1px solid ${theme.palette.divider}`
-            }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                <Box sx={{
-                  p: 1,
-                  borderRadius: 2,
-                  backgroundColor: alpha(theme.palette.primary.main, 0.1),
-                  color: theme.palette.primary.main,
-                  mr: 2
-                }}>
+            <Paper
+              elevation={0}
+              sx={{
+                p: 3,
+                borderRadius: 3,
+                height: "100%",
+                border: `1px solid ${theme.palette.divider}`,
+              }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+                <Box
+                  sx={{
+                    p: 1,
+                    borderRadius: 2,
+                    backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                    color: theme.palette.primary.main,
+                    mr: 2,
+                  }}
+                >
                   <TimelineIcon />
                 </Box>
                 <Box sx={{ flexGrow: 1 }}>
@@ -656,14 +710,16 @@ const AdminDashboard = (props) => {
                 </Box>
                 <FormControl size="small" sx={{ minWidth: 200 }}>
                   <Select
-                    value={selectedProject2 || ''}
+                    value={selectedProject2 || ""}
                     onChange={handleProjectChange}
                     displayEmpty
                     renderValue={(selected) => {
                       if (!selected) {
                         return <em>Select a project</em>;
                       }
-                      const project = projects2.find(p => p.project_id === selected);
+                      const project = projects2.find(
+                        (p) => p.project_id === selected
+                      );
                       return project?.name || selected;
                     }}
                   >
@@ -682,50 +738,72 @@ const AdminDashboard = (props) => {
               {selectedProject2 && filteredActivities.length > 0 ? (
                 <Box sx={{ height: 320 }}>
                   <BarChart
-                    series={[{
-                      data: filteredActivities.map((activity) => {
-                        const progress = (start_date, end_date) => {
-                          const currentDate = new Date();
-                          const totalDuration = new Date(end_date) - new Date(start_date);
-                          const elapsedDuration = currentDate - new Date(start_date);
-                          return Math.min(Math.max((elapsedDuration / totalDuration) * 100, 0), 100);
-                        };
-                        return parseInt(progress(activity.start_date, activity.end_date));
-                      }),
-                      color: theme.palette.primary.main,
-                      label: 'Progress %',
-                    }]}
-                    height={320}
-                    xAxis={[{
-                      data: filteredActivities.map(activity => activity.name),
-                      scaleType: 'band',
-                      tickLabelStyle: {
-                        angle: 45,
-                        textAnchor: 'start',
-                        fontSize: 12,
+                    series={[
+                      {
+                        data: filteredActivities.map((activity) => {
+                          const progress = (start_date, end_date) => {
+                            const currentDate = new Date();
+                            const totalDuration =
+                              new Date(end_date) - new Date(start_date);
+                            const elapsedDuration =
+                              currentDate - new Date(start_date);
+                            return Math.min(
+                              Math.max(
+                                (elapsedDuration / totalDuration) * 100,
+                                0
+                              ),
+                              100
+                            );
+                          };
+                          return parseInt(
+                            progress(activity.start_date, activity.end_date)
+                          );
+                        }),
+                        color: theme.palette.primary.main,
+                        label: "Progress %",
                       },
-                    }]}
-                    yAxis={[{
-                      min: 0,
-                      max: 100,
-                      valueFormatter: (value) => `${value}%`,
-                    }]}
+                    ]}
+                    height={320}
+                    xAxis={[
+                      {
+                        data: filteredActivities.map(
+                          (activity) => activity.name
+                        ),
+                        scaleType: "band",
+                        tickLabelStyle: {
+                          angle: 45,
+                          textAnchor: "start",
+                          fontSize: 12,
+                        },
+                      },
+                    ]}
+                    yAxis={[
+                      {
+                        min: 0,
+                        max: 100,
+                        valueFormatter: (value) => `${value}%`,
+                      },
+                    ]}
                     margin={{ top: 20, bottom: 70, left: 40, right: 20 }}
                     grid={{ vertical: true }}
                   />
                 </Box>
               ) : (
-                <Box sx={{
-                  height: 320,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexDirection: 'column',
-                  gap: 2
-                }}>
-                  <TimelineIcon sx={{ fontSize: 48, color: 'text.disabled' }} />
+                <Box
+                  sx={{
+                    height: 320,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexDirection: "column",
+                    gap: 2,
+                  }}
+                >
+                  <TimelineIcon sx={{ fontSize: 48, color: "text.disabled" }} />
                   <Typography variant="body1" color="text.secondary">
-                    {selectedProject2 ? 'No milestone data available' : 'Select a project to view milestones'}
+                    {selectedProject2
+                      ? "No milestone data available"
+                      : "Select a project to view milestones"}
                   </Typography>
                 </Box>
               )}
@@ -734,20 +812,25 @@ const AdminDashboard = (props) => {
 
           {/* Project Statistics Chart */}
           <Grid item xs={12} lg={4}>
-            <Paper elevation={0} sx={{
-              p: 3,
-              borderRadius: 3,
-              height: '100%',
-              border: `1px solid ${theme.palette.divider}`
-            }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                <Box sx={{
-                  p: 1,
-                  borderRadius: 2,
-                  backgroundColor: alpha(theme.palette.info.main, 0.1),
-                  color: theme.palette.info.main,
-                  mr: 2
-                }}>
+            <Paper
+              elevation={0}
+              sx={{
+                p: 3,
+                borderRadius: 3,
+                height: "100%",
+                border: `1px solid ${theme.palette.divider}`,
+              }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+                <Box
+                  sx={{
+                    p: 1,
+                    borderRadius: 2,
+                    backgroundColor: alpha(theme.palette.info.main, 0.1),
+                    color: theme.palette.info.main,
+                    mr: 2,
+                  }}
+                >
                   <PieChartIcon />
                 </Box>
                 <Box>
@@ -761,57 +844,78 @@ const AdminDashboard = (props) => {
               </Box>
 
               {totalProjects > 0 ? (
-                <Box sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: 3
-                }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 3,
+                  }}
+                >
                   <PieChart
-                    series={[{
-                      data: chartData,
-                      innerRadius: 40,
-                      outerRadius: 80,
-                      paddingAngle: 2,
-                      cornerRadius: 4,
-                      highlightScope: { fade: 'global', highlight: 'item' },
-                    }]}
+                    series={[
+                      {
+                        data: chartData,
+                        innerRadius: 40,
+                        outerRadius: 80,
+                        paddingAngle: 2,
+                        cornerRadius: 4,
+                        highlightScope: { fade: "global", highlight: "item" },
+                      },
+                    ]}
                     height={240}
                     slotProps={{
                       legend: { hidden: true },
                     }}
                   />
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, width: '100%' }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 1.5,
+                      width: "100%",
+                    }}
+                  >
                     {chartData.map((item, index) => (
                       <Box
                         key={index}
                         sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
                           p: 2,
                           borderRadius: 2,
                           backgroundColor: alpha(item.color, 0.05),
-                          border: `1px solid ${alpha(item.color, 0.1)}`
+                          border: `1px solid ${alpha(item.color, 0.1)}`,
                         }}
                       >
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                          <Box sx={{
-                            width: 12,
-                            height: 12,
-                            borderRadius: '50%',
-                            backgroundColor: item.color,
-                          }} />
+                        <Box
+                          sx={{ display: "flex", alignItems: "center", gap: 2 }}
+                        >
+                          <Box
+                            sx={{
+                              width: 12,
+                              height: 12,
+                              borderRadius: "50%",
+                              backgroundColor: item.color,
+                            }}
+                          />
                           <Typography variant="body2" sx={{ fontWeight: 500 }}>
                             {item.label}
                           </Typography>
                         </Box>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Box
+                          sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                        >
                           <Typography variant="h6" sx={{ fontWeight: 700 }}>
                             {item.value}
                           </Typography>
                           <Typography variant="caption" color="text.secondary">
-                            ({totalProjects > 0 ? Math.round((item.value / totalProjects) * 100) : 0}%)
+                            (
+                            {totalProjects > 0
+                              ? Math.round((item.value / totalProjects) * 100)
+                              : 0}
+                            %)
                           </Typography>
                         </Box>
                       </Box>
@@ -819,15 +923,17 @@ const AdminDashboard = (props) => {
                   </Box>
                 </Box>
               ) : (
-                <Box sx={{
-                  height: 240,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexDirection: 'column',
-                  gap: 2
-                }}>
-                  <PieChartIcon sx={{ fontSize: 48, color: 'text.disabled' }} />
+                <Box
+                  sx={{
+                    height: 240,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexDirection: "column",
+                    gap: 2,
+                  }}
+                >
+                  <PieChartIcon sx={{ fontSize: 48, color: "text.disabled" }} />
                   <Typography variant="body1" color="text.secondary">
                     No project data available
                   </Typography>

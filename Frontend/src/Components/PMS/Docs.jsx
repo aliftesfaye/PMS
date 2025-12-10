@@ -235,13 +235,13 @@ const Docs = (props) => {
   };
 
   return (
-    <div className="docs-container ml-auto mr-5 mt-24 px-4 lg:px-6 xl:px-8 w-full lg:w-4/5">
+    <div className="docs-container ml-auto mr-5 mt-6 px-4 lg:px-6 xl:px-8 w-full lg:w-4/5">
       <Helmet>
         <title>{props.setSelectedProjectInfo.name} - Documents</title>
       </Helmet>
 
       {/* Project Header */}
-      <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6 mt-10 mb-8">
+      <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6 mt-10 ">
         <div className="flex items-center gap-4">
           <div
             className="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center text-white text-xl font-bold shadow-md"

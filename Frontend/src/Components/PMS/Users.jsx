@@ -23,14 +23,16 @@ import Swal from "sweetalert2";
 import { PERMISSIONS } from "../../config";
 import apiService from "../services/apiServices";
 import EditUsers from "./EditUsers";
-import Projectdelete from "./Projectdelete";
 import Registernewuser from "./Registernewuser";
 import Userdelete from "./Userdelete";
-// import UserStatus from "./UserStatus.jsx";
 
 const BoldTableCell = styled(TableCell)({
   "& .header-cell": {
     fontWeight: "bold",
+    color: "#1e3a8a",
+    fontSize: "0.875rem",
+    textTransform: "uppercase",
+    letterSpacing: "0.05em",
   },
 });
 
@@ -39,7 +41,6 @@ const Users = () => {
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-
   const [selectedRow, setSelectedRow] = useState(null);
   const [openRowMenu, setOpenRowMenu] = useState(null);
   const [statusFilter, setStatusFilter] = useState("All");
@@ -54,14 +55,12 @@ const Users = () => {
   const [selectedUserForStatusChange, setSelectedUserForStatusChange] =
     useState(null);
   const [loading, setLoading] = useState(false);
-
   const [userStatus, setUserStatus] = useState();
   const [createUser, setCreateUser] = useState(0);
   const [deleteUser, setDeleteUser] = useState(0);
   const [updateUser, setUpdateUser] = useState(0);
   const [changeUserStatus, setChangeUserStatus] = useState(0);
   const [viewPassword, setViewPassword] = useState(0);
-
   const [showCreateUserModal, setShowCreateUserModal] = useState(false);
   const [userInfo, setUserInfo] = useState(() => {
     return JSON.parse(localStorage.getItem("userInfo")) || [];
@@ -69,17 +68,16 @@ const Users = () => {
   const [permissions, setPermissions] = useState(() => {
     return JSON.parse(localStorage.getItem("permissions")) || [];
   });
+
   const fetchData = async () => {
     try {
       setLoading(true);
       const response = await apiService.getAllUsers(userInfo.access_token);
-      console.log(response);
       const sortedResponse = response.sort((a, b) => {
         if (a.createdAt > b.createdAt) {
           return -1;
         }
       });
-      console.log(sortedResponse);
       setUsersData(sortedResponse);
       setLoading(false);
     } catch (error) {
@@ -92,7 +90,6 @@ const Users = () => {
     async function fetchUsers() {
       localStorage.setItem("userInfo", JSON.stringify(userInfo));
     }
-
     async function fetchPermissions() {
       localStorage.setItem("permissions", JSON.stringify(permissions));
     }
@@ -101,23 +98,18 @@ const Users = () => {
     const CREATE_USER = permissions.filter(
       (permission) => permission.name === PERMISSIONS.REGISTER_NEW_USER
     );
-
     const UPDATE_USER = permissions.filter(
       (permission) => permission.name === PERMISSIONS.UPDATE_USER
     );
-
     const DELETE_USER = permissions.filter(
       (permission) => permission.name === PERMISSIONS.DELETE_USER
     );
-
     const CHANGE_USER_STATUS = permissions.filter(
       (permission) => permission.name === PERMISSIONS.CHANGE_USER_STATUS
     );
-
     const VIEW_PASSWORD = permissions.filter(
       (permission) => permission.name === PERMISSIONS.VIEW_PASSWORD
     );
-
     setCreateUser(CREATE_USER.length);
     setUpdateUser(UPDATE_USER.length);
     setDeleteUser(DELETE_USER.length);
@@ -146,7 +138,6 @@ const Users = () => {
           confirmButton: "mr-8",
         },
       });
-
       if (confirmation.isConfirmed) {
         await apiService.updateUserStatus(id, userInfo.access_token);
         await fetchData();
@@ -216,7 +207,6 @@ const Users = () => {
   const toggleConfirmModal = () => setShowConfirmModal(!showConfirmModal);
 
   const handleEditClick = (row) => {
-    console.log(row);
     setSelectedRow(row);
     setEditModalOpen(true);
   };
@@ -317,25 +307,29 @@ const Users = () => {
         handleCloseModal();
       }
     };
-
     document.addEventListener("mousedown", handleClickOutsideModal);
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutsideModal);
     };
   }, [userStatus]);
 
   const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    height: 50,
+    height: 60,
+    "&:hover": {
+      backgroundColor: "#f8fafc",
+      transition: "background-color 0.2s ease",
+    },
   }));
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    padding: "0px 20px",
+    padding: "16px 24px",
+    fontSize: "0.875rem",
+    color: "#334155",
   }));
+
   const handlefetchUsers = async () => {
     try {
       const usersData = await apiService.getAllUsers(userInfo.access_token);
-      console.log(usersData);
       const sortedResponse = usersData.sort((a, b) => {
         if (a.createdAt > b.createdAt) {
           return -1;
@@ -348,382 +342,446 @@ const Users = () => {
   };
 
   return (
-    <div className="ml-auto w-4/5 mr-6 mt-24 relative ">
+    <div className="ml-auto w-full lg:w-4/5 mr-0 lg:mr-6 mt-6 px-4 lg:px-0 relative">
       <Helmet>
         <title>PMS - Users</title>
       </Helmet>
-      <div className="  mb-6">
-        <h1 className="text-2xl font-bold">Users</h1>
+
+      <div className="mb-6">
+        <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">Users</h1>
+        <p className="text-gray-600 mt-1">
+          Manage and monitor all system users
+        </p>
       </div>
 
-      <div>
-        <ul class="my-5 flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-200 dark:text-gray-400">
-          <li class="me-2 " onClick={() => handleFilterClick("All")}>
-            <a
-              href="#"
-              aria-current="page"
-              className={`cursor-pointer ${
-                statusFilter === "All"
-                  ? "font-bold text-blue-900 bg-gray-100 inline-block p-4   rounded-t-lg "
-                  : "inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50  dark:hover:text-gray-300"
+      {/* Status Filter Tabs */}
+      <div className="mb-6 overflow-x-auto">
+        <div className="flex space-x-1 bg-white rounded-lg border border-gray-200 p-1 w-fit">
+          {["All", "Active", "Inactive"].map((status) => (
+            <button
+              key={status}
+              onClick={() => handleFilterClick(status)}
+              className={`px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                statusFilter === status
+                  ? "bg-blue-900 text-white shadow-sm"
+                  : "text-gray-600 hover:text-blue-900 hover:bg-blue-50"
               }`}
             >
-              <div>All</div>
-            </a>
-          </li>
-          <li class="me-2" onClick={() => handleFilterClick("Active")}>
-            <a
-              href="#"
-              className={`cursor-pointer ${
-                statusFilter === "Active"
-                  ? "font-bold text-blue-900 bg-gray-100 inline-block p-4   rounded-t-lg "
-                  : "inline-block p-4 rounded-t-lg  hover:bg-gray-50  dark:hover:text-gray-300"
-              }`}
-            >
-              <div>Active</div>
-            </a>
-          </li>
-          <li class="me-2" onClick={() => handleFilterClick("Inactive")}>
-            <a
-              href="#"
-              className={`cursor-pointer ${
-                statusFilter === "Inactive"
-                  ? "font-bold text-blue-900 bg-gray-100 inline-block p-4   rounded-t-lg "
-                  : "inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50  dark:hover:text-gray-300"
-              }`}
-            >
-              <div>Inactive</div>
-            </a>
-          </li>
-        </ul>
+              {status}
+            </button>
+          ))}
+        </div>
+      </div>
 
-        <div className="flex flex-wrap mb-7 justify-between">
-          <div class=" self-center ">
+      {/* Search and Create Section */}
+      <div className="bg-white rounded-xl border border-gray-200 p-4 lg:p-6 mb-6 shadow-sm">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+          <div className="w-full lg:w-auto">
             <TextField
               type="text"
-              placeholder="Search by User Name"
+              placeholder="Search by User Name..."
               size="small"
-              class=" rounded-lg "
+              className="w-full lg:w-64"
               variant="outlined"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <SearchIcon />
+                    <SearchIcon className="text-gray-400" />
                   </InputAdornment>
                 ),
+                classes: {
+                  root: "rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors",
+                },
               }}
             />
           </div>
           {createUser !== 0 && (
             <button
-              className="text-white font-bold py-2 px-4 rounded"
+              className="bg-blue-900 hover:bg-blue-800 text-white font-semibold py-2.5 px-6 rounded-lg transition-all duration-200 flex items-center gap-2 shadow-sm hover:shadow whitespace-nowrap"
               onClick={() => handleAddClick()}
-              style={{ backgroundColor: "#082f49" }}
             >
-              + Register User
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              Register New User
             </button>
           )}
         </div>
-        <div className="rows-per-page flex my-6 ml-2 justify-start text-sm ">
-          {" "}
-          Rows per page
-          <div>
+      </div>
+
+      {/* Rows per page selector */}
+      {usersData.length !== 0 && (
+        <div className="flex justify-between items-center mb-4">
+          <div className="text-sm text-gray-600">
+            Showing {indexOfFirstItem + 1} to{" "}
+            {Math.min(indexOfLastItem, filteredRows.length)} of{" "}
+            {filteredRows.length} users
+          </div>
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            Rows per page:
             <select
               value={rowsPerPage}
               onChange={handleRowsPerPageChange}
-              className=" w-fit pl-3 text-sm border-none outline-none bg-white  focus:border-none focus:outline-none"
+              className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-transparent bg-white"
             >
               <option value={5}>5</option>
               <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
               <option value={100}>100</option>
             </select>
           </div>
         </div>
-      </div>
-      <div>
-        <TableContainer
-          component={Paper}
-          sx={{
-            // maxHeight: 300,
-            width: "100%",
-          }}
-        >
-          <Box sx={{ width: "100%" }}>
-            <Fade
-              in={loading}
-              style={{
-                transitionDelay: loading ? "100ms" : "0ms",
-              }}
-              unmountOnExit
-            >
-              <LinearProgress />
-            </Fade>
-          </Box>
-          <Table
-            sx={{
-              minWidth: 900,
-              borderBottom: "none",
+      )}
+
+      {/* Table Section */}
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <Box sx={{ width: "100%" }}>
+          <Fade
+            in={loading}
+            style={{
+              transitionDelay: loading ? "100ms" : "0ms",
             }}
-            stickyHeader
+            unmountOnExit
           >
-            <TableHead>
-              <TableRow>
-                <BoldTableCell>
-                  <div className="header-cell">Full Name</div>
-                </BoldTableCell>
-                <BoldTableCell>
-                  <div className="header-cell">Email</div>
-                </BoldTableCell>
-                <BoldTableCell>
-                  <div className="header-cell">Password</div>
-                </BoldTableCell>
-                <BoldTableCell>
-                  <div className="header-cell ">Gender</div>
-                </BoldTableCell>
-                <BoldTableCell>
-                  <div className="header-cell">Status</div>
-                </BoldTableCell>
-                {/* <BoldTableCell>
-                  <div className="header-cell">Project</div>
-                </BoldTableCell> */}
-                {updateUser !== 0 && (
-                  <BoldTableCell>
-                    <div className="header-cell ">Action</div>
+            <LinearProgress sx={{ height: 2 }} />
+          </Fade>
+        </Box>
+
+        {currentItems.length !== 0 ? (
+          <div className="overflow-x-auto">
+            <Table sx={{ minWidth: 900 }}>
+              <TableHead>
+                <TableRow sx={{ backgroundColor: "#f8fafc" }}>
+                  <BoldTableCell sx={{ padding: "20px 24px" }}>
+                    <div className="header-cell">Full Name</div>
                   </BoldTableCell>
-                )}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {currentItems.map((row, index) => (
-                <StyledTableRow
-                  key={row.id}
-                  style={
-                    index % 2
-                      ? { background: "white" }
-                      : { background: "#f7f6fe" }
-                  }
-                >
-                  <StyledTableCell>
-                    <div className="flex items-center cursor-pointer">
-                      <div
-                        className={`h-8 w-fit flex gap-1 items-center justify-center rounded-md text-`}
-                      >
-                        <AccountCircleIcon style={{ color: "#223c5d" }} />
-                        <div>{capitalizeName(row.full_name)}</div>
-                      </div>
-                    </div>
-                  </StyledTableCell>
-
-                  <StyledTableCell>{row.email}</StyledTableCell>
-
-                  <StyledTableCell>
-                    {" "}
-                    {row.unchanged_password ? (
-                      <div className="flex flex-row items-center gap-3">
-                        <div className="text-center cursor-pointer">
-                          <div
-                            onClick={() =>
-                              handlePasswordVisibility(row.user_id)
-                            }
-                          >
-                            {eyeIcon === "eye" &&
-                            row.user_id === selectedUser ? (
-                              <Tooltip title="Hide Password">
-                                <div className="p-2 hover:bg-gray-200 rounded-lg">
-                                  <VisibilityOffOutlinedIcon />
-                                </div>
-                              </Tooltip>
-                            ) : (
-                              <Tooltip title="View Password">
-                                <div className="p-2 hover:bg-gray-200 rounded-lg">
-                                  <VisibilityOutlinedIcon />
-                                </div>
-                              </Tooltip>
-                            )}
-                          </div>
-                        </div>
-                        {isSecureEntry && row.user_id === selectedUser ? (
-                          <div>{row.unchanged_password}</div>
-                        ) : (
-                          <div>*****</div>
-                        )}
-                      </div>
-                    ) : (
-                      <div></div>
-                    )}
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <div className="flex flex-row">
-                      <div className="ml-5">{getGenderLabel(row.gender)}</div>
-                    </div>
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <div className="manager-cell flex">
-                      <Tooltip title="Change User Status">
-                        <div>
-                          <Switch
-                            checked={row.account_status}
-                            onChange={() => handleStatusChange(row.user_id)}
-                            color="primary"
-                            inputProps={{ "aria-label": "toggle user status" }}
+                  <BoldTableCell>
+                    <div className="header-cell">Email</div>
+                  </BoldTableCell>
+                  <BoldTableCell>
+                    <div className="header-cell">Password</div>
+                  </BoldTableCell>
+                  <BoldTableCell>
+                    <div className="header-cell">Gender</div>
+                  </BoldTableCell>
+                  <BoldTableCell>
+                    <div className="header-cell">Status</div>
+                  </BoldTableCell>
+                  {(updateUser !== 0 || deleteUser !== 0) && (
+                    <BoldTableCell>
+                      <div className="header-cell">Actions</div>
+                    </BoldTableCell>
+                  )}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {currentItems.map((row) => (
+                  <StyledTableRow key={row.user_id}>
+                    <StyledTableCell>
+                      <div className="flex items-center cursor-pointer group">
+                        <div className="flex-shrink-0 mr-3">
+                          <AccountCircleIcon
+                            className="text-blue-900 group-hover:text-blue-800 transition-colors"
+                            style={{ fontSize: 32 }}
                           />
                         </div>
-                      </Tooltip>
-                    </div>
-                  </StyledTableCell>
-
-                  {/* <StyledTableCell
-                    className={String(row.project_status).toLowerCase()}
-                  >
-                    <div className="status-cell">
-                      <div style={{ alignItems: "center" }}>
-                        {String(row.project_status) === "true" && (
-                          <span className="bg-green-200  text-green-700 rounded-xl p-1">
-                            Assigned
-                          </span>
-                        )}
-                        {String(row.project_status) === "false" && (
-                          <span className="bg-red-200  text-red-700 rounded-xl p-1">
-                            Unassigned
-                          </span>
-                        )}
+                        <div>
+                          <div className="font-medium text-gray-900 group-hover:text-blue-900 transition-colors">
+                            {capitalizeName(row.full_name)}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            ID: {row.user_id?.slice(0, 8)}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </StyledTableCell> */}
-                  <StyledTableCell>
-                    <div className="flex flex-row items-center">
-                      {updateUser !== 0 && (             
-                      <div className="cursor-pointer flex gap-2 text-white flex-row relative">
-                        <Tooltip title="Edit User Info..">
-                          <div className="p-2 hover:bg-gray-200 rounded-lg">
-                            <div
-                              onClick={() => handleEditClick(row)}
-                              className="text-blue-900"
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      <div className="font-medium text-gray-900">
+                        {row.email}
+                      </div>
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      {row.unchanged_password ? (
+                        <div className="flex items-center gap-3">
+                          <Tooltip
+                            title={
+                              eyeIcon === "eye"
+                                ? " Hide Password"
+                                : "View Password"
+                            }
+                            placement="top"
+                          >
+                            <button
+                              onClick={() =>
+                                handlePasswordVisibility(row.user_id)
+                              }
+                              className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 p-2 rounded-lg transition-colors"
                             >
-                              {" "}
-                              <FaEdit size={22} />
+                              {eyeIcon === "eye" &&
+                              row.user_id === selectedUser ? (
+                                <VisibilityOutlinedIcon />
+                              ) : (
+                                <VisibilityOffOutlinedIcon />
+                              )}
+                            </button>
+                          </Tooltip>
+                          {isSecureEntry && row.user_id === selectedUser ? (
+                            <div className="font-mono text-gray-700">
+                              {row.unchanged_password}
                             </div>
+                          ) : (
+                            <div className="text-gray-400">••••••••</div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="text-gray-400 text-sm">
+                          No password set
+                        </div>
+                      )}
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      <div className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-800">
+                        {getGenderLabel(row.gender)}
+                      </div>
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      <div className="flex items-center">
+                        <Tooltip title="Change User Status" placement="top">
+                          <div>
+                            <Switch
+                              checked={row.account_status}
+                              onChange={() => handleStatusChange(row.user_id)}
+                              color="primary"
+                              inputProps={{
+                                "aria-label": "toggle user status",
+                              }}
+                            />
                           </div>
                         </Tooltip>
+                        <div
+                          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ml-3 ${
+                            row.account_status
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
+                        >
+                          {row.account_status ? "Active" : "Inactive"}
+                        </div>
                       </div>
-                  )}
-                  {deleteUser !== 0 && (
-                      <div className="cursor-pointer flex gap-2 text-white flex-row relative">
-                        <Tooltip title="Delete User">
-                          <div className="p-2 hover:bg-gray-200 rounded-lg">
-                          <div
-                        className="text-red-500"
-                        onClick={() => handleDeleteClick(row)}
-                      >
-                        <FaTrash size={15} />
-                      </div>
-                          </div>
-                        </Tooltip>
-                      </div>
-                    
-                  )}</div>
-                  
-                  </StyledTableCell>
-                  
-                </StyledTableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                    </StyledTableCell>
+                    {(updateUser !== 0 || deleteUser !== 0) && (
+                      <StyledTableCell>
+                        <div className="flex items-center gap-2">
+                          {updateUser !== 0 && (
+                            <Tooltip title="Edit User" placement="top">
+                              <button
+                                onClick={() => handleEditClick(row)}
+                                className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 p-2 rounded-lg transition-colors"
+                              >
+                                <FaEdit size={16} />
+                              </button>
+                            </Tooltip>
+                          )}
+                          {deleteUser !== 0 && (
+                            <Tooltip title="Delete User" placement="top">
+                              <button
+                                onClick={() => handleDeleteClick(row)}
+                                className="text-red-600 hover:text-red-800 hover:bg-red-50 p-2 rounded-lg transition-colors"
+                              >
+                                <FaTrash size={16} />
+                              </button>
+                            </Tooltip>
+                          )}
+                        </div>
+                      </StyledTableCell>
+                    )}
+                  </StyledTableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        ) : (
+          <div className="py-16 text-center">
+            <div className="text-gray-400 mb-2">
+              <svg
+                className="w-16 h-16 mx-auto"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1}
+                  d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-1">
+              No users found
+            </h3>
+            <p className="text-gray-600 max-w-md mx-auto">
+              {loading
+                ? "Loading users..."
+                : "No users match your current filters. Try adjusting your search or filters."}
+            </p>
+            {!loading && createUser !== 0 && (
+              <button
+                onClick={() => handleAddClick()}
+                className="mt-4 bg-blue-900 hover:bg-blue-800 text-white font-medium py-2 px-6 rounded-lg transition-colors inline-flex items-center gap-2"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+                Register your first user
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
-      <Box className="text-sm flex justify-end mt-1 pb-20 pt-5">
-        <Pagination
-          count={pageCount}
-          page={currentPage}
-          onChange={handleChange}
-          variant="outlined"
-          shape="rounded"
-          size="small"
-          color="primary"
-          sx={{ "& .MuiPaginationItem-root": { margin: "0 4px" } }}
-        />
-      </Box>
-
-      {addModalOpen && (
-        <div className="fixed  top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div className="bg-white  h-fit p-5 rounded-md relative">
-            <div
-              className="close cursor-pointer text-end mr-5 "
-              onClick={handleAddModalClose}
-            >
-              {" "}
-              X
-            </div>
-            <Registernewuser
-              handleCloseModal={handleAddModalClose}
-              handlefetchUsers={handlefetchUsers}
+      {/* Pagination */}
+      {usersData.length !== 0 && search.length > 0 && (
+        <div className="mt-6 flex justify-center mb-20">
+          <div className="bg-white rounded-lg border border-gray-200 px-4 py-3 shadow-sm">
+            <Pagination
+              count={pageCount}
+              page={currentPage}
+              onChange={handleChange}
+              variant="outlined"
+              shape="rounded"
+              color="primary"
+              showFirstButton
+              showLastButton
+              sx={{
+                "& .MuiPaginationItem-root": {
+                  fontSize: "0.875rem",
+                  margin: "0 2px",
+                  "&.Mui-selected": {
+                    backgroundColor: "#1e3a8a",
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "#1e40af",
+                    },
+                  },
+                  "&:hover": {
+                    backgroundColor: "#f1f5f9",
+                  },
+                },
+              }}
             />
           </div>
         </div>
       )}
-      {editModalOpen && (
-        <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div className="bg-white p-5 w-fit  rounded-md relative">
-            <div
-              className="close cursor-pointer text-end mr-5 "
-              onClick={handleEditModalClose}
-            >
-              {" "}
-              X
+
+      {/* Modals */}
+      {addModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-opacity">
+          <div className="rounded-2xl shadow-2xl w-11/12 lg:w-4/5 max-h-[90vh] overflow-hidden mx-4">
+            <div className="overflow-y-auto max-h-[calc(90vh-80px)]">
+              <Registernewuser
+                handleCloseModal={handleAddModalClose}
+                handlefetchUsers={handlefetchUsers}
+              />
             </div>
-            <EditUsers
-              selectedRow={selectedRow}
-              handleCloseModal={handleEditModalClose}
-              handleFetchUsers={fetchData}
-            />
+          </div>
+        </div>
+      )}
+
+      {editModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-opacity">
+          <div className="rounded-2xl shadow-2xl w-11/12 lg:w-4/5 max-h-[90vh] overflow-hidden mx-4">
+            <div className="overflow-y-auto max-h-[calc(90vh-80px)]">
+              <EditUsers
+                selectedRow={selectedRow}
+                handleCloseModal={handleEditModalClose}
+                handleFetchUsers={fetchData}
+              />
+            </div>
           </div>
         </div>
       )}
 
       {deleteModalOpen && (
-        <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div className="bg-white w-1/2 pt-4 rounded-md relative">
-            <div
-              className="close cursor-pointer text-end mr-12 "
-              onClick={handleDeleteModalClose}
-            >
-              X
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-opacity">
+          <div className=" rounded-2xl shadow-2xl w-11/12 lg:w-1/2 max-h-[90vh] overflow-hidden mx-4">
+            <div className="overflow-y-auto max-h-[calc(90vh-80px)]">
+              <Userdelete
+                selectedRow={selectedRow}
+                handlefetchUsers={handlefetchUsers}
+                handleDeleteModalClose={handleDeleteModalClose}
+              />
             </div>
-            <Userdelete  selectedRow={selectedRow}
-              handlefetchUsers={handlefetchUsers}
-              handleDeleteModalClose={handleDeleteModalClose} />
           </div>
         </div>
       )}
+
       {showConfirmModal && (
-        <div className="modal-overlay">
-          <div className="confirm-modal-container">
-            <div className="fixed top-0 left-0 w-full h-full z-70 flex items-center justify-center bg-gray-800 bg-opacity-50">
-              <div className="bg-white w-2/3 p-8 rounded-md relative">
-                <span
-                  onClick={toggleConfirmModal}
-                  className="  cursor-pointer text-gray-500"
+        <div className="fixed inset-0 z-60 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl w-11/12 lg:w-1/3 max-h-[90vh] overflow-hidden mx-4">
+            <div className="flex justify-between items-center border-b border-gray-200 px-6 py-4">
+              <h2 className="text-xl font-bold text-gray-900">
+                Confirm Status Change
+              </h2>
+              <button
+                onClick={cancelStatusChange}
+                className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  X
-                </span>
-                {/* <UserStatus /> */}
-                <div className="mt-4 flex justify-end">
-                  <button
-                    className="bg-white text-black py-2 px-4 rounded mr-4"
-                    onClick={cancelStatusChange}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    className="bg-blue-500 text-white py-2 px-4 rounded"
-                    onClick={confirmStatusChange}
-                  >
-                    Confirm
-                  </button>
-                </div>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div className="p-6">
+              <div className="text-gray-700 mb-6">
+                Are you sure you want to change this user's status?
+              </div>
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={cancelStatusChange}
+                  className="px-4 py-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors font-medium"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmStatusChange}
+                  className="px-4 py-2 bg-blue-900 hover:bg-blue-800 text-white rounded-lg transition-colors font-medium"
+                >
+                  Confirm
+                </button>
               </div>
             </div>
           </div>

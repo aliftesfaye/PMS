@@ -25,6 +25,10 @@ import apiService from "../services/apiServices";
 const BoldTableCell = styled(TableCell)({
   "& .header-cell": {
     fontWeight: "bold",
+    color: "#1e3a8a",
+    fontSize: "0.875rem",
+    textTransform: "uppercase",
+    letterSpacing: "0.05em",
   },
 });
 
@@ -70,7 +74,6 @@ const Roles = () => {
 
   const handleEditClick = (row) => {
     setSelectedRow(row);
-    console.log(row);
     setEditModalOpen(true);
   };
   const handleCloseModal = (row) => {
@@ -100,7 +103,6 @@ const Roles = () => {
   };
 
   const handleViewClick = (row) => {
-    // console.log(row)
     setSelectedRow(row);
     setViewModalOpen(true);
   };
@@ -140,13 +142,21 @@ const Roles = () => {
   const currentItems = filteredRows.slice(indexOfFirstItem, indexOfLastItem);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    height: 50,
+    height: 60,
+    "&:hover": {
+      backgroundColor: "#f8fafc",
+      transition: "background-color 0.2s ease",
+    },
   }));
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    padding: "0px 20px",
+    padding: "16px 24px",
+    fontSize: "0.875rem",
+    color: "#334155",
   }));
+
   const handleChange = (event, value) => {
     paginate(value);
   };
@@ -154,248 +164,418 @@ const Roles = () => {
   const pageCount = Math.ceil(filteredRows.length / rowsPerPage);
 
   return (
-    <div className="ml-auto w-4/5 mr-5 mt-24 relative ">
+    <div className="ml-auto w-full lg:w-4/5 mr-0 lg:mr-6 mt-6 px-4 lg:px-0 relative">
       <Helmet>
         <title>PMS - Roles</title>
       </Helmet>
+
       <div className="mb-6">
-        <h1 className="text-2xl font-bold">Roles</h1>
+        <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">Roles</h1>
+        <p className="text-gray-600 mt-1">
+          Manage system roles and permissions
+        </p>
       </div>
 
-      <div className="">
-        <div class=" self-center ">
-          <TextField
-            type="text"
-            placeholder="Search by Role Name"
-            size="small"
-            class="bg-white rounded-lg"
-            variant="outlined"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </div>
-        <div className="flex mb-7 justify-between">
-          <div className="rows-per-page flex ml-2 justify-start mt-4 text-sm ">
-            Rows per page
-            <div>
-              <select
-                value={rowsPerPage}
-                onChange={handleRowsPerPageChange}
-                className="w-fit pl-3 text-sm border-none outline-none bg-white focus:border-none focus:outline-none"
-              >
-                <option value={5}>5</option>
-                <option value={10}>10</option>
-                <option value={100}>100</option>
-              </select>
-            </div>
+      {/* Search and Create Section */}
+      <div className="bg-white rounded-xl border border-gray-200 p-4 lg:p-6 mb-6 shadow-sm">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+          <div className="w-full lg:w-auto">
+            <TextField
+              type="text"
+              placeholder="Search by Role Name"
+              size="small"
+              className="w-full lg:w-64"
+              variant="outlined"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon className="text-gray-400" />
+                  </InputAdornment>
+                ),
+                classes: {
+                  root: "rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors",
+                },
+              }}
+            />
           </div>
           <button
-            className=" text-white font-bold py-2 px-4 rounded"
+            className="bg-blue-900 hover:bg-blue-800 text-white font-semibold py-2.5 px-6 rounded-lg transition-all duration-200 flex items-center gap-2 shadow-sm hover:shadow whitespace-nowrap"
             onClick={handleAddClick}
-            style={{ backgroundColor: "#082f49" }}
           >
-            + Add New Role
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            Add New Role
           </button>
         </div>
       </div>
-      <div>
-        <TableContainer
-          component={Paper}
-          sx={{
-            width: "100%",
-          }}
-        >
-          <Box sx={{ width: "100%" }}>
-            <Fade
-              in={loading}
-              style={{
-                transitionDelay: loading ? "100ms" : "0ms",
-              }}
-              unmountOnExit
-            >
-              <LinearProgress />
-            </Fade>
-          </Box>
-          <Table
-            sx={{
-              minWidth: 900,
-              borderBottom: "none",
-            }}
-            stickyHeader
-          >
-            <TableHead>
-              <TableRow>
-                <BoldTableCell>
-                  <div className="header-cell">No</div>
-                </BoldTableCell>
-                <BoldTableCell>
-                  <div className="header-cell">Role name</div>
-                </BoldTableCell>
 
-                <BoldTableCell>
-                  <div className="header-cell ml-10">Actions</div>
-                </BoldTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {currentItems.map((row, index) => (
-                <StyledTableRow
-                  key={row.id}
-                  style={
-                    index % 2
-                      ? { background: "white" }
-                      : { background: "#f7f6fe" }
-                  }
-                >
-                  <StyledTableCell>
-                    {index + 1 + indexOfFirstItem}
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    {row.name.charAt(0).toUpperCase() + row.name.slice(1)}
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <div className="flex gap-2 text-white flex-row relative">
-                      <div className="justify-center px-2.5 text-black rounded-md">
-                        <div className="actions flex flex-row gap-4">
-                          <div className="text-white font-bold  rounded cursor-pointer">
-                            <div
-                              className="ml-16 text-blue-900"
-                              onClick={() => handleViewClick(row)}
-                            >
-                              <FaEye size={18} />
-                            </div>
-                          </div>
-                          <div className=" text-white font-bold  rounded cursor-pointer">
-                            <div
-                              className="text-blue-900"
-                              onClick={() => handleEditClick(row)}
-                            >
-                              <FaEdit size={18} />
-                            </div>
-                          </div>
-                          <div className=" text-white font-bold  rounded cursor-pointer">
-                            {row.project_related === true ? (
-                              <div
-                                className="text-red-500"
-                                onClick={() => handleDeleteClick(row)}
-                                key={row.role_id}
-                              >
-                                {/* <FaTrash size={15} /> */}
-                              </div>
-                            ) : (
-                              <div
-                                className="text-gray-500"
-                                key={row.role_id}
-                              ></div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </StyledTableCell>
-                </StyledTableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </div>
-      <Box className="text-sm flex justify-end mt-1 pb-20 pt-5">
-        <Pagination
-          count={pageCount}
-          page={currentPage}
-          onChange={handleChange}
-          variant="outlined"
-          shape="rounded"
-          size="small"
-          color="primary"
-          sx={{ "& .MuiPaginationItem-root": { margin: "0 4px" } }}
-        />
-      </Box>
-      {addModalOpen && (
-        <div
-          className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-gray-800 bg-opacity-50"
-          onClick={handleAddModalClose}
-        >
-          <div
-            className="bg-white w-2/3 rounded-md relative"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div
-              className="close cursor-pointer text-end mr-12 mt-5 "
-              onClick={handleAddModalClose}
+      {/* Rows per page selector */}
+      {roles.length !== 0 && (
+        <div className="flex justify-between items-center mb-4">
+          <div className="text-sm text-gray-600">
+            Showing {indexOfFirstItem + 1} to{" "}
+            {Math.min(indexOfLastItem, filteredRows.length)} of{" "}
+            {filteredRows.length} roles
+          </div>
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            Rows per page:
+            <select
+              value={rowsPerPage}
+              onChange={handleRowsPerPageChange}
+              className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-transparent bg-white"
             >
-              X
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+            </select>
+          </div>
+        </div>
+      )}
+
+      {/* Table Section */}
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <Box sx={{ width: "100%" }}>
+          <Fade
+            in={loading}
+            style={{
+              transitionDelay: loading ? "100ms" : "0ms",
+            }}
+            unmountOnExit
+          >
+            <LinearProgress sx={{ height: 2 }} />
+          </Fade>
+        </Box>
+
+        {currentItems.length !== 0 ? (
+          <div className="overflow-x-auto">
+            <Table sx={{ minWidth: 900 }}>
+              <TableHead>
+                <TableRow sx={{ backgroundColor: "#f8fafc" }}>
+                  <BoldTableCell sx={{ padding: "20px 24px" }}>
+                    <div className="header-cell">No</div>
+                  </BoldTableCell>
+                  <BoldTableCell>
+                    <div className="header-cell">Role Name</div>
+                  </BoldTableCell>
+                  <BoldTableCell>
+                    <div className="header-cell">Type</div>
+                  </BoldTableCell>
+                  <BoldTableCell>
+                    <div className="header-cell">Actions</div>
+                  </BoldTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {currentItems.map((row, index) => (
+                  <StyledTableRow key={row.id}>
+                    <StyledTableCell>
+                      <div className="font-medium text-gray-900">
+                        {index + 1 + indexOfFirstItem}
+                      </div>
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      <div className="font-medium text-gray-900">
+                        {row.name.charAt(0).toUpperCase() + row.name.slice(1)}
+                      </div>
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      <div
+                        className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold ${
+                          row.project_related
+                            ? "bg-blue-100 text-blue-800"
+                            : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
+                        {row.project_related ? "Project Role" : "System Role"}
+                      </div>
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={() => handleViewClick(row)}
+                          className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 p-2 rounded-lg transition-colors"
+                          title="View Role"
+                        >
+                          <FaEye size={16} />
+                        </button>
+                        <button
+                          onClick={() => handleEditClick(row)}
+                          className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 p-2 rounded-lg transition-colors"
+                          title="Edit Role"
+                        >
+                          <FaEdit size={16} />
+                        </button>
+                        {row.project_related && (
+                          <button
+                            onClick={() => handleDeleteClick(row)}
+                            className="text-red-600 hover:text-red-800 hover:bg-red-50 p-2 rounded-lg transition-colors"
+                            title="Delete Role"
+                          >
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                              />
+                            </svg>
+                          </button>
+                        )}
+                      </div>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        ) : (
+          <div className="py-16 text-center">
+            <div className="text-gray-400 mb-2">
+              <svg
+                className="w-16 h-16 mx-auto"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1}
+                  d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
             </div>
-            <RoleAdd
-              handlefetchRoles={handlefetchRoles}
-              handleCloseModal={handleAddModalClose}
+            <h3 className="text-lg font-medium text-gray-900 mb-1">
+              No roles found
+            </h3>
+            <p className="text-gray-600 max-w-md mx-auto">
+              {loading
+                ? "Loading roles..."
+                : "No roles match your search. Try adjusting your search term."}
+            </p>
+            {!loading && (
+              <button
+                onClick={handleAddClick}
+                className="mt-4 bg-blue-900 hover:bg-blue-800 text-white font-medium py-2 px-6 rounded-lg transition-colors inline-flex items-center gap-2"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+                Add your role
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Pagination */}
+      {roles.length !== 0 && filteredRows.length > 0 && (
+        <div className="mt-6 flex justify-center mb-20">
+          <div className="bg-white rounded-lg border border-gray-200 px-4 py-3 shadow-sm">
+            <Pagination
+              count={pageCount}
+              page={currentPage}
+              onChange={handleChange}
+              variant="outlined"
+              shape="rounded"
+              color="primary"
+              showFirstButton
+              showLastButton
+              sx={{
+                "& .MuiPaginationItem-root": {
+                  fontSize: "0.875rem",
+                  margin: "0 2px",
+                  "&.Mui-selected": {
+                    backgroundColor: "#1e3a8a",
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "#1e40af",
+                    },
+                  },
+                  "&:hover": {
+                    backgroundColor: "#f1f5f9",
+                  },
+                },
+              }}
             />
+          </div>
+        </div>
+      )}
+
+      {/* Modals */}
+      {addModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-opacity">
+          <div className="bg-white rounded-2xl shadow-2xl w-11/12 lg:w-3/4 max-h-[90vh] overflow-hidden mx-4">
+            <div className="flex justify-between items-center border-b border-gray-200 px-6 py-4">
+              <h2 className="text-xl font-bold text-gray-900">Add New Role</h2>
+              <button
+                onClick={handleAddModalClose}
+                className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div
+              className="overflow-y-auto max-h-[calc(90vh-80px)]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <RoleAdd
+                handlefetchRoles={handlefetchRoles}
+                handleCloseModal={handleAddModalClose}
+              />
+            </div>
           </div>
         </div>
       )}
 
       {editModalOpen && (
-        <div className="modal-overlay" onClick={handleEditModalClose}>
-          <div
-            className="modal-content bg-white w-2/3  rounded-lg"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div
-              className="close cursor-pointer text-end mr-12 mt-5 "
-              onClick={handleEditModalClose}
-            >
-              {" "}
-              X
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-opacity">
+          <div className="bg-white rounded-2xl shadow-2xl w-11/12 lg:w-3/4 max-h-[90vh] overflow-hidden mx-4">
+            <div className="flex justify-between items-center border-b border-gray-200 px-6 py-4">
+              <h2 className="text-xl font-bold text-gray-900">Edit Role</h2>
+              <button
+                onClick={handleEditModalClose}
+                className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
             </div>
-            <RoleEdit
-              roleId={selectedRow.role_id}
-              handleCloseModal={handleEditModalClose}
-              handlefetchRoles={handlefetchRoles}
-            />
+            <div
+              className="overflow-y-auto max-h-[calc(90vh-80px)]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <RoleEdit
+                roleId={selectedRow?.role_id}
+                handleCloseModal={handleEditModalClose}
+                handlefetchRoles={handlefetchRoles}
+              />
+            </div>
           </div>
         </div>
       )}
+
       {deleteModalOpen && (
-        <div className="modal-overlay" onClick={handleDeleteModalClose}>
-          <div
-            className="modal-content bg-white w-fit rounded-lg"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div
-              className="close cursor-pointer text-end mr-12 "
-              onClick={handleDeleteModalClose}
-            >
-              X
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-opacity">
+          <div className="bg-white rounded-2xl shadow-2xl w-11/12 lg:w-1/2 max-h-[90vh] overflow-hidden mx-4">
+            <div className="flex justify-between items-center border-b border-gray-200 px-6 py-4">
+              <h2 className="text-xl font-bold text-gray-900">Delete Role</h2>
+              <button
+                onClick={handleDeleteModalClose}
+                className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
             </div>
-            <RoleDelete
-              selectedRow={selectedRow}
-              handleDeleteModalClose={handleDeleteModalClose}
-              handlefetchRoles={handlefetchRoles}
-            />
+            <div
+              className="overflow-y-auto max-h-[calc(90vh-80px)]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <RoleDelete
+                selectedRow={selectedRow}
+                handleDeleteModalClose={handleDeleteModalClose}
+                handlefetchRoles={handlefetchRoles}
+              />
+            </div>
           </div>
         </div>
       )}
 
       {viewModalOpen && (
-        <div className="modal-overlay">
-          <div
-            className="modal-content bg-white w-2/3 rounded-lg"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div
-              className="close cursor-pointer my-3 text-end mr-12 "
-              onClick={handleViewModalClose}
-            >
-              X
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-opacity">
+          <div className="bg-white rounded-2xl shadow-2xl w-11/12 lg:w-3/4 max-h-[90vh] overflow-hidden mx-4">
+            <div className="flex justify-between items-center border-b border-gray-200 px-6 py-4">
+              <h2 className="text-xl font-bold text-gray-900">Role Details</h2>
+              <button
+                onClick={handleViewModalClose}
+                className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
             </div>
-            <RoleView id={selectedRow} />
+            <div
+              className="overflow-y-auto max-h-[calc(90vh-80px)]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <RoleView id={selectedRow} />
+            </div>
           </div>
         </div>
       )}

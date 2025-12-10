@@ -124,7 +124,7 @@ const ActivitiesDetail = ({
   return (
     <div className="animate-fade-in max-h-[90vh] sm:max-h-[95vh] overflow-hidden flex flex-col">
       {/* Header - Fixed */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 to-slate-800 rounded-t-3xl flex-shrink-0">
+      <div className="relative overflow-hidden bg-gradient-to-br from-slate-500 to-slate-800 rounded-t-3xl flex-shrink-0">
         <div className="absolute inset-0 bg-grid-slate-700/30" />
         <div className="relative px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:py-10">
           <div className="flex items-start justify-between">

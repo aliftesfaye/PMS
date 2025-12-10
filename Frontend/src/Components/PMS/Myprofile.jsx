@@ -133,9 +133,6 @@ const ProfileUpdate = ({ closeModal }) => {
     <div className="max-w-md mx-auto bg-white rounded-lg overflow-hidden shadow-lg p-6">
       <div className="flex justify-between ">
         <h2 className="text-2xl font-bold mb-4 text-center">Update Profile</h2>
-        <span className="cursor-pointer text-gray-800" onClick={closeModal}>
-          X
-        </span>
       </div>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">

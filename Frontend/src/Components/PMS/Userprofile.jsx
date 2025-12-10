@@ -195,7 +195,7 @@ const Userprofile = (props) => {
       className="rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-100"
       sx={{
         p: isMobile ? 2 : 3,
-        height: '100%'
+        height: "100%",
       }}
     >
       <Box className="flex items-center gap-3">
@@ -203,13 +203,13 @@ const Userprofile = (props) => {
           className={`rounded-lg`}
           sx={{
             p: isMobile ? 1.5 : 2,
-            backgroundColor: `${color}15`
+            backgroundColor: `${color}15`,
           }}
         >
           <Icon
             sx={{
-              fontSize: isMobile ? '1rem' : '1.25rem',
-              color
+              fontSize: isMobile ? "1rem" : "1.25rem",
+              color,
             }}
           />
         </Box>
@@ -223,7 +223,7 @@ const Userprofile = (props) => {
           <Typography
             variant="caption"
             className="text-gray-600 block"
-            sx={{ fontSize: isMobile ? '0.7rem' : '0.75rem' }}
+            sx={{ fontSize: isMobile ? "0.7rem" : "0.75rem" }}
           >
             {label}
           </Typography>
@@ -231,7 +231,7 @@ const Userprofile = (props) => {
             <Typography
               variant="caption"
               className="block text-gray-500"
-              sx={{ fontSize: isMobile ? '0.65rem' : '0.7rem' }}
+              sx={{ fontSize: isMobile ? "0.65rem" : "0.7rem" }}
             >
               {subtext}
             </Typography>
@@ -269,7 +269,7 @@ const Userprofile = (props) => {
           <Typography
             variant="caption"
             className="text-gray-600"
-            sx={{ fontSize: isMobile ? '0.7rem' : '0.75rem' }}
+            sx={{ fontSize: isMobile ? "0.7rem" : "0.75rem" }}
           >
             {project.overall_progress} progress
           </Typography>
@@ -312,7 +312,7 @@ const Userprofile = (props) => {
                 fontSize: isMobile ? "0.6rem" : "0.625rem",
                 height: "20px",
                 mt: 0.5,
-                maxWidth: '100%'
+                maxWidth: "100%",
               }}
             />
           </Box>
@@ -335,8 +335,7 @@ const Userprofile = (props) => {
   );
 
   return (
-    <Box className="ml-auto lg:w-4/5 w-full px-4 lg:px-8 mt-24">
-
+    <Box className="ml-auto lg:w-4/5 w-full px-4 lg:px-8 mt-5">
       <Helmet>
         <title>PMS - Profile</title>
       </Helmet>
@@ -385,28 +384,33 @@ const Userprofile = (props) => {
                   sx={{
                     width: isMobile ? 60 : 80,
                     height: isMobile ? 60 : 80,
-                    border: '4px solid white',
+                    border: "4px solid white",
                     boxShadow: 3,
-                    mx: isMobile ? 'auto' : 0,
-                    mb: isMobile ? 2 : 0
+                    mx: isMobile ? "auto" : 0,
+                    mb: isMobile ? 2 : 0,
                   }}
                 >
                   <AccountCircleIcon
                     sx={{
                       width: isMobile ? 48 : 64,
-                      height: isMobile ? 48 : 64
+                      height: isMobile ? 48 : 64,
                     }}
                   />
                 </Avatar>
-                <Box sx={{ textAlign: isMobile ? 'center' : 'left', flex: 1 }}>
+                <Box sx={{ textAlign: isMobile ? "center" : "left", flex: 1 }}>
                   <Typography
                     variant={isMobile ? "h6" : "h5"}
                     className="font-bold text-white mb-1"
                   >
                     {userInfo.foundUser?.full_name || "User Name"}
                   </Typography>
-                  <Box className={`flex ${isMobile ? 'justify-center' : ''} gap-2`}>
-                    <EmailIcon sx={{ fontSize: isMobile ? '1rem' : '1.25rem' }} className="text-white opacity-90" />
+                  <Box
+                    className={`flex ${isMobile ? "justify-center" : ""} gap-2`}
+                  >
+                    <EmailIcon
+                      sx={{ fontSize: isMobile ? "1rem" : "1.25rem" }}
+                      className="text-white opacity-90"
+                    />
                     <Typography
                       variant={isMobile ? "body2" : "body1"}
                       className="text-white opacity-90 truncate"
@@ -495,7 +499,10 @@ const Userprofile = (props) => {
           <Card className="rounded-2xl mb-10 shadow-lg border-0">
             <Box sx={{ p: isMobile ? 3 : 4 }}>
               <Box className="flex items-center gap-2 mb-4 md:mb-6">
-                <WorkIcon sx={{ fontSize: isMobile ? '1.25rem' : '1.5rem' }} className="text-gray-700" />
+                <WorkIcon
+                  sx={{ fontSize: isMobile ? "1.25rem" : "1.5rem" }}
+                  className="text-gray-700"
+                />
                 <Typography
                   variant={isMobile ? "subtitle1" : "h6"}
                   className="font-bold text-gray-900"
@@ -510,9 +517,9 @@ const Userprofile = (props) => {
 
               <Box
                 sx={{
-                  maxHeight: { xs: '200px', sm: '300px', md: '380px' },
-                  overflowY: 'auto',
-                  pr: 1
+                  maxHeight: { xs: "200px", sm: "300px", md: "380px" },
+                  overflowY: "auto",
+                  pr: 1,
                 }}
                 className="space-y-3"
               >
@@ -524,15 +531,15 @@ const Userprofile = (props) => {
                   <Box className="text-center py-6 md:py-8">
                     <WorkIcon
                       sx={{
-                        fontSize: { xs: '2.5rem', sm: '3rem' },
-                        mb: 2
+                        fontSize: { xs: "2.5rem", sm: "3rem" },
+                        mb: 2,
                       }}
                       className="text-gray-300 mx-auto"
                     />
                     <Typography
                       variant="body2"
                       className="text-gray-500"
-                      sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+                      sx={{ fontSize: { xs: "0.875rem", sm: "1rem" } }}
                     >
                       No projects found
                     </Typography>
@@ -546,10 +553,13 @@ const Userprofile = (props) => {
         {/* Right Column - Current Tasks */}
         <Grid item xs={12} lg={7}>
           <Card className="rounded-2xl shadow-lg border-0">
-            <Box sx={{ p: isMobile ? 3 : 4, height: '100%' }}>
+            <Box sx={{ p: isMobile ? 3 : 4, height: "100%" }}>
               <Box className="flex flex-col sm:flex-row sm:items-center gap-2 mb-4 md:mb-6">
                 <Box className="flex items-center gap-2">
-                  <TrendingUpIcon sx={{ fontSize: isMobile ? '1.25rem' : '1.5rem' }} className="text-gray-700" />
+                  <TrendingUpIcon
+                    sx={{ fontSize: isMobile ? "1.25rem" : "1.5rem" }}
+                    className="text-gray-700"
+                  />
                   <Typography
                     variant={isMobile ? "subtitle1" : "h6"}
                     className="font-bold text-gray-900"
@@ -564,9 +574,9 @@ const Userprofile = (props) => {
                     backgroundColor: "#E0F2FE",
                     color: "#0369A1",
                     fontWeight: 600,
-                    alignSelf: 'flex-start',
+                    alignSelf: "flex-start",
                     ml: { sm: 2 },
-                    mt: { xs: 1, sm: 0 }
+                    mt: { xs: 1, sm: 0 },
                   }}
                 />
               </Box>
@@ -578,12 +588,12 @@ const Userprofile = (props) => {
               <Box
                 sx={{
                   maxHeight: {
-                    xs: 'calc(100vh - 380px)',
-                    sm: 'calc(100vh - 420px)',
-                    md: 'calc(100vh - 300px)'
+                    xs: "calc(100vh - 380px)",
+                    sm: "calc(100vh - 420px)",
+                    md: "calc(100vh - 300px)",
                   },
-                  overflowY: 'auto',
-                  pr: 1
+                  overflowY: "auto",
+                  pr: 1,
                 }}
                 className="space-y-4"
               >
@@ -635,8 +645,8 @@ const Userprofile = (props) => {
                   <Box className="text-center py-8 md:py-12">
                     <AssignmentIcon
                       sx={{
-                        fontSize: { xs: '3rem', sm: '4rem' },
-                        mb: 3
+                        fontSize: { xs: "3rem", sm: "4rem" },
+                        mb: 3,
                       }}
                       className="text-gray-300 mx-auto"
                     />
@@ -649,7 +659,7 @@ const Userprofile = (props) => {
                     <Typography
                       variant="body2"
                       className="text-gray-500 px-4"
-                      sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+                      sx={{ fontSize: { xs: "0.875rem", sm: "1rem" } }}
                     >
                       You don't have any assigned sub-tasks at the moment
                     </Typography>

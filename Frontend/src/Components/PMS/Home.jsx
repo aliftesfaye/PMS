@@ -19,6 +19,7 @@ import {
   tableCellClasses,
   Card,
   CardContent,
+  alpha,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -57,47 +58,47 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  '&:nth-of-type(odd)': {
+  "&:nth-of-type(odd)": {
     backgroundColor: theme.palette.action.hover,
   },
-  '&:hover': {
+  "&:hover": {
     backgroundColor: theme.palette.action.selected,
-    cursor: 'pointer',
-    transition: 'background-color 0.2s ease',
+    cursor: "pointer",
+    transition: "background-color 0.2s ease",
   },
-  '&:last-child td, &:last-child th': {
+  "&:last-child td, &:last-child th": {
     border: 0,
   },
 }));
 
 const StatCard = styled(Card)(({ theme }) => ({
-  height: '100%',
+  height: "100%",
   borderRadius: 12,
-  boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-  '&:hover': {
-    transform: 'translateY(-4px)',
-    boxShadow: '0 8px 30px rgba(0,0,0,0.12)',
+  boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+  transition: "transform 0.3s ease, box-shadow 0.3s ease",
+  "&:hover": {
+    transform: "translateY(-4px)",
+    boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
   },
 }));
 
-const ProgressBar = styled('div')(({ theme, progress, color }) => ({
-  position: 'relative',
-  width: '100%',
+const ProgressBar = styled("div")(({ theme, progress, color }) => ({
+  position: "relative",
+  width: "100%",
   height: 8,
   backgroundColor: theme.palette.grey[200],
   borderRadius: 4,
-  overflow: 'hidden',
-  '&::after': {
+  overflow: "hidden",
+  "&::after": {
     content: '""',
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
-    height: '100%',
+    height: "100%",
     width: `${progress}%`,
     backgroundColor: color,
     borderRadius: 4,
-    transition: 'width 0.5s ease',
+    transition: "width 0.5s ease",
   },
 }));
 
@@ -174,7 +175,9 @@ function Home() {
               return (
                 sum +
                 task.subTask.reduce((subtaskSum, subtask) => {
-                  return subtask.subtask_status === "Completed" ? subtaskSum + 1 : subtaskSum;
+                  return subtask.subtask_status === "Completed"
+                    ? subtaskSum + 1
+                    : subtaskSum;
                 }, 0)
               );
             }, 0)
@@ -196,7 +199,9 @@ function Home() {
               return (
                 sum +
                 task.subTask.reduce((subtaskSum, subtask) => {
-                  return subtask.subtask_status === "Pending" ? subtaskSum + 1 : subtaskSum;
+                  return subtask.subtask_status === "Pending"
+                    ? subtaskSum + 1
+                    : subtaskSum;
                 }, 0)
               );
             }, 0)
@@ -218,7 +223,9 @@ function Home() {
               return (
                 sum +
                 task.subTask.reduce((subtaskSum, subtask) => {
-                  return subtask.subtask_status === "On Progress" ? subtaskSum + 1 : subtaskSum;
+                  return subtask.subtask_status === "On Progress"
+                    ? subtaskSum + 1
+                    : subtaskSum;
                 }, 0)
               );
             }, 0)
@@ -300,13 +307,13 @@ function Home() {
       activity.Task.flatMap((task) =>
         task.subTask
           ? task.subTask
-            .filter((subTask) =>
-              subTask.name.toLowerCase().includes(searchTerm.toLowerCase())
-            )
-            .map((subTask) => ({
-              ...subTask,
-              projectName: project.name,
-            }))
+              .filter((subTask) =>
+                subTask.name.toLowerCase().includes(searchTerm.toLowerCase())
+              )
+              .map((subTask) => ({
+                ...subTask,
+                projectName: project.name,
+              }))
           : []
       )
     )
@@ -325,11 +332,14 @@ function Home() {
       activity.Task.flatMap((task) =>
         task.subTask
           ? task.subTask
-            .filter((subTask) => subTask.end_date && isDueWithin15Days(subTask.end_date))
-            .map((subTask) => ({
-              ...subTask,
-              projectName: project.name,
-            }))
+              .filter(
+                (subTask) =>
+                  subTask.end_date && isDueWithin15Days(subTask.end_date)
+              )
+              .map((subTask) => ({
+                ...subTask,
+                projectName: project.name,
+              }))
           : []
       )
     )
@@ -348,7 +358,10 @@ function Home() {
 
   const indexOfLastItem2 = page2 * rowsPerPage2;
   const indexOfFirstItem2 = indexOfLastItem2 - rowsPerPage2;
-  const currentItems2 = projectsAssigned.slice(indexOfFirstItem2, indexOfLastItem2);
+  const currentItems2 = projectsAssigned.slice(
+    indexOfFirstItem2,
+    indexOfLastItem2
+  );
   const pageCount2 = Math.ceil(projectsAssigned.length / rowsPerPage2);
 
   const handlePageChange = (event, value) => {
@@ -393,21 +406,24 @@ function Home() {
   }, []);
 
   return (
-    <Box className="ml-auto w-full lg:w-4/5 mr-0 lg:mr-5 mt-24 lg:mt-24">
+    <Box className="ml-auto w-full lg:w-4/5 mr-0 lg:mr-5 ">
       <Helmet>
         <title>PMS - Dashboard</title>
       </Helmet>
       <Container maxWidth="xl" sx={{ py: 3 }}>
         {/* Header */}
         <Box sx={{ mb: 4 }}>
-          <Typography variant="h4" sx={{
-            fontWeight: 700,
-            color: theme.palette.primary.main,
-            mb: 1
-          }}>
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 700,
+              color: "#0A5077",
+              mb: 1,
+            }}
+          >
             Dashboard Overview
           </Typography>
-          <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+          <Typography variant="body1" sx={{ color: "text.secondary" }}>
             Welcome back! Here's what's happening with your projects today.
           </Typography>
         </Box>
@@ -417,25 +433,31 @@ function Home() {
           <Grid item xs={12} sm={6} md={3}>
             <StatCard>
               <CardContent sx={{ p: 3 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <Box sx={{
-                    p: 1.5,
-                    borderRadius: 2,
-                    backgroundColor: theme.palette.primary.light,
-                    color: theme.palette.primary.main,
-                    mr: 2
-                  }}>
+                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                  <Box
+                    sx={{
+                      p: 1.5,
+                      borderRadius: 2,
+                      backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                      color: theme.palette.primary.main,
+                      mr: 2,
+                    }}
+                  >
                     <ListAltIcon />
                   </Box>
-                  <Typography variant="body2" color="text.secondary">
-                    Projects Assigned
-                  </Typography>
+                  <Box>
+                    <Typography variant="body2" color="text.secondary">
+                      Projects Assigned
+                    </Typography>
+                    <Typography variant="h4" sx={{ fontWeight: 700 }}>
+                      {totalProjects}
+                    </Typography>
+                  </Box>
                 </Box>
-                <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
-                  {totalProjects}
-                </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <TrendingUpIcon sx={{ color: 'success.main', mr: 0.5, fontSize: 16 }} />
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <TrendingUpIcon
+                    sx={{ color: "success.main", fontSize: 16 }}
+                  />
                   <Typography variant="caption" color="success.main">
                     Active projects
                   </Typography>
@@ -447,25 +469,33 @@ function Home() {
           <Grid item xs={12} sm={6} md={3}>
             <StatCard>
               <CardContent sx={{ p: 3 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <Box sx={{
-                    p: 1.5,
-                    borderRadius: 2,
-                    backgroundColor: theme.palette.success.light,
-                    color: theme.palette.success.main,
-                    mr: 2
-                  }}>
+                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                  <Box
+                    sx={{
+                      p: 1.5,
+                      borderRadius: 2,
+                      backgroundColor: alpha(theme.palette.success.main, 0.1),
+                      color: theme.palette.success.main,
+                      mr: 2,
+                    }}
+                  >
                     <ChecklistIcon />
                   </Box>
-                  <Typography variant="body2" color="text.secondary">
-                    Projects Completed
-                  </Typography>
+                  <Box>
+                    <Typography variant="body2" color="text.secondary">
+                      Projects Completed
+                    </Typography>
+                    <Typography variant="h4" sx={{ fontWeight: 700 }}>
+                      {completedProjects}
+                    </Typography>
+                  </Box>
                 </Box>
-                <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
-                  {completedProjects}
-                </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  {totalProjects > 0 ? `${Math.round((completedProjects / totalProjects) * 100)}% completion rate` : 'No projects'}
+                  {totalProjects > 0
+                    ? `${Math.round(
+                        (completedProjects / totalProjects) * 100
+                      )}% completion rate`
+                    : "No projects"}
                 </Typography>
               </CardContent>
             </StatCard>
@@ -474,23 +504,27 @@ function Home() {
           <Grid item xs={12} sm={6} md={3}>
             <StatCard>
               <CardContent sx={{ p: 3 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <Box sx={{
-                    p: 1.5,
-                    borderRadius: 2,
-                    backgroundColor: theme.palette.warning.light,
-                    color: theme.palette.warning.main,
-                    mr: 2
-                  }}>
+                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                  <Box
+                    sx={{
+                      p: 1.5,
+                      borderRadius: 2,
+                      backgroundColor: alpha(theme.palette.warning.main, 0.1),
+                      color: theme.palette.warning.main,
+                      mr: 2,
+                    }}
+                  >
                     <HistoryToggleOffIcon />
                   </Box>
-                  <Typography variant="body2" color="text.secondary">
-                    Projects In Progress
-                  </Typography>
+                  <Box>
+                    <Typography variant="body2" color="text.secondary">
+                      Projects In Progress
+                    </Typography>
+                    <Typography variant="h4" sx={{ fontWeight: 700 }}>
+                      {onProgressProjects}
+                    </Typography>
+                  </Box>
                 </Box>
-                <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
-                  {onProgressProjects}
-                </Typography>
                 <Typography variant="caption" color="text.secondary">
                   Actively being worked on
                 </Typography>
@@ -501,25 +535,29 @@ function Home() {
           <Grid item xs={12} sm={6} md={3}>
             <StatCard>
               <CardContent sx={{ p: 3 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <Box sx={{
-                    p: 1.5,
-                    borderRadius: 2,
-                    backgroundColor: theme.palette.info.light,
-                    color: theme.palette.info.main,
-                    mr: 2
-                  }}>
+                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                  <Box
+                    sx={{
+                      p: 1.5,
+                      borderRadius: 2,
+                      backgroundColor: alpha(theme.palette.info.main, 0.1),
+                      color: theme.palette.info.main,
+                      mr: 2,
+                    }}
+                  >
                     <TaskIcon />
                   </Box>
-                  <Typography variant="body2" color="text.secondary">
-                    Total Tasks
-                  </Typography>
+                  <Box>
+                    <Typography variant="body2" color="text.secondary">
+                      Total Tasks
+                    </Typography>
+                    <Typography variant="h4" sx={{ fontWeight: 700 }}>
+                      {totalSubtasksLength}
+                    </Typography>
+                  </Box>
                 </Box>
-                <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
-                  {totalSubtasksLength}
-                </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Typography variant="caption" color="success.main" sx={{ mr: 1 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Typography variant="caption" color="success.main">
                     {totalCompletedSubtasksLength} completed
                   </Typography>
                 </Box>
@@ -529,17 +567,22 @@ function Home() {
         </Grid>
 
         {/* Task List Section */}
-        <Paper elevation={0} sx={{
-          borderRadius: 3,
-          overflow: 'hidden',
-          mb: 4,
-          border: `1px solid ${theme.palette.divider}`
-        }}>
-          <Box sx={{
-            p: 3,
-            bgcolor: 'background.default',
-            borderBottom: `1px solid ${theme.palette.divider}`
-          }}>
+        <Paper
+          elevation={0}
+          sx={{
+            borderRadius: 3,
+            overflow: "hidden",
+            mb: 4,
+            border: `1px solid ${theme.palette.divider}`,
+          }}
+        >
+          <Box
+            sx={{
+              p: 3,
+              bgcolor: "background.default",
+              borderBottom: `1px solid ${theme.palette.divider}`,
+            }}
+          >
             <Grid container alignItems="center" justifyContent="space-between">
               <Grid item>
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
@@ -561,7 +604,7 @@ function Home() {
                         <SearchIcon color="action" />
                       </InputAdornment>
                     ),
-                    sx: { borderRadius: 2 }
+                    sx: { borderRadius: 2 },
                   }}
                   sx={{ minWidth: 250 }}
                 />
@@ -582,24 +625,32 @@ function Home() {
               </TableHead>
               <TableBody>
                 {currentItems.map((subTask, index) => {
-                  const progress = calculateProgress(subTask.start_date, subTask.end_date);
-                  const progressColor = getProgressColor(progress, subTask.subtask_status);
+                  const progress = calculateProgress(
+                    subTask.start_date,
+                    subTask.end_date
+                  );
+                  const progressColor = getProgressColor(
+                    progress,
+                    subTask.subtask_status
+                  );
                   return (
                     <StyledTableRow key={index}>
                       <StyledTableCell>
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                          <Box sx={{
-                            width: 32,
-                            height: 32,
-                            borderRadius: '50%',
-                            bgcolor: getInitialsColor(subTask.name.charAt(0)),
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            color: 'white',
-                            fontWeight: 600,
-                            mr: 2
-                          }}>
+                        <Box sx={{ display: "flex", alignItems: "center" }}>
+                          <Box
+                            sx={{
+                              width: 32,
+                              height: 32,
+                              borderRadius: "50%",
+                              bgcolor: getInitialsColor(subTask.name.charAt(0)),
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              color: "white",
+                              fontWeight: 600,
+                              mr: 2,
+                            }}
+                          >
                             {subTask.name.charAt(0).toUpperCase()}
                           </Box>
                           <Typography variant="body2" sx={{ fontWeight: 500 }}>
@@ -613,42 +664,58 @@ function Home() {
                         </Typography>
                       </StyledTableCell>
                       <StyledTableCell>
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                          <CalendarTodayIcon sx={{ fontSize: 16, mr: 1, color: 'action.active' }} />
+                        <Box sx={{ display: "flex", alignItems: "center" }}>
+                          <CalendarTodayIcon
+                            sx={{ fontSize: 16, mr: 1, color: "action.active" }}
+                          />
                           <Typography variant="body2">
                             {new Date(subTask.end_date).toLocaleDateString()}
                           </Typography>
                         </Box>
                       </StyledTableCell>
                       <StyledTableCell align="center">
-                        <Box sx={{ position: 'relative', width: '100%', maxWidth: 200, mx: 'auto' }}>
+                        <Box
+                          sx={{
+                            position: "relative",
+                            width: "100%",
+                            maxWidth: 200,
+                            mx: "auto",
+                          }}
+                        >
                           <ProgressBar
                             progress={progress}
                             color={progressColor}
                           />
-                          <Typography variant="caption" sx={{
-                            position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            transform: 'translate(-50%, -50%)',
-                            fontWeight: 600,
-                            color: progress > 50 ? 'white' : 'text.primary'
-                          }}>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              position: "absolute",
+                              top: "50%",
+                              left: "50%",
+                              transform: "translate(-50%, -50%)",
+                              fontWeight: 600,
+                              color: progress > 50 ? "white" : "text.primary",
+                            }}
+                          >
                             {progress.toFixed(1)}%
                           </Typography>
                         </Box>
                       </StyledTableCell>
                       <StyledTableCell align="center">
-                        <Box sx={{
-                          display: 'inline-flex',
-                          px: 1.5,
-                          py: 0.5,
-                          borderRadius: 1,
-                          bgcolor: `${getStatusColor(subTask.subtask_status)}15`,
-                          color: getStatusColor(subTask.subtask_status),
-                          fontWeight: 600,
-                          fontSize: '0.75rem'
-                        }}>
+                        <Box
+                          sx={{
+                            display: "inline-flex",
+                            px: 1.5,
+                            py: 0.5,
+                            borderRadius: 1,
+                            bgcolor: `${getStatusColor(
+                              subTask.subtask_status
+                            )}15`,
+                            color: getStatusColor(subTask.subtask_status),
+                            fontWeight: 600,
+                            fontSize: "0.75rem",
+                          }}
+                        >
                           {subTask.subtask_status}
                         </Box>
                       </StyledTableCell>
@@ -659,16 +726,18 @@ function Home() {
             </Table>
           </TableContainer>
 
-          <Box sx={{
-            p: 2,
-            borderTop: `1px solid ${theme.palette.divider}`,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: 2
-          }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Box
+            sx={{
+              p: 2,
+              borderTop: `1px solid ${theme.palette.divider}`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: 2,
+            }}
+          >
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
               <Typography variant="body2" color="text.secondary">
                 Rows per page:
               </Typography>
@@ -703,20 +772,25 @@ function Home() {
         <Grid container spacing={4}>
           {/* Near Due Date Tasks */}
           <Grid item xs={12} md={8}>
-            <Paper elevation={0} sx={{
-              p: 3,
-              height: '100%',
-              borderRadius: 3,
-              border: `1px solid ${theme.palette.divider}`
-            }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                <Box sx={{
-                  p: 1,
-                  borderRadius: 2,
-                  bgcolor: theme.palette.warning.light,
-                  color: theme.palette.warning.main,
-                  mr: 2
-                }}>
+            <Paper
+              elevation={0}
+              sx={{
+                p: 3,
+                height: "100%",
+                borderRadius: 3,
+                border: `1px solid ${theme.palette.divider}`,
+              }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+                <Box
+                  sx={{
+                    p: 1,
+                    borderRadius: 2,
+                    bgcolor: theme.palette.warning.light,
+                    color: theme.palette.warning.main,
+                    mr: 2,
+                  }}
+                >
                   <CalendarTodayIcon />
                 </Box>
                 <Box>
@@ -742,7 +816,7 @@ function Home() {
                     {limitedSubTasks.map((subTask, index) => (
                       <TableRow
                         key={index}
-                        sx={{ '&:hover': { bgcolor: 'action.hover' } }}
+                        sx={{ "&:hover": { bgcolor: "action.hover" } }}
                       >
                         <TableCell>
                           <Typography variant="body2" sx={{ fontWeight: 500 }}>
@@ -755,17 +829,22 @@ function Home() {
                           </Typography>
                         </TableCell>
                         <TableCell align="right">
-                          <Box sx={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            px: 1.5,
-                            py: 0.5,
-                            borderRadius: 1,
-                            bgcolor: theme.palette.warning.light,
-                            color: theme.palette.warning.dark
-                          }}>
+                          <Box
+                            sx={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              px: 1.5,
+                              py: 0.5,
+                              borderRadius: 1,
+                              bgcolor: theme.palette.warning.light,
+                              color: theme.palette.warning.dark,
+                            }}
+                          >
                             <CalendarTodayIcon sx={{ fontSize: 14, mr: 0.5 }} />
-                            <Typography variant="caption" sx={{ fontWeight: 600 }}>
+                            <Typography
+                              variant="caption"
+                              sx={{ fontWeight: 600 }}
+                            >
                               {new Date(subTask.end_date).toLocaleDateString()}
                             </Typography>
                           </Box>
@@ -780,22 +859,27 @@ function Home() {
 
           {/* Project Statistics Chart */}
           <Grid item xs={12} md={4}>
-            <Paper elevation={0} sx={{
-              p: 3,
-              height: '100%',
-              borderRadius: 3,
-              border: `1px solid ${theme.palette.divider}`,
-              display: 'flex',
-              flexDirection: 'column'
-            }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                <Box sx={{
-                  p: 1,
-                  borderRadius: 2,
-                  bgcolor: theme.palette.info.light,
-                  color: theme.palette.info.main,
-                  mr: 2
-                }}>
+            <Paper
+              elevation={0}
+              sx={{
+                p: 3,
+                height: "100%",
+                borderRadius: 3,
+                border: `1px solid ${theme.palette.divider}`,
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+                <Box
+                  sx={{
+                    p: 1,
+                    borderRadius: 2,
+                    bgcolor: theme.palette.info.light,
+                    color: theme.palette.info.main,
+                    mr: 2,
+                  }}
+                >
                   <PieChartIcon />
                 </Box>
                 <Box>
@@ -808,14 +892,16 @@ function Home() {
                 </Box>
               </Box>
 
-              <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                <Box sx={{
-                  flex: 1,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  mb: 3
-                }}>
+              <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
+                <Box
+                  sx={{
+                    flex: 1,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    mb: 3,
+                  }}
+                >
                   <PieChart
                     series={[
                       {
@@ -833,25 +919,32 @@ function Home() {
                   />
                 </Box>
 
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                <Box
+                  sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}
+                >
                   {chartData.map((item, index) => (
-                    <Box key={index} sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      p: 1.5,
-                      borderRadius: 1,
-                      bgcolor: 'background.default',
-                      border: `1px solid ${theme.palette.divider}`
-                    }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Box sx={{
-                          width: 12,
-                          height: 12,
-                          borderRadius: '50%',
-                          bgcolor: item.color,
-                          mr: 2
-                        }} />
+                    <Box
+                      key={index}
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        p: 1.5,
+                        borderRadius: 1,
+                        bgcolor: "background.default",
+                        border: `1px solid ${theme.palette.divider}`,
+                      }}
+                    >
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <Box
+                          sx={{
+                            width: 12,
+                            height: 12,
+                            borderRadius: "50%",
+                            bgcolor: item.color,
+                            mr: 2,
+                          }}
+                        />
                         <Typography variant="body2" sx={{ fontWeight: 500 }}>
                           {item.label}
                         </Typography>
@@ -868,18 +961,23 @@ function Home() {
         </Grid>
 
         {/* Projects Assigned Section */}
-        <Paper elevation={0} sx={{
-          mt: 4,
-          mb: 10,
-          borderRadius: 3,
-          border: `1px solid ${theme.palette.divider}`,
-          overflow: 'hidden'
-        }}>
-          <Box sx={{
-            p: 3,
-            bgcolor: 'background.default',
-            borderBottom: `1px solid ${theme.palette.divider}`
-          }}>
+        <Paper
+          elevation={0}
+          sx={{
+            mt: 4,
+            mb: 10,
+            borderRadius: 3,
+            border: `1px solid ${theme.palette.divider}`,
+            overflow: "hidden",
+          }}
+        >
+          <Box
+            sx={{
+              p: 3,
+              bgcolor: "background.default",
+              borderBottom: `1px solid ${theme.palette.divider}`,
+            }}
+          >
             <Typography variant="h6" sx={{ fontWeight: 600 }}>
               Projects Assigned to You
             </Typography>
@@ -902,20 +1000,22 @@ function Home() {
                 {currentItems2.map((project, index) => (
                   <StyledTableRow key={index}>
                     <StyledTableCell>
-                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Box sx={{
-                          width: 40,
-                          height: 40,
-                          borderRadius: 2,
-                          bgcolor: getInitialsColor(project.name.charAt(0)),
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          color: 'white',
-                          fontWeight: 600,
-                          fontSize: '1rem',
-                          mr: 2
-                        }}>
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <Box
+                          sx={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: 2,
+                            bgcolor: getInitialsColor(project.name.charAt(0)),
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            color: "white",
+                            fontWeight: 600,
+                            fontSize: "1rem",
+                            mr: 2,
+                          }}
+                        >
                           {project.name.charAt(0).toUpperCase()}
                         </Box>
                         <Box>
@@ -939,24 +1039,30 @@ function Home() {
                       </Typography>
                     </StyledTableCell>
                     <StyledTableCell align="center">
-                      <Box sx={{
-                        display: 'inline-flex',
-                        px: 2,
-                        py: 0.75,
-                        borderRadius: 1.5,
-                        bgcolor: `${getStatusColor(project.overall_progress)}15`,
-                        color: getStatusColor(project.overall_progress),
-                        fontWeight: 600,
-                        fontSize: '0.75rem',
-                        alignItems: 'center'
-                      }}>
-                        <Box sx={{
-                          width: 8,
-                          height: 8,
-                          borderRadius: '50%',
-                          bgcolor: getStatusColor(project.overall_progress),
-                          mr: 1
-                        }} />
+                      <Box
+                        sx={{
+                          display: "inline-flex",
+                          px: 2,
+                          py: 0.75,
+                          borderRadius: 1.5,
+                          bgcolor: `${getStatusColor(
+                            project.overall_progress
+                          )}15`,
+                          color: getStatusColor(project.overall_progress),
+                          fontWeight: 600,
+                          fontSize: "0.75rem",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            width: 8,
+                            height: 8,
+                            borderRadius: "50%",
+                            bgcolor: getStatusColor(project.overall_progress),
+                            mr: 1,
+                          }}
+                        />
                         {project.overall_progress}
                       </Box>
                     </StyledTableCell>
@@ -966,16 +1072,18 @@ function Home() {
             </Table>
           </TableContainer>
 
-          <Box sx={{
-            p: 2,
-            borderTop: `1px solid ${theme.palette.divider}`,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: 2
-          }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Box
+            sx={{
+              p: 2,
+              borderTop: `1px solid ${theme.palette.divider}`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: 2,
+            }}
+          >
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
               <Typography variant="body2" color="text.secondary">
                 Rows per page:
               </Typography>

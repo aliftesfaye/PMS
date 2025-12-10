@@ -697,7 +697,7 @@ const SideandNav = (props) => {
               >
                 <DashboardIcon
                   style={{
-                    color: `${selectedLink === 0 ? "#fff" : "#082f49"}`,
+                    color: `${selectedLink === 0 ? "#fff" : "#0A5077"}`,
                   }}
                 />
                 <Typography>Home</Typography>
@@ -710,7 +710,7 @@ const SideandNav = (props) => {
               >
                 <DashboardIcon
                   style={{
-                    color: `${selectedLink === 0 ? "#fff" : "#082f49"}`,
+                    color: `${selectedLink === 0 ? "#fff" : "#0A5077"}`,
                   }}
                 />
                 <Typography>Dashboard</Typography>
@@ -724,7 +724,7 @@ const SideandNav = (props) => {
               >
                 <DashboardIcon
                   style={{
-                    color: `${selectedLink === 0 ? "#fff" : "#082f49"}`,
+                    color: `${selectedLink === 0 ? "#fff" : "#0A5077"}`,
                   }}
                 />
                 <Typography>Dashboard</Typography>
@@ -744,7 +744,7 @@ const SideandNav = (props) => {
                   >
                     <OrgIcon
                       style={{
-                        color: `${selectedLink === 6 ? "#fff" : "#082f49"}`,
+                        color: `${selectedLink === 6 ? "#fff" : "#0A5077"}`,
                       }}
                     />
                     <Typography fontSize={13}>Organization</Typography>
@@ -762,7 +762,7 @@ const SideandNav = (props) => {
                   >
                     <SectorIcon
                       style={{
-                        color: `${selectedLink === 7 ? "#fff" : "#082f49"}`,
+                        color: `${selectedLink === 7 ? "#fff" : "#0A5077"}`,
                       }}
                     />
                     <Typography fontSize={13}>Sectors</Typography>
@@ -779,7 +779,7 @@ const SideandNav = (props) => {
                   >
                     <OrgUnitIcon
                       style={{
-                        color: `${selectedLink === 8 ? "#fff" : "#082f49"}`,
+                        color: `${selectedLink === 8 ? "#fff" : "#0A5077"}`,
                       }}
                     />
                     <Typography fontSize={13}>Department</Typography>
@@ -794,7 +794,7 @@ const SideandNav = (props) => {
               >
                 <OrgIcon
                   style={{
-                    color: `${selectedLink === 18 ? "#fff" : "#082f49"}`,
+                    color: `${selectedLink === 18 ? "#fff" : "#0A5077"}`,
                   }}
                 />
                 <Typography>Structure</Typography>
@@ -808,7 +808,7 @@ const SideandNav = (props) => {
               >
                 <RoleIcon
                   style={{
-                    color: `${selectedLink === 4 ? "#fff" : "#082f49"}`,
+                    color: `${selectedLink === 4 ? "#fff" : "#0A5077"}`,
                   }}
                 />
                 <Typography>Roles</Typography>
@@ -822,7 +822,7 @@ const SideandNav = (props) => {
               >
                 <UsersIcon
                   style={{
-                    color: `${selectedLink === 3 ? "#fff" : "#082f49"}`,
+                    color: `${selectedLink === 3 ? "#fff" : "#0A5077"}`,
                   }}
                 />
                 <Typography>Users</Typography>
@@ -835,7 +835,7 @@ const SideandNav = (props) => {
               >
                 <AccountBoxIcon
                   style={{
-                    color: `${selectedLink === 16 ? "#fff" : "#082f49"}`,
+                    color: `${selectedLink === 16 ? "#fff" : "#0A5077"}`,
                   }}
                 />
                 <Typography>Profile</Typography>
@@ -848,7 +848,7 @@ const SideandNav = (props) => {
             >
               <ProjectIcon
                 style={{
-                  color: `${selectedLink === 1 ? "#fff" : "#082f49"}`,
+                  color: `${selectedLink === 1 ? "#fff" : "#0A5077"}`,
                 }}
               />
               <Typography>Projects</Typography>
@@ -862,7 +862,7 @@ const SideandNav = (props) => {
                 >
                   <TrashIcon
                     style={{
-                      color: `${selectedLink === 9 ? "#fff" : "#082f49"}`,
+                      color: `${selectedLink === 9 ? "#fff" : "#0A5077"}`,
                     }}
                   />
                   <Typography>Trash</Typography>
@@ -889,7 +889,7 @@ const SideandNav = (props) => {
                   >
                     <DashboardIcon
                       style={{
-                        color: `${selectedLink === 10 ? "#fff" : "#082f49"}`,
+                        color: `${selectedLink === 10 ? "#fff" : "#0A5077"}`,
                       }}
                     />
                     <Typography>Dashboard</Typography>
@@ -902,7 +902,7 @@ const SideandNav = (props) => {
                   >
                     <MilestoneIcon
                       style={{
-                        color: `${selectedLink === 11 ? "#fff" : "#082f49"}`,
+                        color: `${selectedLink === 11 ? "#fff" : "#0A5077"}`,
                       }}
                     />
                     <Typography>Activities</Typography>
@@ -915,7 +915,7 @@ const SideandNav = (props) => {
                   >
                     <ProjectMembersIcon
                       style={{
-                        color: `${selectedLink === 12 ? "#fff" : "#082f49"}`,
+                        color: `${selectedLink === 12 ? "#fff" : "#0A5077"}`,
                       }}
                     />
                     <Typography>Members</Typography>
@@ -929,7 +929,7 @@ const SideandNav = (props) => {
                   >
                     <ProjectWorkspaceIcon
                       style={{
-                        color: `${selectedLink === 13 ? "#fff" : "#082f49"}`,
+                        color: `${selectedLink === 13 ? "#fff" : "#0A5077"}`,
                       }}
                     />
                     <Typography>Workspace</Typography>
@@ -942,7 +942,7 @@ const SideandNav = (props) => {
                   >
                     <Flag
                       style={{
-                        color: `${selectedLink === 17 ? "#fff" : "#082f49"}`,
+                        color: `${selectedLink === 17 ? "#fff" : "#0A5077"}`,
                       }}
                     />
                     <Typography>Milestone</Typography>
@@ -956,7 +956,7 @@ const SideandNav = (props) => {
                 >
                   <ProjectDocsIcon
                     style={{
-                      color: `${selectedLink === 14 ? "#fff" : "#082f49"}`,
+                      color: `${selectedLink === 14 ? "#fff" : "#0A5077"}`,
                     }}
                   />
                   <Typography>Docs</Typography>
@@ -1149,7 +1149,7 @@ const SideandNav = (props) => {
 
       <div class="overflow-x-auto">
         <Box sx={{ display: { xs: "none", sm: "none", md: "block" } }}>
-          <div class="no-scrollbar fixed h-screen overflow-x-hidden lg:px-1 py-28 w-1/6 items-center lg:z-40 md:z-40 shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] bg-white">
+          <div class="no-scrollbar fixed h-screen overflow-x-hidden lg:px-1 py-10 w-1/6 items-center lg:z-40 md:z-40 shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] bg-white">
             {viewHome !== 0 && viewAdminDashboard === 0 && (
               <div
                 className={`link ${selectedLink === 0 ? "selected" : ""}`}
@@ -1157,7 +1157,7 @@ const SideandNav = (props) => {
               >
                 <DashboardIcon
                   style={{
-                    color: `${selectedLink === 0 ? "#fff" : "#082f49"}`,
+                    color: `${selectedLink === 0 ? "#fff" : "#0A5077"}`,
                   }}
                 />
                 <Typography>Home</Typography>
@@ -1170,7 +1170,7 @@ const SideandNav = (props) => {
               >
                 <DashboardIcon
                   style={{
-                    color: `${selectedLink === 0 ? "#fff" : "#082f49"}`,
+                    color: `${selectedLink === 0 ? "#fff" : "#0A5077"}`,
                   }}
                 />
                 <Typography>Dashboard</Typography>
@@ -1184,7 +1184,7 @@ const SideandNav = (props) => {
               >
                 <DashboardIcon
                   style={{
-                    color: `${selectedLink === 0 ? "#fff" : "#082f49"}`,
+                    color: `${selectedLink === 0 ? "#fff" : "#0A5077"}`,
                   }}
                 />
                 <Typography>Dashboard</Typography>
@@ -1204,7 +1204,7 @@ const SideandNav = (props) => {
                   >
                     <OrgIcon
                       style={{
-                        color: `${selectedLink === 6 ? "#fff" : "#082f49"}`,
+                        color: `${selectedLink === 6 ? "#fff" : "#0A5077"}`,
                       }}
                     />
                     <Typography fontSize={13}>Organization</Typography>
@@ -1222,7 +1222,7 @@ const SideandNav = (props) => {
                   >
                     <SectorIcon
                       style={{
-                        color: `${selectedLink === 7 ? "#fff" : "#082f49"}`,
+                        color: `${selectedLink === 7 ? "#fff" : "#0A5077"}`,
                       }}
                     />
                     <Typography fontSize={13}>Sectors</Typography>
@@ -1239,7 +1239,7 @@ const SideandNav = (props) => {
                   >
                     <OrgUnitIcon
                       style={{
-                        color: `${selectedLink === 8 ? "#fff" : "#082f49"}`,
+                        color: `${selectedLink === 8 ? "#fff" : "#0A5077"}`,
                       }}
                     />
                     <Typography fontSize={13}>Department</Typography>
@@ -1254,7 +1254,7 @@ const SideandNav = (props) => {
               >
                 <OrgIcon
                   style={{
-                    color: `${selectedLink === 18 ? "#fff" : "#082f49"}`,
+                    color: `${selectedLink === 18 ? "#fff" : "#0A5077"}`,
                   }}
                 />
                 <Typography>Structure</Typography>
@@ -1268,7 +1268,7 @@ const SideandNav = (props) => {
               >
                 <RoleIcon
                   style={{
-                    color: `${selectedLink === 4 ? "#fff" : "#082f49"}`,
+                    color: `${selectedLink === 4 ? "#fff" : "#0A5077"}`,
                   }}
                 />
                 <Typography>Roles</Typography>
@@ -1282,7 +1282,7 @@ const SideandNav = (props) => {
               >
                 <UsersIcon
                   style={{
-                    color: `${selectedLink === 3 ? "#fff" : "#082f49"}`,
+                    color: `${selectedLink === 3 ? "#fff" : "#0A5077"}`,
                   }}
                 />
                 <Typography>Users</Typography>
@@ -1295,7 +1295,7 @@ const SideandNav = (props) => {
               >
                 <AccountBoxIcon
                   style={{
-                    color: `${selectedLink === 16 ? "#fff" : "#082f49"}`,
+                    color: `${selectedLink === 16 ? "#fff" : "#0A5077"}`,
                   }}
                 />
                 <Typography>Profile</Typography>
@@ -1308,7 +1308,7 @@ const SideandNav = (props) => {
             >
               <ProjectIcon
                 style={{
-                  color: `${selectedLink === 1 ? "#fff" : "#082f49"}`,
+                  color: `${selectedLink === 1 ? "#fff" : "#0A5077"}`,
                 }}
               />
               <Typography>Projects</Typography>
@@ -1322,7 +1322,7 @@ const SideandNav = (props) => {
                 >
                   <TrashIcon
                     style={{
-                      color: `${selectedLink === 9 ? "#fff" : "#082f49"}`,
+                      color: `${selectedLink === 9 ? "#fff" : "#0A5077"}`,
                     }}
                   />
                   <Typography>Trash</Typography>
@@ -1349,7 +1349,7 @@ const SideandNav = (props) => {
                   >
                     <DashboardIcon
                       style={{
-                        color: `${selectedLink === 10 ? "#fff" : "#082f49"}`,
+                        color: `${selectedLink === 10 ? "#fff" : "#0A5077"}`,
                       }}
                     />
                     <Typography>Dashboard</Typography>
@@ -1362,7 +1362,7 @@ const SideandNav = (props) => {
                   >
                     <MilestoneIcon
                       style={{
-                        color: `${selectedLink === 11 ? "#fff" : "#082f49"}`,
+                        color: `${selectedLink === 11 ? "#fff" : "#0A5077"}`,
                       }}
                     />
                     <Typography>Activities</Typography>
@@ -1375,7 +1375,7 @@ const SideandNav = (props) => {
                   >
                     <ProjectMembersIcon
                       style={{
-                        color: `${selectedLink === 12 ? "#fff" : "#082f49"}`,
+                        color: `${selectedLink === 12 ? "#fff" : "#0A5077"}`,
                       }}
                     />
                     <Typography>Members</Typography>
@@ -1389,7 +1389,7 @@ const SideandNav = (props) => {
                   >
                     <ProjectWorkspaceIcon
                       style={{
-                        color: `${selectedLink === 13 ? "#fff" : "#082f49"}`,
+                        color: `${selectedLink === 13 ? "#fff" : "#0A5077"}`,
                       }}
                     />
                     <Typography>Workspace</Typography>
@@ -1402,7 +1402,7 @@ const SideandNav = (props) => {
                   >
                     <Flag
                       style={{
-                        color: `${selectedLink === 17 ? "#fff" : "#082f49"}`,
+                        color: `${selectedLink === 17 ? "#fff" : "#0A5077"}`,
                       }}
                     />
                     <Typography>Milestone</Typography>
@@ -1416,7 +1416,7 @@ const SideandNav = (props) => {
                 >
                   <ProjectDocsIcon
                     style={{
-                      color: `${selectedLink === 14 ? "#fff" : "#082f49"}`,
+                      color: `${selectedLink === 14 ? "#fff" : "#0A5077"}`,
                     }}
                   />
                   <Typography>Docs</Typography>

@@ -65,11 +65,11 @@ const RoleChip = styled(Chip)(({ theme, role }) => ({
   fontSize: "0.75rem",
   ...(role === "manager" && {
     backgroundColor: theme.palette.primary.light,
-    color: theme.palette.primary.main,
+    color: "#ffffff",
   }),
   ...(role === "technical" && {
     backgroundColor: theme.palette.secondary.light,
-    color: theme.palette.secondary.dark,
+    color: "#ffffff",
   }),
   ...(role === "member" && {
     backgroundColor: theme.palette.grey[200],
