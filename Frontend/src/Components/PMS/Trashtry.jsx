@@ -365,7 +365,7 @@ const Trashtry = () => {
               {selectedCategory === "" ? (
                 <TableRow>
                   <TableCell colSpan={5} align="center">
-                    Please select a category to view deleted items
+                    Please select a category to view deleted items.
                   </TableCell>
                 </TableRow>
               ) : currentItems.length > 0 ? (
