@@ -31,7 +31,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   padding: theme.spacing(1.5, 2),
   borderBottom: `1px solid ${theme.palette.divider}`,
   "&.header-cell": {
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: "#0A5078",
     color: theme.palette.primary.contrastText,
     fontWeight: 600,
     fontSize: "0.875rem",
@@ -64,12 +64,12 @@ const RoleChip = styled(Chip)(({ theme, role }) => ({
   fontWeight: 500,
   fontSize: "0.75rem",
   ...(role === "manager" && {
-    backgroundColor: theme.palette.primary.light,
-    color: "#ffffff",
+    backgroundColor: theme.palette.grey[200],
+    color: theme.palette.grey[700],
   }),
   ...(role === "technical" && {
-    backgroundColor: theme.palette.secondary.light,
-    color: "#ffffff",
+    backgroundColor: theme.palette.grey[200],
+    color: theme.palette.grey[700],
   }),
   ...(role === "member" && {
     backgroundColor: theme.palette.grey[200],
@@ -175,9 +175,9 @@ const ProjectDetail = ({ selectedRow }) => {
               height: 32,
               bgcolor:
                 roleType === "manager"
-                  ? "primary.main"
+                  ? "grey.500"
                   : roleType === "technical"
-                  ? "secondary.main"
+                  ? "grey.500"
                   : "grey.500",
               fontSize: "0.875rem",
             }}

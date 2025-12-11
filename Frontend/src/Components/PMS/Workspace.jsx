@@ -139,7 +139,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 600,
   },
   projectHeader: {
-    background: "linear-gradient(135deg, #082f49 0%, #0c4a6e 100%)",
+    background: "linear-gradient(90deg, #0c4a6e 0%, #075985 50%, #0c4a6e 100%)",
     borderRadius: "16px",
     padding: theme.spacing(4),
     color: "white",
@@ -1162,7 +1162,6 @@ const Workspace = (props) => {
     );
     setCommentOnSubtask(COMMENT_ON_SUBTASK.length);
     setViewCommentOnSubtask(VIEW_COMMENT_ON_SUBTASK.length);
-    console.log("update sub task permission", UPDATE_SUB_TASK.length);
 
     setCreateTask(CREATE_TASK.length);
     setUpdateTask(UPDATE_TASK.length);
@@ -2020,13 +2019,313 @@ const Workspace = (props) => {
                                               borderRadius: 1,
                                             }}
                                           >
-                                            <Typography
-                                              variant="caption"
-                                              color="text.secondary"
-                                            >
-                                              Additional details for this
-                                              subtask...
-                                            </Typography>
+                                            {/* Task Information */}
+                                            {/* Task Information - Enhanced */}
+                                            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-5 border border-blue-200 shadow-sm">
+                                              <div className="flex items-center justify-between mb-4">
+                                                <div className="flex items-center space-x-3">
+                                                  <div className="p-2 bg-blue-100 rounded-lg">
+                                                    <svg
+                                                      className="w-6 h-6 text-blue-600"
+                                                      fill="none"
+                                                      stroke="currentColor"
+                                                      viewBox="0 0 24 24"
+                                                    >
+                                                      <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                                      />
+                                                    </svg>
+                                                  </div>
+                                                  <div>
+                                                    <h3 className="text-sm font-semibold text-blue-900">
+                                                      Subtask Information
+                                                    </h3>
+                                                    <p className="text-xs text-blue-600">
+                                                      Task details and assigned
+                                                      members
+                                                    </p>
+                                                  </div>
+                                                </div>
+                                                <div className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                                                  ID:{" "}
+                                                  {subtaskItem.task_id?.slice(
+                                                    0,
+                                                    6
+                                                  )}
+                                                  ...
+                                                </div>
+                                              </div>
+
+                                              <div className="space-y-4">
+                                                {/* Task Details Grid */}
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                  {/* Task Basic Info */}
+                                                  <div className="space-y-3">
+                                                    <div>
+                                                      <div className="text-xs font-medium text-blue-700 mb-1">
+                                                        Sub Task Name
+                                                      </div>
+                                                      <div className="flex items-center  px-3 py-2 rounded-lg ">
+                                                        <svg
+                                                          className="w-4 h-4 text-blue-500 mr-2"
+                                                          fill="none"
+                                                          stroke="currentColor"
+                                                          viewBox="0 0 24 24"
+                                                        >
+                                                          <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            strokeWidth={2}
+                                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                                          />
+                                                        </svg>
+                                                        <span className="font-medium text-gray-800 truncate">
+                                                          {subtaskItem.name}
+                                                        </span>
+                                                      </div>
+                                                    </div>
+
+                                                    <div>
+                                                      <div className="text-xs font-medium text-blue-700 mb-1">
+                                                        Sub Task Timeline
+                                                      </div>
+                                                      <div className="flex items-center space-x-4">
+                                                        <div className="flex-1  px-3 py-2 rounded-lg ">
+                                                          <div className="text-xs text-gray-500">
+                                                            Start
+                                                          </div>
+                                                          <div className="font-medium text-sm text-gray-800">
+                                                            {new Date(
+                                                              subtaskItem.start_date
+                                                            ).toLocaleDateString(
+                                                              "en-US",
+                                                              {
+                                                                day: "numeric",
+                                                                month: "short",
+                                                                year: "numeric",
+                                                              }
+                                                            )}
+                                                          </div>
+                                                        </div>
+                                                        <div className="flex-1  px-3 py-2 rounded-lg ">
+                                                          <div className="text-xs text-gray-500">
+                                                            End
+                                                          </div>
+                                                          <div className="font-medium text-sm text-gray-800">
+                                                            {new Date(
+                                                              subtaskItem.end_date
+                                                            ).toLocaleDateString(
+                                                              "en-US",
+                                                              {
+                                                                day: "numeric",
+                                                                month: "short",
+                                                                year: "numeric",
+                                                              }
+                                                            )}
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+
+                                                  {/* Status & Members Preview */}
+                                                  <div className="space-y-3">
+                                                    <div>
+                                                      <div className="text-xs font-medium text-blue-700 mb-1">
+                                                        Status
+                                                      </div>
+                                                      <div className="flex items-center  px-3 py-2 rounded-lg  ">
+                                                        <div
+                                                          className={`w-2 h-2 rounded-full mr-2 ${
+                                                            subtaskItem.subtask_status ===
+                                                            "Completed"
+                                                              ? "bg-green-500"
+                                                              : subtaskItem.subtask_status ===
+                                                                "In Progress"
+                                                              ? "bg-blue-500"
+                                                              : "bg-yellow-500"
+                                                          }`}
+                                                        />
+                                                        <span
+                                                          className={`font-medium text-sm ${
+                                                            subtaskItem.subtask_status ===
+                                                            "Completed"
+                                                              ? "text-green-700"
+                                                              : subtaskItem.subtask_status ===
+                                                                "In Progress"
+                                                              ? "text-blue-700"
+                                                              : "text-yellow-700"
+                                                          }`}
+                                                        >
+                                                          {
+                                                            subtaskItem.subtask_status
+                                                          }
+                                                        </span>
+                                                      </div>
+                                                    </div>
+
+                                                    <div>
+                                                      <div className="text-xs font-medium text-blue-700 mb-1">
+                                                        Assigned Members
+                                                      </div>
+                                                      <div className=" rounded-lg  p-3">
+                                                        {subtaskItem.members &&
+                                                        subtaskItem.members
+                                                          .length > 0 ? (
+                                                          <div className="flex flex-wrap gap-2">
+                                                            {subtaskItem.members
+                                                              .slice(0, 3)
+                                                              .map(
+                                                                (
+                                                                  member,
+                                                                  index
+                                                                ) => (
+                                                                  <div
+                                                                    key={index}
+                                                                    className="flex items-center space-x-2 bg-blue-50 px-3 py-1.5 rounded-lg"
+                                                                  >
+                                                                    <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xs font-semibold">
+                                                                      {member.UserInfo?.full_name?.charAt(
+                                                                        0
+                                                                      ) || "U"}
+                                                                    </div>
+                                                                    <span className="text-sm font-medium text-gray-700 truncate max-w-[100px]">
+                                                                      {member
+                                                                        .UserInfo
+                                                                        ?.full_name ||
+                                                                        "Unnamed"}
+                                                                    </span>
+                                                                  </div>
+                                                                )
+                                                              )}
+                                                            {subtaskItem.members
+                                                              .length > 3 && (
+                                                              <div className="flex items-center space-x-2 bg-blue-50 px-3 py-1.5 rounded-lg">
+                                                                <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xs font-semibold">
+                                                                  +
+                                                                  {subtaskItem
+                                                                    .members
+                                                                    .length - 3}
+                                                                </div>
+                                                                <span className="text-sm font-medium text-blue-600">
+                                                                  {subtaskItem
+                                                                    .members
+                                                                    .length -
+                                                                    3}{" "}
+                                                                  more
+                                                                </span>
+                                                              </div>
+                                                            )}
+                                                          </div>
+                                                        ) : (
+                                                          <div className="flex items-center justify-center py-3">
+                                                            <div className="text-center">
+                                                              <svg
+                                                                className="w-8 h-8 text-gray-300 mx-auto mb-2"
+                                                                fill="none"
+                                                                stroke="currentColor"
+                                                                viewBox="0 0 24 24"
+                                                              >
+                                                                <path
+                                                                  strokeLinecap="round"
+                                                                  strokeLinejoin="round"
+                                                                  strokeWidth={
+                                                                    1.5
+                                                                  }
+                                                                  d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+                                                                />
+                                                              </svg>
+                                                              <p className="text-xs text-gray-500">
+                                                                No members
+                                                                assigned
+                                                              </p>
+                                                            </div>
+                                                          </div>
+                                                        )}
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+
+                                                {/* Progress Bar (Mobile & Desktop) */}
+                                                <div className="pt-2 border-t border-blue-100">
+                                                  <div className="flex items-center justify-between mb-1">
+                                                    <span className="text-xs font-medium text-blue-700">
+                                                      Progress
+                                                    </span>
+                                                    <span className="text-xs text-gray-500">
+                                                      {(() => {
+                                                        const start = new Date(
+                                                          selectedTask.start_date
+                                                        );
+                                                        const end = new Date(
+                                                          selectedTask.end_date
+                                                        );
+                                                        const today =
+                                                          new Date();
+                                                        const diffDays =
+                                                          Math.ceil(
+                                                            (end - today) /
+                                                              (1000 *
+                                                                60 *
+                                                                60 *
+                                                                24)
+                                                          );
+                                                        return diffDays > 0
+                                                          ? `${diffDays} days left`
+                                                          : "Overdue";
+                                                      })()}
+                                                    </span>
+                                                  </div>
+                                                  <div className="w-full bg-gray-200 rounded-full h-2">
+                                                    <div
+                                                      className={`h-2 rounded-full ${
+                                                        selectedTask.task_status ===
+                                                        "Completed"
+                                                          ? "bg-green-500"
+                                                          : selectedTask.task_status ===
+                                                            "In Progress"
+                                                          ? "bg-blue-500"
+                                                          : "bg-yellow-500"
+                                                      }`}
+                                                      style={{
+                                                        width: `${(() => {
+                                                          const start =
+                                                            new Date(
+                                                              selectedTask.start_date
+                                                            );
+                                                          const end = new Date(
+                                                            selectedTask.end_date
+                                                          );
+                                                          const today =
+                                                            new Date();
+                                                          const total =
+                                                            end - start;
+                                                          const progress =
+                                                            today - start;
+                                                          const percentage =
+                                                            Math.min(
+                                                              Math.max(
+                                                                (progress /
+                                                                  total) *
+                                                                  100,
+                                                                0
+                                                              ),
+                                                              100
+                                                            );
+                                                          return Math.round(
+                                                            percentage
+                                                          );
+                                                        })()}%`,
+                                                      }}
+                                                    />
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
                                           </Box>
                                         </Collapse>
                                       </CardContent>
@@ -2085,7 +2384,12 @@ const Workspace = (props) => {
         sx={{ position: "fixed", bottom: 32, right: 32 }}
         icon={<SpeedDialIcon />}
         FabProps={{
-          sx: { bgcolor: "#3b82f6", "&:hover": { bgcolor: "#2563eb" } },
+          sx: {
+            backgroundColor: "#0A4F76 !important",
+            "&:hover": {
+              backgroundColor: "#0A3D5C !important",
+            },
+          },
         }}
       >
         {createTask !== 0 && (

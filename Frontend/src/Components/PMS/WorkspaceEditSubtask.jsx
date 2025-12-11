@@ -191,10 +191,11 @@ const WorkspaceEditSubtask = ({
           .sort((a, b) => a.label.localeCompare(b.label));
 
         setMemberOptions(options);
+        console.log("Filtered member options:", options);
 
         // Auto-select current user if available
         if (options.length > 0 && members.length === 0) {
-          setMembers([options[0].value]);
+          setMembers([options[0]]);
         }
       } catch (error) {
         console.error("Error fetching project members:", error);

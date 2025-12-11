@@ -218,7 +218,7 @@ const WorkspaceAddSubTask = ({
                 <div>
                   Task ID:{" "}
                   <span className="font-mono bg-gray-100 px-2 py-1 rounded">
-                    {selectedTask.task_id}
+                    {selectedTask.task_id.slice(0, 8)}
                   </span>
                 </div>
                 <div>
