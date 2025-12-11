@@ -340,15 +340,15 @@ const Navbar = ({ drawer, mobileOpen, handleDrawerToggle }) => {
               <div className="flex items-center space-x-3">
                 <div className="hidden lg:flex items-center space-x-2">
                   <img
-                    src={EaiiIcon}
-                    alt="EAII Logo"
+                    src={ECSCIcon}
+                    alt="ECSC Logo"
                     className="h-8 w-8 object-contain"
                   />
                   <div className="h-6 w-px bg-white/30" />
                 </div>
                 <div className="flex flex-col">
                   <span className="text-white font-bold text-lg tracking-tight">
-                    EAII-PMS
+                    ECSC-PMS
                   </span>
                   <span className="text-white/80 text-xs">
                     Project Management System

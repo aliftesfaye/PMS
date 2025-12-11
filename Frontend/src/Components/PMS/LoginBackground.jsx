@@ -1,6 +1,7 @@
 import React from "react";
 import backgroundImage from "../Assets/Loginbackground.png";
 import EaiiLogin from "../Assets/EaiiLoginicon.png";
+import ethiopian_civil_service_commistion_logo from "../Assets/ethiopian_civil_service_commistion_logo.png";
 import LoginContainer from "./LoginContainer";
 import { CheckCircle, TrendingUp, Group, OpenInNew } from "@mui/icons-material";
 
@@ -35,9 +36,9 @@ const LoginBackground = () => {
                 <div className="flex justify-center mb-8">
                   <div className="bg-white/20 p-4 rounded-2xl backdrop-blur-sm border border-white/30">
                     <img
-                      src={EaiiLogin}
-                      alt="Ethiopian Artificial Intelligence Institute"
-                      className="h-24 w-auto"
+                      src={ethiopian_civil_service_commistion_logo}
+                      alt="Federal Civil Service Commission of Ethiopia"
+                      className="h-16 w-auto"
                     />
                   </div>
                 </div>
@@ -45,7 +46,7 @@ const LoginBackground = () => {
                 {/* Institute Info */}
                 <div className="text-center mb-8">
                   <h1 className="text-2xl lg:text-3xl font-bold mb-4 leading-tight">
-                    Ethiopian Artificial Intelligence Institute
+                    Federal Civil Service Commission of Ethiopia
                   </h1>
                   <p className="text-xl lg:text-2xl font-semibold text-white/90 mb-2">
                     PROJECT MANAGEMENT SYSTEM
@@ -99,7 +100,7 @@ const LoginBackground = () => {
                 {/* Learn More Button */}
                 <div className="text-center">
                   <a
-                    href="https://aii.et/"
+                    href="https://fcsc.ecsc.gov.et/"
                     className="inline-flex items-center px-6 py-3 bg-white/20 backdrop-blur-sm border border-white/30 text-white font-semibold rounded-lg hover:bg-white/30 transition-all duration-200 transform hover:-translate-y-0.5"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -121,7 +122,7 @@ const LoginBackground = () => {
         {/* Footer */}
         <div className="text-center mt-6">
           <p className="text-white/70 text-sm">
-            © 2025 Ethiopian Artificial Intelligence Institute. All rights
+            © 2025 Federal Civil Service Commission of Ethiopia. All rights
             reserved.
           </p>
         </div>
