@@ -513,7 +513,7 @@ const Projects = (props) => {
   };
 
   return (
-    <div className="ml-auto w-full lg:w-4/5 mr-0 lg:mr-6 mt-6 px-4 lg:px-0 relative">
+    <div className="ml-auto w-full  mr-0 lg:mr-6 mt-6 px-4 lg:px-0 relative">
       <Helmet>
         <title>PMS - Projects</title>
       </Helmet>

@@ -235,7 +235,7 @@ const Docs = (props) => {
   };
 
   return (
-    <div className="docs-container ml-auto mr-5 mt-6 px-4 lg:px-6 xl:px-8 w-full lg:w-4/5">
+    <div className="docs-container ml-auto mr-5 mt-6 px-4 lg:px-6 xl:px-8 w-full ">
       <Helmet>
         <title>{props.setSelectedProjectInfo.name} - Documents</title>
       </Helmet>

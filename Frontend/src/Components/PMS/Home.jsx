@@ -406,7 +406,7 @@ function Home() {
   }, []);
 
   return (
-    <Box className="ml-auto w-full lg:w-4/5 mr-0 lg:mr-5 ">
+    <Box className="ml-auto w-full  mr-0 lg:mr-5 ">
       <Helmet>
         <title>PMS - Dashboard</title>
       </Helmet>

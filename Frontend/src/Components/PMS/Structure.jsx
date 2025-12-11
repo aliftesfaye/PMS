@@ -549,7 +549,7 @@ const Structure = (props) => {
       <Helmet>
         <title>PMS - Organizational Structure</title>
       </Helmet>
-      <div className="w-4/5 border-x-4 border-y-4 pb-6 mb-16 ml-auto mt-6 mr-6 overflow-x-auto no-scrollbar">
+      <div className=" border-x-4 border-y-4 pb-6 mb-16 ml-auto mt-6 mr-6 overflow-x-auto no-scrollbar">
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={loading}

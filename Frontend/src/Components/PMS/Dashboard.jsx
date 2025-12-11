@@ -251,7 +251,7 @@ const Dashboard = (props) => {
   });
 
   return (
-    <Box className="ml-auto w-full lg:w-4/5 mr-0 lg:mr-5 mt-6 lg:mt-6">
+    <Box className=" w-full mr-0 lg:mr-5 mt-5 lg:mt-6">
       <Helmet>
         <title>{props.setSelectedProjectInfo.name} - Dashboard</title>
       </Helmet>

@@ -418,7 +418,7 @@ const Activity = (props) => {
   };
 
   return (
-    <div className="ml-4 md:ml-auto w-full md:w-4/5 mr-0 md:mr-5 mt-6 md:mt-6 px-4 md:px-0">
+    <div className="ml-4 md:ml-auto w-full  mr-0 md:mr-5 mt-6 md:mt-6 px-4 md:px-0">
       <Helmet>
         <title>{props.setSelectedProjectInfo.name} - Activities</title>
       </Helmet>

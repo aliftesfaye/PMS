@@ -458,7 +458,7 @@ const MembersDashboard = ({ selectedProjectInfo }) => {
   };
 
   return (
-    <Box className="ml-auto lg:w-4/5 w-full px-4 lg:px-8 mt-6">
+    <Box className="ml-auto  w-full px-4 lg:px-8 mt-6">
       <Helmet>
         <title>{selectedProjectInfo.name} - Members</title>
       </Helmet>

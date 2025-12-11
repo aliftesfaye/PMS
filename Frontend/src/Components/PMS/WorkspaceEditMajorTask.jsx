@@ -14,6 +14,7 @@ const WorkspaceEditMajorTask = ({
 }) => {
   const [formData, setFormData] = useState({
     name: selectedTask.name,
+    description: selectedTask.description || "", // Added description field
     start_date: selectedTask.start_date,
     task_status: selectedTask.task_status,
     end_date: selectedTask.end_date,
@@ -22,6 +23,7 @@ const WorkspaceEditMajorTask = ({
   });
   const [initialFormData] = useState({
     name: selectedTask.name,
+    description: selectedTask.description || "", // Added description field
     start_date: selectedTask.start_date,
     task_status: selectedTask.task_status,
     end_date: selectedTask.end_date,
@@ -270,10 +272,18 @@ const WorkspaceEditMajorTask = ({
             </h1>
             <p className="text-gray-600 mt-2">Update task details</p>
             <div className="mt-2 text-sm text-gray-500">
-              Task ID:{" "}
-              <span className="font-mono bg-gray-100 px-2 py-1 rounded">
-                {selectedTask.task_id.slice(0, 8)}
-              </span>
+              <div className="flex items-center gap-4">
+                <div>
+                  Task ID:{" "}
+                  <span className="font-mono bg-gray-100 px-2 py-1 rounded">
+                    {selectedTask.task_id.slice(0, 8)}
+                  </span>
+                </div>
+                <div>
+                  Project:{" "}
+                  <span className="font-medium">{selectedProject.name}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -313,6 +323,41 @@ const WorkspaceEditMajorTask = ({
                       required
                       className="pl-10 w-full px-4 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors bg-gray-50"
                     />
+                  </div>
+                </div>
+
+                {/* Task Description */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Description
+                  </label>
+                  <div className="relative">
+                    <div className="absolute top-3 left-3 pointer-events-none">
+                      <svg
+                        className="h-5 w-5 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
+                        />
+                      </svg>
+                    </div>
+                    <textarea
+                      name="description"
+                      value={formData.description}
+                      placeholder="Enter task description (optional)"
+                      onChange={handleInputChange}
+                      rows="4"
+                      className="pl-10 w-full px-4 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors bg-gray-50 resize-none"
+                    />
+                  </div>
+                  <div className="mt-1 text-xs text-gray-500 flex justify-end">
+                    <span>{formData.description.length}/1000 characters</span>
                   </div>
                 </div>
 
@@ -374,7 +419,10 @@ const WorkspaceEditMajorTask = ({
                     </span>
                   </div>
                 </div>
+              </div>
 
+              {/* Right Column */}
+              <div className="space-y-6">
                 {/* Assignees */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -452,10 +500,7 @@ const WorkspaceEditMajorTask = ({
                     )}
                   </div>
                 </div>
-              </div>
 
-              {/* Right Column */}
-              <div className="space-y-6">
                 {/* Task Timeline */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-4">
@@ -575,37 +620,9 @@ const WorkspaceEditMajorTask = ({
                           }
                         )}
                       </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Project Timeline Reference */}
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="text-sm text-gray-700 mb-2">
-                    Project Timeline Reference:
-                  </div>
-                  <div className="text-xs text-gray-600">
-                    <div className="grid grid-cols-2 gap-1">
-                      <div>Project Start:</div>
-                      <div className="font-medium">
-                        {new Date(
-                          selectedProject.start_date
-                        ).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        })}
-                      </div>
-                      <div>Project End:</div>
-                      <div className="font-medium">
-                        {new Date(selectedProject.end_date).toLocaleDateString(
-                          "en-US",
-                          {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                          }
-                        )}
+                      <div>Parent Activity:</div>
+                      <div className="font-medium truncate">
+                        {selectedActivity?.activity?.name || "N/A"}
                       </div>
                     </div>
                   </div>

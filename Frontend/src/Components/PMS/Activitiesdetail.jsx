@@ -325,7 +325,6 @@ const ActivitiesDetail = ({
                             {member.UserInfo?.role || "Team Member"}
                           </div>
                         </div>
-                        <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 flex-shrink-0" />
                       </div>
                     ))}
                   </div>
@@ -456,7 +455,6 @@ const ActivitiesDetail = ({
                             )}
                           </div>
                         </div>
-                        <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex-shrink-0" />
                       </div>
                     </div>
                   ))}

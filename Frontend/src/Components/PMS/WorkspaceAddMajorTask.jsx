@@ -13,6 +13,7 @@ const WorkspaceAddMajorTask = ({
 }) => {
   const [formData, setFormData] = useState({
     name: "",
+    description: "", // Added description field
     task_status: "Pending",
     start_date: "",
     end_date: "",
@@ -253,6 +254,7 @@ const WorkspaceAddMajorTask = ({
   const resetFormData = () => {
     setFormData({
       name: "",
+      description: "", // Reset description field
       task_status: "Pending",
       start_date: "",
       end_date: "",
@@ -323,14 +325,48 @@ const WorkspaceAddMajorTask = ({
                     </div>
                     <input
                       type="text"
+                      name="name"
                       value={formData.name}
                       placeholder="Enter task name"
-                      onChange={(e) =>
-                        setFormData({ ...formData, name: e.target.value })
-                      }
+                      onChange={handleInputChange}
                       required
                       className="pl-10 w-full px-4 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors bg-gray-50"
                     />
+                  </div>
+                </div>
+
+                {/* Task Description */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Description
+                  </label>
+                  <div className="relative">
+                    <div className="absolute top-3 left-3 pointer-events-none">
+                      <svg
+                        className="h-5 w-5 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
+                        />
+                      </svg>
+                    </div>
+                    <textarea
+                      name="description"
+                      value={formData.description}
+                      placeholder="Enter task description (optional)"
+                      onChange={handleInputChange}
+                      rows="4"
+                      className="pl-10 w-full px-4 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors bg-gray-50 resize-none"
+                    />
+                  </div>
+                  <div className="mt-1 text-xs text-gray-500 flex justify-end">
+                    <span>{formData.description.length}/1000 characters</span>
                   </div>
                 </div>
 
@@ -356,7 +392,10 @@ const WorkspaceAddMajorTask = ({
                     placeholder="Select team members..."
                   />
                 </div>
+              </div>
 
+              {/* Right Column */}
+              <div className="space-y-6">
                 {/* Milestone Toggle */}
                 <div className="bg-gray-50 rounded-lg p-4">
                   <div className="flex items-center justify-between">
@@ -410,10 +449,7 @@ const WorkspaceAddMajorTask = ({
                     )}
                   </div>
                 </div>
-              </div>
 
-              {/* Right Column */}
-              <div className="space-y-6">
                 {/* Task Timeline */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-4">
@@ -531,6 +567,10 @@ const WorkspaceAddMajorTask = ({
                           day: "numeric",
                         })}
                       </div>
+                      <div>Project:</div>
+                      <div className="font-medium truncate">
+                        {selectedProject.name}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -557,13 +597,9 @@ const WorkspaceAddMajorTask = ({
                       </svg>
                     </div>
                     <select
+                      name="task_status"
                       value={formData.task_status}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          task_status: e.target.value,
-                        })
-                      }
+                      onChange={handleInputChange}
                       className="pl-10 w-full px-4 py-3 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors bg-gray-50 appearance-none"
                     >
                       <option value="Pending">Pending</option>

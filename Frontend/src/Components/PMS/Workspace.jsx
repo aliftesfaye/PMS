@@ -11,11 +11,35 @@ import {
   FormControl,
   MenuItem,
   Select,
+  Card,
+  CardContent,
+  Grid,
+  Chip,
+  Avatar,
+  AvatarGroup,
+  Paper,
+  Divider,
+  Collapse,
+  Fab,
+  Tabs,
+  Tab,
+  Breadcrumbs,
+  Link,
+  SpeedDial,
+  SpeedDialAction,
+  SpeedDialIcon,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
 } from "@mui/material";
 import { makeStyles } from "@material-ui/core/styles";
 import { Helmet } from "react-helmet-async";
-import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
-import { TreeItem } from "@mui/x-tree-view/TreeItem";
 import Swal from "sweetalert2";
 import PuffLoader from "react-spinners/ClipLoader";
 
@@ -28,6 +52,22 @@ import AddCommentIcon from "@mui/icons-material/MapsUgcOutlined";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import SearchIcon from "@mui/icons-material/Search";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import ViewKanbanIcon from "@mui/icons-material/ViewKanban";
+import TimelineIcon from "@mui/icons-material/Timeline";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import SortIcon from "@mui/icons-material/Sort";
+import GroupIcon from "@mui/icons-material/Group";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import DescriptionIcon from "@mui/icons-material/Description";
+import PersonIcon from "@mui/icons-material/Person";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import InfoIcon from "@mui/icons-material/Info";
+import CloseIcon from "@mui/icons-material/Close";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
 // Config & Services
@@ -45,20 +85,561 @@ import WorkspaceSubtasktrash from "./WorkspaceSubtasktrash.jsx";
 import WorkspaceTaskTrash from "./WorkspaceTaskTrash.jsx";
 import Subtaskcommentview from "./Subtaskcommentview.jsx";
 
-const useStyles = makeStyles({
-  "@global": {
-    ".MuiTreeItem-root.Mui-selected > .MuiTreeItem-content .MuiTreeItem-label":
-      {
-        backgroundColor: "white",
-      },
-    ".MuiTreeItem-root.Mui-selected > .MuiTreeItem-content .MuiTreeItem-label:hover, .MuiTreeItem-root.Mui-selected:focus > .MuiTreeItem-content .MuiTreeItem-label":
-      {
-        backgroundColor: "blue",
-      },
+const useStyles = makeStyles((theme) => ({
+  workspaceContainer: {
+    minHeight: "calc(100vh - 64px)",
+    backgroundColor: "#f8fafc",
+    padding: theme.spacing(3),
+    [theme.breakpoints.down("sm")]: {
+      padding: theme.spacing(2),
+    },
   },
-});
+  activityCard: {
+    borderRadius: "12px",
+    border: "1px solid #e2e8f0",
+    boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
+    transition: "all 0.2s ease-in-out",
+    "&:hover": {
+      boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+      borderColor: "#cbd5e1",
+    },
+    marginBottom: theme.spacing(3),
+    overflow: "visible",
+  },
+  taskCard: {
+    borderRadius: "10px",
+    borderLeft: "4px solid #3b82f6",
+    backgroundColor: "#ffffff",
+    marginBottom: theme.spacing(2),
+    transition: "all 0.2s ease-in-out",
+    "&:hover": {
+      transform: "translateY(-2px)",
+      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
+    },
+  },
+  subtaskCard: {
+    borderRadius: "8px",
+    borderLeft: "3px solid #10b981",
+    backgroundColor: "#f0fdfa",
+    marginBottom: theme.spacing(1.5),
+    transition: "all 0.2s ease-in-out",
+    "&:hover": {
+      backgroundColor: "#f0fdf9",
+    },
+  },
+  statusBadge: {
+    fontWeight: 600,
+    fontSize: "0.75rem",
+    padding: "4px 12px",
+    borderRadius: "20px",
+  },
+  milestoneTag: {
+    backgroundColor: "#f3e8ff",
+    color: "#7c3aed",
+    fontWeight: 600,
+  },
+  projectHeader: {
+    background: "linear-gradient(135deg, #082f49 0%, #0c4a6e 100%)",
+    borderRadius: "16px",
+    padding: theme.spacing(4),
+    color: "white",
+    marginBottom: theme.spacing(4),
+    position: "relative",
+    overflow: "hidden",
+    "&::before": {
+      content: '""',
+      position: "absolute",
+      top: 0,
+      right: 0,
+      width: "200px",
+      height: "200px",
+      background:
+        "radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%)",
+    },
+  },
+  floatingActions: {
+    position: "fixed",
+    bottom: theme.spacing(4),
+    right: theme.spacing(4),
+    zIndex: 1000,
+  },
+  progressBar: {
+    height: "4px",
+    borderRadius: "2px",
+    backgroundColor: "#e2e8f0",
+    overflow: "hidden",
+  },
+  progressFill: {
+    height: "100%",
+    borderRadius: "2px",
+    transition: "width 0.3s ease",
+  },
+  detailPopup: {
+    borderRadius: "16px",
+    maxWidth: "800px",
+    width: "90%",
+    maxHeight: "90vh",
+    overflow: "hidden",
+  },
+}));
+
+const DetailPopup = ({ open, onClose, type, data, userInfo }) => {
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Completed":
+        return { color: "#10b981", bgColor: "#d1fae5" };
+      case "On Progress":
+      case "In Progress":
+        return { color: "#f97316", bgColor: "#ffedd5" };
+      case "Pending":
+        return { color: "#9ca3af", bgColor: "#f3f4f6" };
+      default:
+        return { color: "#6b7280", bgColor: "#f3f4f6" };
+    }
+  };
+
+  const renderActivityDetails = () => (
+    <>
+      <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+        <FlagIcon color="primary" />
+        <Box sx={{ flex: 1 }}>
+          <Typography variant="h5" fontWeight={600}>
+            {data?.activity?.name}
+          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 1 }}>
+            <Chip
+              label={data?.activity?.activity_status || "Active"}
+              size="small"
+              sx={{
+                backgroundColor: getStatusColor(data?.activity?.activity_status)
+                  .bgColor,
+                color: getStatusColor(data?.activity?.activity_status).color,
+                fontWeight: 600,
+              }}
+            />
+            {data?.activity?.is_milestone && (
+              <Chip
+                icon={<FlagIcon />}
+                label="Milestone"
+                size="small"
+                sx={{ bgcolor: "#f3e8ff", color: "#7c3aed" }}
+              />
+            )}
+          </Box>
+        </Box>
+      </DialogTitle>
+      <DialogContent dividers>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={6}>
+            <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+              <CalendarTodayIcon sx={{ fontSize: 16, mr: 1 }} />
+              Created Date
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              {new Date(data?.activity?.createdAt).toLocaleDateString()}
+            </Typography>
+
+            <Typography
+              variant="subtitle2"
+              color="text.secondary"
+              gutterBottom
+              sx={{ mt: 2 }}
+            >
+              <AccessTimeIcon sx={{ fontSize: 16, mr: 1 }} />
+              Last Updated
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              {new Date(data?.activity?.updatedAt).toLocaleDateString()}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+              <TaskAltIcon sx={{ fontSize: 16, mr: 1 }} />
+              Total Tasks
+            </Typography>
+            <Typography variant="h4" color="primary" gutterBottom>
+              {data?.tasks?.length || 0}
+            </Typography>
+
+            <Typography
+              variant="subtitle2"
+              color="text.secondary"
+              gutterBottom
+              sx={{ mt: 2 }}
+            >
+              <DescriptionIcon sx={{ fontSize: 16, mr: 1 }} />
+              Description
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              {data?.activity?.description || "No description provided"}
+            </Typography>
+          </Grid>
+        </Grid>
+
+        {data?.tasks && data.tasks.length > 0 && (
+          <Box sx={{ mt: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              Tasks in this Activity
+            </Typography>
+            <List>
+              {data.tasks.slice(0, 3).map((task, index) => (
+                <ListItem
+                  key={index}
+                  sx={{ borderBottom: "1px solid #e2e8f0" }}
+                >
+                  <ListItemIcon>
+                    <TaskAltIcon color="primary" />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={task.name}
+                    secondary={
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 2,
+                          mt: 1,
+                        }}
+                      >
+                        <Chip
+                          label={task.task_status}
+                          size="small"
+                          sx={{
+                            backgroundColor: getStatusColor(task.task_status)
+                              .bgColor,
+                            color: getStatusColor(task.task_status).color,
+                          }}
+                        />
+                        <Typography variant="caption" color="text.secondary">
+                          {new Date(task.start_date).toLocaleDateString()} -{" "}
+                          {new Date(task.end_date).toLocaleDateString()}
+                        </Typography>
+                      </Box>
+                    }
+                  />
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        )}
+      </DialogContent>
+    </>
+  );
+
+  const renderTaskDetails = () => (
+    <>
+      <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+        <TaskAltIcon color="primary" />
+        <Box sx={{ flex: 1 }}>
+          <Typography variant="h5" fontWeight={600}>
+            {data?.name}
+          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 1 }}>
+            <Chip
+              label={data?.task_status || "Pending"}
+              size="small"
+              sx={{
+                backgroundColor: getStatusColor(data?.task_status).bgColor,
+                color: getStatusColor(data?.task_status).color,
+                fontWeight: 600,
+              }}
+            />
+            {data?.is_milestone && (
+              <Chip
+                icon={<FlagIcon />}
+                label="Milestone"
+                size="small"
+                sx={{ bgcolor: "#f3e8ff", color: "#7c3aed" }}
+              />
+            )}
+          </Box>
+        </Box>
+      </DialogTitle>
+      <DialogContent dividers>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={6}>
+            <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+              <CalendarTodayIcon sx={{ fontSize: 16, mr: 1 }} />
+              Start Date
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              {new Date(data?.start_date).toLocaleDateString()}
+            </Typography>
+
+            <Typography
+              variant="subtitle2"
+              color="text.secondary"
+              gutterBottom
+              sx={{ mt: 2 }}
+            >
+              <CalendarTodayIcon sx={{ fontSize: 16, mr: 1 }} />
+              End Date
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              {new Date(data?.end_date).toLocaleDateString()}
+            </Typography>
+
+            <Typography
+              variant="subtitle2"
+              color="text.secondary"
+              gutterBottom
+              sx={{ mt: 2 }}
+            >
+              <AccessTimeIcon sx={{ fontSize: 16, mr: 1 }} />
+              Duration
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              {Math.ceil(
+                (new Date(data?.end_date) - new Date(data?.start_date)) /
+                  (1000 * 60 * 60 * 24)
+              )}{" "}
+              days
+            </Typography>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+              <GroupIcon sx={{ fontSize: 16, mr: 1 }} />
+              Assigned Members
+            </Typography>
+            {data?.members && data.members.length > 0 ? (
+              <AvatarGroup max={4} sx={{ mt: 1 }}>
+                {data.members.map((member, index) => (
+                  <Tooltip
+                    key={index}
+                    title={member.UserInfo.full_name || member.UserInfo.email}
+                  >
+                    <Avatar sx={{ width: 32, height: 32 }}>
+                      {member.UserInfo.full_name?.charAt(0) ||
+                        member.UserInfo.email?.charAt(0)}
+                    </Avatar>
+                  </Tooltip>
+                ))}
+              </AvatarGroup>
+            ) : (
+              <Typography variant="body2" color="text.secondary">
+                No members assigned
+              </Typography>
+            )}
+
+            <Typography
+              variant="subtitle2"
+              color="text.secondary"
+              gutterBottom
+              sx={{ mt: 3 }}
+            >
+              <DescriptionIcon sx={{ fontSize: 16, mr: 1 }} />
+              Description
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              {data?.description || "No description provided"}
+            </Typography>
+          </Grid>
+        </Grid>
+
+        {data?.subTask && data.subTask.length > 0 && (
+          <Box sx={{ mt: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              Subtasks ({data.subTask.length})
+            </Typography>
+            <List>
+              {data.subTask.slice(0, 5).map((subtask, index) => (
+                <ListItem
+                  key={index}
+                  sx={{ borderBottom: "1px solid #e2e8f0" }}
+                >
+                  <ListItemIcon>
+                    <ListAltIcon color="success" />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={subtask.name}
+                    secondary={
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 2,
+                          mt: 1,
+                        }}
+                      >
+                        <Chip
+                          label={subtask.subtask_status}
+                          size="small"
+                          sx={{
+                            backgroundColor: getStatusColor(
+                              subtask.subtask_status
+                            ).bgColor,
+                            color: getStatusColor(subtask.subtask_status).color,
+                          }}
+                        />
+                        <Typography variant="caption" color="text.secondary">
+                          {new Date(subtask.start_date).toLocaleDateString()} -{" "}
+                          {new Date(subtask.end_date).toLocaleDateString()}
+                        </Typography>
+                      </Box>
+                    }
+                  />
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        )}
+      </DialogContent>
+    </>
+  );
+
+  const renderSubtaskDetails = () => (
+    <>
+      <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+        <ListAltIcon color="success" />
+        <Box sx={{ flex: 1 }}>
+          <Typography variant="h5" fontWeight={600}>
+            {data?.name}
+          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 1 }}>
+            <Chip
+              label={data?.subtask_status || "Pending"}
+              size="small"
+              sx={{
+                backgroundColor: getStatusColor(data?.subtask_status).bgColor,
+                color: getStatusColor(data?.subtask_status).color,
+                fontWeight: 600,
+              }}
+            />
+            {data?.is_milestone && (
+              <Chip
+                icon={<FlagIcon />}
+                label="Milestone"
+                size="small"
+                sx={{ bgcolor: "#f3e8ff", color: "#7c3aed" }}
+              />
+            )}
+          </Box>
+        </Box>
+      </DialogTitle>
+      <DialogContent dividers>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={6}>
+            <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+              <CalendarTodayIcon sx={{ fontSize: 16, mr: 1 }} />
+              Start Date
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              {new Date(data?.start_date).toLocaleDateString()}
+            </Typography>
+
+            <Typography
+              variant="subtitle2"
+              color="text.secondary"
+              gutterBottom
+              sx={{ mt: 2 }}
+            >
+              <CalendarTodayIcon sx={{ fontSize: 16, mr: 1 }} />
+              End Date
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              {new Date(data?.end_date).toLocaleDateString()}
+            </Typography>
+
+            <Typography
+              variant="subtitle2"
+              color="text.secondary"
+              gutterBottom
+              sx={{ mt: 2 }}
+            >
+              <AccessTimeIcon sx={{ fontSize: 16, mr: 1 }} />
+              Time Remaining
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              {Math.ceil(
+                (new Date(data?.end_date) - new Date()) / (1000 * 60 * 60 * 24)
+              )}{" "}
+              days
+            </Typography>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Typography
+              variant="subtitle2"
+              color="text.secondary"
+              gutterBottom
+              sx={{ mt: 3 }}
+            >
+              <DescriptionIcon sx={{ fontSize: 16, mr: 1 }} />
+              Description
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              {data?.description || "No description provided"}
+            </Typography>
+          </Grid>
+        </Grid>
+
+        <Box sx={{ mt: 3 }}>
+          <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+            <CommentIcon sx={{ fontSize: 16, mr: 1 }} />
+            Comments ({data?.Coments?.length || 0})
+          </Typography>
+          {data?.Coments && data.Coments.length > 0 ? (
+            <List>
+              {data.Coments.slice(0, 3).map((comment, index) => (
+                <ListItem
+                  key={index}
+                  sx={{ borderBottom: "1px solid #e2e8f0" }}
+                >
+                  <ListItemIcon>
+                    <Avatar sx={{ width: 32, height: 32 }}>
+                      {comment.user?.name?.charAt(0) ||
+                        comment.user?.email?.charAt(0)}
+                    </Avatar>
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
+                        <Typography variant="subtitle2">
+                          {comment.user?.name || comment.user?.email}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {new Date(comment.createdAt).toLocaleDateString()}
+                        </Typography>
+                      </Box>
+                    }
+                    secondary={comment.content}
+                  />
+                </ListItem>
+              ))}
+            </List>
+          ) : (
+            <Typography variant="body2" color="text.secondary">
+              No comments yet
+            </Typography>
+          )}
+        </Box>
+      </DialogContent>
+    </>
+  );
+
+  return (
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="md"
+      fullWidth
+      classes={{ paper: useStyles().detailPopup }}
+    >
+      {type === "activity" && renderActivityDetails()}
+      {type === "task" && renderTaskDetails()}
+      {type === "subtask" && renderSubtaskDetails()}
+      <DialogActions>
+        <Button onClick={onClose} startIcon={<CloseIcon />}>
+          Close
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
 
 const Workspace = (props) => {
+  const classes = useStyles();
   const [formData, setFormData] = useState({
     subtask_status: "",
   });
@@ -77,15 +658,12 @@ const Workspace = (props) => {
   const [showSubsubtaskOptions, setShowSubsubtaskOptions] = useState({});
   const [commentSubModalOpen, setCommentSubModalOpen] = useState(false);
   const [viewCommentSubModalOpen, setViewCommentSubModalOpen] = useState(false);
-
   const [commentOnSubtask, setCommentOnSubtask] = useState(0);
   const [viewCommentOnSubtask, setViewCommentOnSubtask] = useState(0);
-
   const [selectedSubTaskId, setSelectedSubTaskId] = useState("");
   const [selectedTaskIndex, setSelectedTaskIndex] = useState(null);
   const [selectedSubtaskIndex, setSelectedSubtaskIndex] = useState(null);
   const [selectedSubsubtaskIndex, setSelectedSubsubtaskIndex] = useState(null);
-
   const [expandedActivities, setExpandedActivities] = useState([]);
   const [expandedTasks, setExpandedTasks] = useState([]);
   const [showEditSubtaskModal, setShowEditSubtaskModal] = useState(false);
@@ -99,6 +677,13 @@ const Workspace = (props) => {
   const [createSubTask, setCreateSubTask] = useState(0);
   const [updateSubTask, setUpdateSubTask] = useState(0);
   const [deleteSubTask, setDeleteSubTask] = useState(0);
+  const [viewMode, setViewMode] = useState("list");
+  const [sortBy, setSortBy] = useState("date");
+  const [detailPopup, setDetailPopup] = useState({
+    open: false,
+    type: null,
+    data: null,
+  });
 
   const [userInfo, setUserInfo] = useState(() => {
     return JSON.parse(localStorage.getItem("userInfo")) || [];
@@ -117,14 +702,31 @@ const Workspace = (props) => {
 
   const modalRef = useRef(null);
 
-  const handleToggle = (itemId) => {
-    setExpandedItems((prevExpanded) => {
-      if (prevExpanded.includes(itemId)) {
-        return prevExpanded.filter((item) => item !== itemId);
-      } else {
-        return [...prevExpanded, itemId];
-      }
-    });
+  // Fixed toggle functions
+  const toggleActivity = (index) => {
+    setExpandedActivities((prev) =>
+      prev.includes(index)
+        ? prev.filter((item) => item !== index)
+        : [...prev, index]
+    );
+  };
+
+  const toggleTask = (activityIndex, taskIndex) => {
+    const taskKey = `${activityIndex}-${taskIndex}`;
+    setExpandedTasks((prev) =>
+      prev.includes(taskKey)
+        ? prev.filter((item) => item !== taskKey)
+        : [...prev, taskKey]
+    );
+  };
+
+  const toggleSubtask = (activityIndex, taskIndex, subtaskIndex) => {
+    const subtaskKey = `${activityIndex}-${taskIndex}-${subtaskIndex}`;
+    setExpandedSubtasks((prev) =>
+      prev.includes(subtaskKey)
+        ? prev.filter((item) => item !== subtaskKey)
+        : [...prev, subtaskKey]
+    );
   };
 
   const toggleModal = () => setShowModal(!showModal);
@@ -140,32 +742,41 @@ const Workspace = (props) => {
     setSelectedTaskIndex(index);
     setShowMajorTaskTrashModal(!showMajorTaskTrashModal);
   };
+
   const statusOptions = [
-    { value: "Pending", label: "Pending", color: "" },
-    { value: "On Progress", label: "On Progress", color: "orange" },
-    { value: "Completed", label: "Completed", color: "green" },
+    {
+      value: "Pending",
+      label: "Pending",
+      color: "#9ca3af",
+      bgColor: "#f3f4f6",
+    },
+    {
+      value: "On Progress",
+      label: "In Progress",
+      color: "#f97316",
+      bgColor: "#ffedd5",
+    },
+    {
+      value: "Completed",
+      label: "Completed",
+      color: "#10b981",
+      bgColor: "#d1fae5",
+    },
   ];
 
   const toggleSubtasktrashModal = (index) => {
     setSelectedTaskIndex(index);
     setShowSubtasktrashModal(!showSubtasktrashModal);
   };
+
   const toggleEditSubtaskModal = () => {
     setShowEditSubtaskModal(!showEditSubtaskModal);
   };
-  const toggleSubtask = (activityIndex, taskIndex, subtaskIndex) => {
-    const subtaskKey = `${activityIndex}-${taskIndex}-${subtaskIndex}`;
-    setExpandedSubtasks((prevState) => {
-      if (prevState.includes(subtaskKey)) {
-        return prevState.filter((item) => item !== subtaskKey);
-      } else {
-        return [...prevState, subtaskKey];
-      }
-    });
-  };
+
   const handleChange = (subtaskItem) => (event) => {
     handleStatusChange(event.target.value, subtaskItem.sub_task_id);
   };
+
   const handlefetchTask = async () => {
     try {
       const taskData = await apiService.getAllTasks(
@@ -182,6 +793,7 @@ const Workspace = (props) => {
       console.error("Error fetching projects:", error);
     }
   };
+
   const handlefetchSubTask = async () => {
     try {
       const taskData = await apiService.getAllSubTasks(
@@ -198,6 +810,7 @@ const Workspace = (props) => {
       console.error("Error fetching projects:", error);
     }
   };
+
   const handleAddTaskModalClose = () => {
     setShowAddTaskModal(false);
   };
@@ -256,9 +869,11 @@ const Workspace = (props) => {
       });
     }
   };
+
   const handleEditTaskModalClose = () => {
     setShowEditMajorTaskModal(false);
   };
+
   const handleEditSubTaskModalClose = () => {
     setShowEditSubtaskModal(false);
   };
@@ -266,11 +881,29 @@ const Workspace = (props) => {
   const handleAddSubModalClose = () => {
     setShowAddSubTaskModal(false);
   };
+
   const handleCommentModalClose = () => {
     setCommentSubModalOpen(false);
   };
+
   const handleViewCommentModalClose = () => {
     setViewCommentSubModalOpen(false);
+  };
+
+  const handleOpenDetailPopup = (type, data) => {
+    setDetailPopup({
+      open: true,
+      type,
+      data,
+    });
+  };
+
+  const handleCloseDetailPopup = () => {
+    setDetailPopup({
+      open: false,
+      type: null,
+      data: null,
+    });
   };
 
   const toggleAddSubSubTaskModal = () => {};
@@ -314,23 +947,6 @@ const Workspace = (props) => {
     }));
   };
 
-  const toggleActivity = async (index) => {
-    if (expandedActivities.includes(index)) {
-      setExpandedActivities(
-        expandedActivities.filter((item) => item !== index)
-      );
-    } else {
-      setExpandedActivities([...expandedActivities, index]);
-    }
-  };
-  const toggleTask = (activityIndex, taskIndex) => {
-    const taskKey = `${activityIndex}-${taskIndex}`;
-    if (expandedTasks.includes(taskKey)) {
-      setExpandedTasks(expandedTasks.filter((item) => item !== taskKey));
-    } else {
-      setExpandedTasks([...expandedTasks, taskKey]);
-    }
-  };
   const handleInputChange = (event) => {
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
@@ -341,9 +957,9 @@ const Workspace = (props) => {
       [name]: value,
     });
 
-    // Fetch activities based on the checkbox value
     fetchActivitiesWithMilestone(value);
   };
+
   const fetchActivitiesWithMilestone = async (isMilestone) => {
     try {
       setLoading(true);
@@ -357,7 +973,6 @@ const Workspace = (props) => {
         }
       });
 
-      // Filter activities based on the isMilestone parameter
       const filteredActivities = sortedResponse.filter(
         (activity) => activity.activity.is_milestone === isMilestone
       );
@@ -372,6 +987,7 @@ const Workspace = (props) => {
       console.error("Error fetching activity:", error);
     }
   };
+
   const fetchAllActivities = async () => {
     try {
       setLoading(true);
@@ -393,6 +1009,7 @@ const Workspace = (props) => {
       console.error("Error fetching activity:", error);
     }
   };
+
   const fetchActivities = async () => {
     try {
       setLoading(true);
@@ -428,6 +1045,7 @@ const Workspace = (props) => {
       console.error("Error fetching sub tasks:", error);
     }
   };
+
   const filteredRows =
     statusFilter === "All"
       ? activities
@@ -445,21 +1063,37 @@ const Workspace = (props) => {
 
   const indexOfLastActivity = currentPage;
   const indexOfFirstActivity = indexOfLastActivity;
-
   const currentActivities = search.slice(currentPage);
 
   const handleFilterClick = (status) => {
     setStatusFilter(status);
     setCurrentPage();
   };
+
   const handleCommentOnSubtaskClick = (activity) => {
     setSelectedSubTaskId(activity.sub_task_id);
     setCommentSubModalOpen(true);
   };
+
   const handleViewCommentOnSubtaskClick = (activity) => {
     setSelectedSubTaskId(activity.sub_task_id);
     setViewCommentSubModalOpen(true);
   };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Completed":
+        return { color: "#10b981", bgColor: "#d1fae5" };
+      case "On Progress":
+      case "In Progress":
+        return { color: "#f97316", bgColor: "#ffedd5" };
+      case "Pending":
+        return { color: "#9ca3af", bgColor: "#f3f4f6" };
+      default:
+        return { color: "#6b7280", bgColor: "#f3f4f6" };
+    }
+  };
+
   useEffect(() => {
     fetchActivities();
     async function fetchUsers() {
@@ -528,6 +1162,7 @@ const Workspace = (props) => {
     );
     setCommentOnSubtask(COMMENT_ON_SUBTASK.length);
     setViewCommentOnSubtask(VIEW_COMMENT_ON_SUBTASK.length);
+    console.log("update sub task permission", UPDATE_SUB_TASK.length);
 
     setCreateTask(CREATE_TASK.length);
     setUpdateTask(UPDATE_TASK.length);
@@ -541,10 +1176,76 @@ const Workspace = (props) => {
     setShowModal(true);
   };
 
-  const classes = useStyles();
+  const calculateProjectProgress = () => {
+    if (activities.length === 0) return 0;
+
+    let totalWeight = 0;
+    let completedWeight = 0;
+
+    activities.forEach((activity) => {
+      const activityWeight = 1;
+      totalWeight += activityWeight;
+
+      if (activity.activity.activity_status === "Completed") {
+        completedWeight += activityWeight;
+      } else {
+        if (activity.tasks && activity.tasks.length > 0) {
+          let taskTotalWeight = 0;
+          let taskCompletedWeight = 0;
+
+          activity.tasks.forEach((task) => {
+            const taskWeight = 1;
+            taskTotalWeight += taskWeight;
+
+            if (task.task_status === "Completed") {
+              taskCompletedWeight += taskWeight;
+            } else {
+              if (task.subTask && task.subTask.length > 0) {
+                let subtaskTotalWeight = 0;
+                let subtaskCompletedWeight = 0;
+
+                task.subTask.forEach((subtask) => {
+                  const subtaskWeight = 1;
+                  subtaskTotalWeight += subtaskWeight;
+
+                  if (subtask.subtask_status === "Completed") {
+                    subtaskCompletedWeight += subtaskWeight;
+                  } else if (subtask.subtask_status === "On Progress") {
+                    subtaskCompletedWeight += subtaskWeight * 0.5;
+                  }
+                });
+
+                if (subtaskTotalWeight > 0) {
+                  taskCompletedWeight +=
+                    (subtaskCompletedWeight / subtaskTotalWeight) * taskWeight;
+                }
+              } else {
+                if (task.task_status === "On Progress") {
+                  taskCompletedWeight += taskWeight * 0.5;
+                }
+              }
+            }
+          });
+
+          if (taskTotalWeight > 0) {
+            completedWeight +=
+              (taskCompletedWeight / taskTotalWeight) * activityWeight;
+          }
+        } else {
+          if (activity.activity.activity_status === "On Progress") {
+            completedWeight += activityWeight * 0.5;
+          }
+        }
+      }
+    });
+
+    return totalWeight > 0
+      ? Math.round((completedWeight / totalWeight) * 100)
+      : 0;
+  };
 
   return (
-    <div className=" w-4/5 border-x-4 border-y-4 pb-6 mb-16 ml-auto mt-6 mr-6 overflow-x-auto no-scrollbar">
+    <Box className={classes.workspaceContainer}>
       <Helmet>
         <title>{props.setSelectedProjectInfo.name} - Workspace</title>
       </Helmet>
@@ -555,66 +1256,179 @@ const Workspace = (props) => {
         <PuffLoader color="#fff" />
       </Backdrop>
 
-      {/* Header */}
+      {/* Project Header */}
+      <Card className={classes.projectHeader}>
+        <CardContent sx={{ position: "relative", zIndex: 1 }}>
+          <Grid container spacing={3} alignItems="center">
+            <Grid item xs={12} md={8}>
+              <Breadcrumbs
+                aria-label="breadcrumb"
+                sx={{ color: "white", mb: 2 }}
+              >
+                <Link underline="hover" color="inherit" href="#">
+                  Projects
+                </Link>
+                <Link underline="hover" color="inherit" href="#">
+                  Workspace
+                </Link>
+                <Typography color="white" fontWeight={600}>
+                  {props.setSelectedProjectInfo.name}
+                </Typography>
+              </Breadcrumbs>
+              <Typography
+                variant="h4"
+                color="white"
+                fontWeight={700}
+                gutterBottom
+              >
+                {props.setSelectedProjectInfo.name}
+              </Typography>
+              <Typography
+                variant="body1"
+                color="white"
+                sx={{ opacity: 0.9, mb: 3 }}
+              >
+                Project Management Workspace
+              </Typography>
 
-      <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6 mt-10 mb-8 ml-4">
-        <div className="flex items-center gap-4">
-          <div
-            className="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center text-white text-xl font-bold shadow-md"
-            style={{ backgroundColor: "#082f49" }}
-          >
-            {props.setSelectedProjectInfo.name.charAt(0).toUpperCase()}
-          </div>
-          <div>
-            <h1 className="text-2xl md:text-3xl font-semibold text-gray-800">
-              {props.setSelectedProjectInfo.name}
-            </h1>
-            <p className="text-sm text-gray-600 mt-1">Project Workspace</p>
-          </div>
-        </div>
-      </div>
+              <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
+                <Box>
+                  <Typography
+                    variant="caption"
+                    color="white"
+                    sx={{ opacity: 0.8 }}
+                  >
+                    Total Activities
+                  </Typography>
+                  <Typography variant="h6" color="white" fontWeight={600}>
+                    {activities.length}
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography
+                    variant="caption"
+                    color="white"
+                    sx={{ opacity: 0.8 }}
+                  >
+                    Active Tasks
+                  </Typography>
+                  <Typography variant="h6" color="white" fontWeight={600}>
+                    {tasks.length}
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography
+                    variant="caption"
+                    color="white"
+                    sx={{ opacity: 0.8 }}
+                  >
+                    Progress
+                  </Typography>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                    <Typography variant="h6" color="white" fontWeight={600}>
+                      {calculateProjectProgress()}%
+                    </Typography>
+                    <Box sx={{ flex: 1, maxWidth: 200 }}>
+                      <Box
+                        sx={{
+                          height: 8,
+                          bgcolor: "#e2e8f0",
+                          borderRadius: 4,
+                          overflow: "hidden",
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            height: "100%",
+                            bgcolor: "#10b981",
+                            width: `${calculateProjectProgress()}%`,
+                            transition: "width 0.3s ease",
+                          }}
+                        />
+                      </Box>
+                    </Box>
+                  </Box>
+                </Box>
+              </Box>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                <Avatar
+                  sx={{
+                    width: 80,
+                    height: 80,
+                    fontSize: "2rem",
+                    fontWeight: 700,
+                    bgcolor: "rgba(255,255,255,0.2)",
+                    backdropFilter: "blur(10px)",
+                  }}
+                >
+                  {props.setSelectedProjectInfo.name.charAt(0).toUpperCase()}
+                </Avatar>
+              </Box>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
 
-      {/* Filter Tabs */}
-      <div className="border-b border-gray-200 bg-gray-50 px-4 md:px-6 overflow-x-auto">
-        <div className="flex space-x-1 min-w-max">
-          {["All", "Completed", "On Progress", "Pending"].map((status) => (
-            <button
-              key={status}
-              onClick={() => handleFilterClick(status)}
-              className={`px-4 py-3 text-sm font-medium transition-all duration-200 whitespace-nowrap ${
-                statusFilter === status
-                  ? "text-blue-700 border-b-2 border-blue-700 bg-blue-50"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-              }`}
-            >
-              {status}
-            </button>
-          ))}
-        </div>
-      </div>
+      {/* Controls Bar */}
+      <Paper sx={{ mb: 4, p: 3, borderRadius: 3 }}>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              placeholder="Search activities, tasks, or subtasks..."
+              variant="outlined"
+              size="small"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+                sx: { borderRadius: 2 },
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+              <Tabs
+                value={statusFilter}
+                onChange={(e, value) => handleFilterClick(value)}
+                sx={{ minHeight: 40 }}
+              >
+                <Tab label="All" value="All" />
+                <Tab label="Active" value="On Progress" />
+                <Tab label="Completed" value="Completed" />
+                <Tab label="Pending" value="Pending" />
+              </Tabs>
+            </Box>
+          </Grid>
+        </Grid>
 
-      {/* Search and Filters */}
-      <div className="p-4 md:p-6 border-b border-gray-200 bg-white">
-        <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
-          <TextField
-            type="text"
-            placeholder="Search activities..."
-            size="small"
-            className="bg-white rounded-lg w-full md:w-auto md:min-w-[300px]"
-            variant="outlined"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon className="text-gray-400" />
-                </InputAdornment>
-              ),
-              className: "rounded-lg",
-            }}
-          />
-
-          <div className="flex items-center gap-4 flex-wrap">
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mt: 2,
+          }}
+        >
+          <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+            <Chip
+              icon={<FilterListIcon />}
+              label="Filters"
+              variant="outlined"
+              clickable
+            />
+            <Chip
+              icon={<SortIcon />}
+              label="Sort by Date"
+              variant="outlined"
+              clickable
+            />
             <label className="flex items-center gap-2 cursor-pointer group">
               <input
                 type="checkbox"
@@ -625,382 +1439,707 @@ const Workspace = (props) => {
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
               <span className="text-sm text-gray-700 group-hover:text-gray-900">
-                Show Milestones Only
+                Milestones Only
               </span>
             </label>
+          </Box>
 
-            <button
-              onClick={fetchAllActivities}
-              className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200"
-            >
-              Show All Activities
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="p-4 md:p-6">
-        {activities.length !== 0 ? (
-          <Box
-            sx={{
-              border: "1px solid #e5e7eb",
-              borderRadius: "8px",
-              padding: "24px",
-              backgroundColor: "white",
-            }}
-            className="overflow-x-auto"
+          <button
+            onClick={fetchAllActivities}
+            className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200"
           >
-            <SimpleTreeView>
-              {currentActivities.map((activityItem, activityIndex) => (
-                <TreeItem
-                  key={`activity-${activityIndex}`}
-                  itemId={`activity-${activityIndex}`}
-                  label={
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                      <div className="flex items-center gap-3">
-                        <span className="font-semibold text-gray-900">
-                          {activityItem.activity.name}
-                        </span>
-                        {activityItem.activity.is_milestone === true && (
-                          <span className="inline-flex items-center gap-1 px-2 py-1 bg-purple-100 text-purple-700 text-xs font-medium rounded">
-                            <FlagIcon fontSize="small" />
-                            Milestone
-                          </span>
+            Refresh All
+          </button>
+        </Box>
+      </Paper>
+
+      {/* Activities List */}
+      <Box>
+        {activities.length !== 0 ? (
+          currentActivities.map((activityItem, activityIndex) => (
+            <Card
+              key={`activity-${activityIndex}`}
+              className={classes.activityCard}
+            >
+              <CardContent>
+                <Grid container alignItems="center" spacing={2}>
+                  <Grid item xs={12} md={9}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 2,
+                        mb: 1,
+                      }}
+                    >
+                      <IconButton
+                        size="small"
+                        onClick={() => toggleActivity(activityIndex)}
+                        sx={{ mr: 1 }}
+                      >
+                        {expandedActivities.includes(activityIndex) ? (
+                          <ExpandLessIcon />
+                        ) : (
+                          <ExpandMoreIcon />
                         )}
-                      </div>
-
-                      {createTask !== 0 && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleAddTaskModal();
-                            setSelectedActivity(activityItem);
-                          }}
-                          className="flex items-center gap-2 px-3 py-2 bg-green-500 text-white text-sm font-medium rounded-lg hover:bg-green-600 transition-colors duration-200"
-                        >
-                          <AddCircleOutlineIcon style={{ fontSize: 18 }} />
-                          Add Task
-                        </button>
-                      )}
-                    </div>
-                  }
-                >
-                  {activityItem.tasks.map((taskItem, taskIndex) => (
-                    <React.Fragment key={`task-${activityIndex}-${taskIndex}`}>
-                      <TreeItem
-                        itemId={`task-${activityIndex}-${taskIndex}`}
-                        label={
-                          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 py-4 px-4 items-center text-sm border-b border-gray-100 hover:bg-gray-50 transition-colors duration-150 ml-4 md:ml-8">
-                            <div className="lg:col-span-4 flex items-start gap-3">
-                              <TaskAltIcon
-                                className="text-blue-600 mt-0.5 flex-shrink-0"
-                                style={{ fontSize: 18 }}
-                              />
-                              <div>
-                                <div className="font-medium text-gray-900 mb-1">
-                                  {taskItem.name}
-                                </div>
-                                {taskItem.is_milestone === true && (
-                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-50 text-purple-600 text-xs font-medium rounded">
-                                    <FlagIcon style={{ fontSize: 12 }} />
-                                    Milestone
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-
-                            <div className="lg:col-span-3 flex items-center gap-2 text-gray-600">
-                              <PendingActionsIcon style={{ fontSize: 16 }} />
-                              <span className="text-sm">
-                                {new Date(
-                                  taskItem.start_date
-                                ).toLocaleDateString()}{" "}
-                                -{" "}
-                                {new Date(
-                                  taskItem.end_date
-                                ).toLocaleDateString()}
-                              </span>
-                            </div>
-
-                            <div className="lg:col-span-2">
-                              <span
-                                className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium ${
-                                  taskItem.task_status === "Completed"
-                                    ? "bg-green-100 text-green-800"
-                                    : taskItem.task_status === "On Progress"
-                                    ? "bg-orange-100 text-orange-800"
-                                    : taskItem.task_status === "Canceled"
-                                    ? "bg-red-100 text-red-800"
-                                    : "bg-gray-100 text-gray-800"
-                                }`}
-                              >
-                                {taskItem.task_status}
-                              </span>
-                            </div>
-
-                            <div className="lg:col-span-2">
-                              {createSubTask !== 0 &&
-                                taskItem.members.some(
-                                  (member) =>
-                                    member.user_id ===
-                                    userInfo.foundUser.user_id
-                                ) && (
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      toggleAddSubTaskModal();
-                                      setSelectedTask(taskItem);
-                                    }}
-                                    className="flex items-center gap-1 text-blue-600 hover:text-blue-800 text-sm font-medium"
-                                  >
-                                    <AddCircleOutlineIcon
-                                      style={{ fontSize: 16 }}
-                                    />
-                                    Add Sub Task
-                                  </button>
-                                )}
-                            </div>
-
-                            {(updateTask !== 0 || deleteTask !== 0) && (
-                              <div className="lg:col-span-1 flex items-center gap-3 justify-end">
-                                {updateTask !== 0 && (
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      toggleEditMajorTaskModal(taskIndex);
-                                      setSelectedTask(taskItem);
-                                    }}
-                                    className="text-green-600 hover:text-green-800 p-1 rounded hover:bg-green-50"
-                                  >
-                                    <FaEdit size={16} />
-                                  </button>
-                                )}
-                                {deleteTask !== 0 && (
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      toggleMajorTaskTrashModal(taskIndex);
-                                      setSelectedTask(taskItem);
-                                    }}
-                                    className="text-red-600 hover:text-red-800 p-1 rounded hover:bg-red-50"
-                                  >
-                                    <FaTrash size={16} />
-                                  </button>
-                                )}
-                              </div>
-                            )}
-                          </div>
+                      </IconButton>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 2,
+                          cursor: "pointer",
+                        }}
+                        onClick={() =>
+                          handleOpenDetailPopup("activity", activityItem)
                         }
                       >
-                        {taskItem.subTask.map((subtaskItem, subtaskIndex) => (
-                          <TreeItem
-                            key={`subtask-${activityIndex}-${taskIndex}-${subtaskIndex}`}
-                            itemId={`subtask-${activityIndex}-${taskIndex}-${subtaskIndex}`}
-                            label={
-                              <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 py-4 px-4 items-center text-sm bg-blue-50/50 border-b border-blue-100 hover:bg-blue-50 transition-colors duration-150 ml-8 md:ml-16">
-                                <div className="lg:col-span-3 flex items-start gap-3">
-                                  <ListAltIcon
-                                    className="text-gray-600 mt-0.5 flex-shrink-0"
-                                    style={{ fontSize: 16 }}
-                                  />
-                                  <div>
-                                    <div className="font-medium text-gray-900">
-                                      {subtaskItem.name}
-                                    </div>
-                                    {subtaskItem.is_milestone === true && (
-                                      <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-50 text-purple-600 text-xs font-medium rounded mt-1">
-                                        <FlagIcon style={{ fontSize: 12 }} />
-                                        Milestone
-                                      </span>
+                        <Typography variant="h6" fontWeight={600}>
+                          {activityItem.activity.name}
+                        </Typography>
+                        {activityItem.activity.is_milestone === true && (
+                          <Chip
+                            icon={<FlagIcon />}
+                            label="Milestone"
+                            size="small"
+                            className={classes.milestoneTag}
+                          />
+                        )}
+                        <Chip
+                          label={activityItem.activity.activity_status}
+                          size="small"
+                          sx={{
+                            backgroundColor: getStatusColor(
+                              activityItem.activity.activity_status
+                            ).bgColor,
+                            color: getStatusColor(
+                              activityItem.activity.activity_status
+                            ).color,
+                            fontWeight: 600,
+                          }}
+                        />
+                      </Box>
+                    </Box>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mb: 2, ml: 6 }}
+                    >
+                      {activityItem.tasks.length} tasks • Last updated:{" "}
+                      {new Date(
+                        activityItem.activity.updatedAt
+                      ).toLocaleDateString()}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} md={3}>
+                    {createTask !== 0 && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleAddTaskModal();
+                          setSelectedActivity(activityItem);
+                        }}
+                        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm font-medium rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-md hover:shadow-lg"
+                      >
+                        <AddCircleOutlineIcon style={{ fontSize: 18 }} />
+                        Add Task
+                      </button>
+                    )}
+                  </Grid>
+                </Grid>
+
+                {/* Tasks Section - Collapsible */}
+                <Collapse in={expandedActivities.includes(activityIndex)}>
+                  <Box sx={{ ml: 6 }}>
+                    {activityItem.tasks.map((taskItem, taskIndex) => (
+                      <Box key={`task-${activityIndex}-${taskIndex}`}>
+                        <Card className={classes.taskCard} sx={{ mt: 2 }}>
+                          <CardContent>
+                            <Grid container spacing={2} alignItems="center">
+                              <Grid item xs={12} md={8}>
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 2,
+                                    mb: 1,
+                                  }}
+                                >
+                                  <IconButton
+                                    size="small"
+                                    onClick={() =>
+                                      toggleTask(activityIndex, taskIndex)
+                                    }
+                                  >
+                                    {expandedTasks.includes(
+                                      `${activityIndex}-${taskIndex}`
+                                    ) ? (
+                                      <ExpandLessIcon />
+                                    ) : (
+                                      <ExpandMoreIcon />
                                     )}
-                                  </div>
-                                </div>
+                                  </IconButton>
+                                  <Box
+                                    sx={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: 2,
+                                      cursor: "pointer",
+                                    }}
+                                    onClick={() =>
+                                      handleOpenDetailPopup("task", taskItem)
+                                    }
+                                  >
+                                    <TaskAltIcon sx={{ color: "#3b82f6" }} />
+                                    <Typography
+                                      variant="subtitle1"
+                                      fontWeight={600}
+                                    >
+                                      {taskItem.name}
+                                    </Typography>
+                                    {taskItem.is_milestone === true && (
+                                      <Chip
+                                        label="Milestone"
+                                        size="small"
+                                        sx={{
+                                          bgcolor: "#f3e8ff",
+                                          color: "#7c3aed",
+                                        }}
+                                      />
+                                    )}
+                                  </Box>
+                                </Box>
 
-                                <div className="lg:col-span-2 flex items-center gap-2 text-gray-600">
-                                  <PendingActionsIcon
-                                    style={{ fontSize: 14 }}
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 3,
+                                    flexWrap: "wrap",
+                                    ml: 6,
+                                  }}
+                                >
+                                  <Box
+                                    sx={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: 1,
+                                    }}
+                                  >
+                                    <CalendarTodayIcon
+                                      fontSize="small"
+                                      sx={{ color: "#6b7280" }}
+                                    />
+                                    <Typography
+                                      variant="caption"
+                                      color="text.secondary"
+                                    >
+                                      {new Date(
+                                        taskItem.start_date
+                                      ).toLocaleDateString()}{" "}
+                                      -{" "}
+                                      {new Date(
+                                        taskItem.end_date
+                                      ).toLocaleDateString()}
+                                    </Typography>
+                                  </Box>
+
+                                  <Box
+                                    sx={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: 1,
+                                    }}
+                                  >
+                                    <GroupIcon
+                                      fontSize="small"
+                                      sx={{ color: "#6b7280" }}
+                                    />
+                                    <AvatarGroup
+                                      max={3}
+                                      sx={{
+                                        "& .MuiAvatar-root": {
+                                          width: 24,
+                                          height: 24,
+                                          fontSize: 12,
+                                        },
+                                      }}
+                                    >
+                                      {taskItem.members.map((member, idx) => (
+                                        <Avatar
+                                          key={idx}
+                                          alt={member.UserInfo.full_name}
+                                          src={member.avatar}
+                                        />
+                                      ))}
+                                    </AvatarGroup>
+                                  </Box>
+                                </Box>
+                              </Grid>
+
+                              <Grid item xs={12} md={4}>
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                  }}
+                                >
+                                  <Chip
+                                    label={taskItem.task_status}
+                                    size="small"
+                                    sx={{
+                                      backgroundColor: getStatusColor(
+                                        taskItem.task_status
+                                      ).bgColor,
+                                      color: getStatusColor(
+                                        taskItem.task_status
+                                      ).color,
+                                      fontWeight: 600,
+                                    }}
                                   />
-                                  <span className="text-sm">
-                                    {new Date(
-                                      subtaskItem.start_date
-                                    ).toLocaleDateString()}{" "}
-                                    -{" "}
-                                    {new Date(
-                                      subtaskItem.end_date
-                                    ).toLocaleDateString()}
-                                  </span>
-                                </div>
 
-                                <div className="lg:col-span-2 flex items-center gap-3">
-                                  {viewCommentOnSubtask !== 0 && (
-                                    <Tooltip
-                                      title="View comments"
-                                      placement="top"
+                                  <Box sx={{ display: "flex", gap: 1 }}>
+                                    {(updateTask !== 0 || deleteTask !== 0) && (
+                                      <>
+                                        {updateTask !== 0 && (
+                                          <IconButton
+                                            size="small"
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              toggleEditMajorTaskModal(
+                                                taskIndex
+                                              );
+                                              setSelectedTask(taskItem);
+                                            }}
+                                            sx={{ color: "#10b981" }}
+                                          >
+                                            <FaEdit size={16} />
+                                          </IconButton>
+                                        )}
+                                        {deleteTask !== 0 && (
+                                          <IconButton
+                                            size="small"
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              toggleMajorTaskTrashModal(
+                                                taskIndex
+                                              );
+                                              setSelectedTask(taskItem);
+                                            }}
+                                            sx={{ color: "#ef4444" }}
+                                          >
+                                            <FaTrash size={16} />
+                                          </IconButton>
+                                        )}
+                                      </>
+                                    )}
+                                  </Box>
+                                </Box>
+                              </Grid>
+                            </Grid>
+
+                            {/* Subtasks Section - Collapsible */}
+                            <Collapse
+                              in={expandedTasks.includes(
+                                `${activityIndex}-${taskIndex}`
+                              )}
+                            >
+                              <Box sx={{ mt: 2 }}>
+                                {taskItem.subTask.map(
+                                  (subtaskItem, subtaskIndex) => (
+                                    <Card
+                                      key={`subtask-${activityIndex}-${taskIndex}-${subtaskIndex}`}
+                                      className={classes.subtaskCard}
+                                      sx={{ mt: 1, ml: 4 }}
                                     >
-                                      <IconButton
-                                        onClick={() => {
-                                          handleViewCommentOnSubtaskClick(
-                                            subtaskItem
-                                          );
-                                          setSelectedSubTask(subtaskItem);
-                                        }}
-                                        size="small"
-                                        className="hover:bg-blue-100"
-                                      >
-                                        <Badge
-                                          badgeContent={
-                                            subtaskItem.Coments?.length || 0
-                                          }
-                                          color="info"
-                                          size="small"
+                                      <CardContent>
+                                        <Grid
+                                          container
+                                          spacing={2}
+                                          alignItems="center"
                                         >
-                                          <CommentIcon fontSize="small" />
-                                        </Badge>
-                                      </IconButton>
-                                    </Tooltip>
-                                  )}
-                                  {commentOnSubtask !== 0 && (
-                                    <Tooltip
-                                      title="Add comment"
-                                      placement="top"
-                                    >
-                                      <IconButton
-                                        onClick={() => {
-                                          handleCommentOnSubtaskClick(
-                                            subtaskItem
-                                          );
-                                          setSelectedSubTask(subtaskItem);
-                                        }}
-                                        size="small"
-                                        className="hover:bg-blue-100"
-                                      >
-                                        <AddCommentIcon fontSize="small" />
-                                      </IconButton>
-                                    </Tooltip>
-                                  )}
-                                </div>
+                                          <Grid item xs={12} md={6}>
+                                            <Box
+                                              sx={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                gap: 2,
+                                              }}
+                                            >
+                                              <IconButton
+                                                size="small"
+                                                onClick={() =>
+                                                  toggleSubtask(
+                                                    activityIndex,
+                                                    taskIndex,
+                                                    subtaskIndex
+                                                  )
+                                                }
+                                              >
+                                                {expandedSubtasks.includes(
+                                                  `${activityIndex}-${taskIndex}-${subtaskIndex}`
+                                                ) ? (
+                                                  <ExpandLessIcon />
+                                                ) : (
+                                                  <ExpandMoreIcon />
+                                                )}
+                                              </IconButton>
+                                              <Box
+                                                sx={{
+                                                  display: "flex",
+                                                  alignItems: "center",
+                                                  gap: 2,
+                                                  cursor: "pointer",
+                                                }}
+                                                onClick={() =>
+                                                  handleOpenDetailPopup(
+                                                    "subtask",
+                                                    subtaskItem
+                                                  )
+                                                }
+                                              >
+                                                <ListAltIcon
+                                                  sx={{ color: "#10b981" }}
+                                                />
+                                                <Box>
+                                                  <Typography
+                                                    variant="body2"
+                                                    fontWeight={500}
+                                                  >
+                                                    {subtaskItem.name}
+                                                  </Typography>
+                                                  <Typography
+                                                    variant="caption"
+                                                    color="text.secondary"
+                                                  >
+                                                    {new Date(
+                                                      subtaskItem.start_date
+                                                    ).toLocaleDateString()}{" "}
+                                                    -{" "}
+                                                    {new Date(
+                                                      subtaskItem.end_date
+                                                    ).toLocaleDateString()}
+                                                  </Typography>
+                                                </Box>
+                                              </Box>
+                                            </Box>
+                                          </Grid>
 
-                                <div className="lg:col-span-3">
-                                  {taskItem.members.some(
+                                          <Grid item xs={12} md={6}>
+                                            <Grid
+                                              container
+                                              spacing={1}
+                                              alignItems="center"
+                                              justifyContent="flex-end"
+                                            >
+                                              <Grid item>
+                                                <Box
+                                                  sx={{
+                                                    display: "flex",
+                                                    gap: 1,
+                                                  }}
+                                                >
+                                                  {viewCommentOnSubtask !==
+                                                    0 && (
+                                                    <Tooltip title="View comments">
+                                                      <IconButton
+                                                        size="small"
+                                                        onClick={() => {
+                                                          handleViewCommentOnSubtaskClick(
+                                                            subtaskItem
+                                                          );
+                                                          setSelectedSubTask(
+                                                            subtaskItem
+                                                          );
+                                                        }}
+                                                      >
+                                                        <Badge
+                                                          badgeContent={
+                                                            subtaskItem.Coments
+                                                              ?.length || 0
+                                                          }
+                                                          color="info"
+                                                          size="small"
+                                                        >
+                                                          <CommentIcon fontSize="small" />
+                                                        </Badge>
+                                                      </IconButton>
+                                                    </Tooltip>
+                                                  )}
+                                                  {commentOnSubtask !== 0 && (
+                                                    <Tooltip title="Add comment">
+                                                      <IconButton
+                                                        size="small"
+                                                        onClick={() => {
+                                                          handleCommentOnSubtaskClick(
+                                                            subtaskItem
+                                                          );
+                                                          setSelectedSubTask(
+                                                            subtaskItem
+                                                          );
+                                                        }}
+                                                      >
+                                                        <AddCommentIcon fontSize="small" />
+                                                      </IconButton>
+                                                    </Tooltip>
+                                                  )}
+                                                </Box>
+                                              </Grid>
+
+                                              <Grid item>
+                                                {taskItem.members.some(
+                                                  (member) =>
+                                                    member.user_id ===
+                                                    userInfo.foundUser.user_id
+                                                ) ? (
+                                                  <FormControl
+                                                    size="small"
+                                                    sx={{ minWidth: 120 }}
+                                                  >
+                                                    <Select
+                                                      value={
+                                                        subtaskItem.subtask_status
+                                                      }
+                                                      onChange={handleChange(
+                                                        subtaskItem
+                                                      )}
+                                                      sx={{
+                                                        borderRadius: 2,
+                                                        backgroundColor:
+                                                          getStatusColor(
+                                                            subtaskItem.subtask_status
+                                                          ).bgColor,
+                                                        color: getStatusColor(
+                                                          subtaskItem.subtask_status
+                                                        ).color,
+                                                        fontWeight: 500,
+                                                      }}
+                                                    >
+                                                      {statusOptions.map(
+                                                        (option) => (
+                                                          <MenuItem
+                                                            key={option.value}
+                                                            value={option.value}
+                                                          >
+                                                            {option.label}
+                                                          </MenuItem>
+                                                        )
+                                                      )}
+                                                    </Select>
+                                                  </FormControl>
+                                                ) : (
+                                                  <Chip
+                                                    label={
+                                                      subtaskItem.subtask_status
+                                                    }
+                                                    size="small"
+                                                    sx={{
+                                                      backgroundColor:
+                                                        getStatusColor(
+                                                          subtaskItem.subtask_status
+                                                        ).bgColor,
+                                                      color: getStatusColor(
+                                                        subtaskItem.subtask_status
+                                                      ).color,
+                                                      fontWeight: 600,
+                                                    }}
+                                                  />
+                                                )}
+                                              </Grid>
+
+                                              {subtaskItem.members.some(
+                                                (member) =>
+                                                  member.user_id ===
+                                                  userInfo.foundUser.user_id
+                                              ) && (
+                                                <Grid item>
+                                                  <Box
+                                                    sx={{
+                                                      display: "flex",
+                                                      gap: 0.5,
+                                                    }}
+                                                  >
+                                                    {updateSubTask !== 0 && (
+                                                      <IconButton
+                                                        size="small"
+                                                        onClick={(e) => {
+                                                          e.stopPropagation();
+                                                          toggleEditSubtaskModal(
+                                                            subtaskIndex
+                                                          );
+                                                          setSelectedSubTask(
+                                                            subtaskItem
+                                                          );
+                                                        }}
+                                                        sx={{
+                                                          color: "#10b981",
+                                                        }}
+                                                      >
+                                                        <FaEdit size={14} />
+                                                      </IconButton>
+                                                    )}
+                                                    {deleteSubTask !== 0 && (
+                                                      <IconButton
+                                                        size="small"
+                                                        onClick={(e) => {
+                                                          e.stopPropagation();
+                                                          setShowSubtasktrashModal(
+                                                            true
+                                                          );
+                                                          setSelectedSubTask(
+                                                            subtaskItem
+                                                          );
+                                                        }}
+                                                        sx={{
+                                                          color: "#ef4444",
+                                                        }}
+                                                      >
+                                                        <FaTrash size={14} />
+                                                      </IconButton>
+                                                    )}
+                                                  </Box>
+                                                </Grid>
+                                              )}
+                                            </Grid>
+                                          </Grid>
+                                        </Grid>
+
+                                        {/* Subtask Details (optional additional info) */}
+                                        <Collapse
+                                          in={expandedSubtasks.includes(
+                                            `${activityIndex}-${taskIndex}-${subtaskIndex}`
+                                          )}
+                                        >
+                                          <Box
+                                            sx={{
+                                              mt: 2,
+                                              ml: 6,
+                                              p: 2,
+                                              bgcolor: "white",
+                                              borderRadius: 1,
+                                            }}
+                                          >
+                                            <Typography
+                                              variant="caption"
+                                              color="text.secondary"
+                                            >
+                                              Additional details for this
+                                              subtask...
+                                            </Typography>
+                                          </Box>
+                                        </Collapse>
+                                      </CardContent>
+                                    </Card>
+                                  )
+                                )}
+
+                                {createSubTask !== 0 &&
+                                  taskItem.members.some(
                                     (member) =>
                                       member.user_id ===
                                       userInfo.foundUser.user_id
-                                  ) ? (
-                                    <FormControl
-                                      size="small"
-                                      className="min-w-[140px]"
-                                    >
-                                      <Select
-                                        value={subtaskItem.subtask_status}
-                                        onChange={handleChange(subtaskItem)}
-                                        className={`rounded-lg text-sm ${
-                                          subtaskItem.subtask_status ===
-                                          "Completed"
-                                            ? "bg-green-100 text-green-800"
-                                            : subtaskItem.subtask_status ===
-                                              "On Progress"
-                                            ? "bg-orange-100 text-orange-800"
-                                            : "bg-gray-100 text-gray-800"
-                                        }`}
+                                  ) && (
+                                    <Box sx={{ mt: 2, ml: 4 }}>
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          toggleAddSubTaskModal();
+                                          setSelectedTask(taskItem);
+                                        }}
+                                        className="flex items-center gap-2 px-3 py-1.5 text-blue-600 hover:text-blue-800 text-sm font-medium hover:bg-blue-50 rounded-lg transition-colors duration-200"
                                       >
-                                        {statusOptions.map((option) => (
-                                          <MenuItem
-                                            key={option.value}
-                                            value={option.value}
-                                            className="text-sm"
-                                          >
-                                            {option.label}
-                                          </MenuItem>
-                                        ))}
-                                      </Select>
-                                    </FormControl>
-                                  ) : (
-                                    <span
-                                      className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium ${
-                                        subtaskItem.subtask_status ===
-                                        "Completed"
-                                          ? "bg-green-100 text-green-800"
-                                          : subtaskItem.subtask_status ===
-                                            "On Progress"
-                                          ? "bg-orange-100 text-orange-800"
-                                          : "bg-gray-100 text-gray-800"
-                                      }`}
-                                    >
-                                      {subtaskItem.subtask_status}
-                                    </span>
+                                        <AddCircleOutlineIcon
+                                          style={{ fontSize: 16 }}
+                                        />
+                                        Add Subtask
+                                      </button>
+                                    </Box>
                                   )}
-                                </div>
-
-                                {subtaskItem.members.some(
-                                  (member) =>
-                                    member.user_id ===
-                                    userInfo.foundUser.user_id
-                                ) && (
-                                  <div className="lg:col-span-2 flex items-center gap-3 justify-end">
-                                    {updateSubTask !== 0 && (
-                                      <button
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          toggleEditSubtaskModal(subtaskIndex);
-                                          setSelectedSubTask(subtaskItem);
-                                        }}
-                                        className="text-green-600 hover:text-green-800 p-1 rounded hover:bg-green-50"
-                                      >
-                                        <FaEdit size={15} />
-                                      </button>
-                                    )}
-                                    {deleteSubTask !== 0 && (
-                                      <button
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          setShowSubtasktrashModal(true);
-                                          setSelectedSubTask(subtaskItem);
-                                        }}
-                                        className="text-red-600 hover:text-red-800 p-1 rounded hover:bg-red-50"
-                                      >
-                                        <FaTrash size={15} />
-                                      </button>
-                                    )}
-                                  </div>
-                                )}
-                              </div>
-                            }
-                          />
-                        ))}
-                      </TreeItem>
-                    </React.Fragment>
-                  ))}
-                </TreeItem>
-              ))}
-            </SimpleTreeView>
-          </Box>
+                              </Box>
+                            </Collapse>
+                          </CardContent>
+                        </Card>
+                      </Box>
+                    ))}
+                  </Box>
+                </Collapse>
+              </CardContent>
+            </Card>
+          ))
         ) : (
-          <div className="text-center py-16">
-            <Typography className="text-gray-500 text-lg">
+          <Box sx={{ textAlign: "center", py: 8 }}>
+            <Typography variant="h6" color="text.secondary" gutterBottom>
               {noActivity || "No activities found"}
             </Typography>
-          </div>
+            <Typography variant="body2" color="text.secondary">
+              Create your first activity to get started
+            </Typography>
+          </Box>
         )}
-      </div>
+      </Box>
 
-      {/* Modal Components */}
+      {/* Floating Action Button */}
+      <SpeedDial
+        ariaLabel="Quick Actions"
+        sx={{ position: "fixed", bottom: 32, right: 32 }}
+        icon={<SpeedDialIcon />}
+        FabProps={{
+          sx: { bgcolor: "#3b82f6", "&:hover": { bgcolor: "#2563eb" } },
+        }}
+      >
+        {createTask !== 0 && (
+          <SpeedDialAction
+            icon={<AddCircleOutlineIcon />}
+            tooltipTitle="Add Task"
+            onClick={() => {
+              if (activities.length > 0) {
+                toggleAddTaskModal();
+                setSelectedActivity(activities[0]);
+              }
+            }}
+          />
+        )}
+        <SpeedDialAction
+          icon={<SearchIcon />}
+          tooltipTitle="Search"
+          onClick={() =>
+            document.querySelector('input[placeholder*="Search"]').focus()
+          }
+        />
+        <SpeedDialAction
+          icon={<FilterListIcon />}
+          tooltipTitle="Filter"
+          onClick={() => handleFilterClick("All")}
+        />
+      </SpeedDial>
+
+      {/* Detail Popup */}
+      <DetailPopup
+        open={detailPopup.open}
+        onClose={handleCloseDetailPopup}
+        type={detailPopup.type}
+        data={detailPopup.data}
+        userInfo={userInfo}
+      />
+
+      {/* Keep all existing modal components */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
           <div
             ref={modalRef}
-            className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden"
           >
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-xl font-semibold text-gray-900">
-                  Assign Member
+                <h3 className="text-2xl font-bold text-gray-900">
+                  Assign Team Members
                 </h3>
                 <button
                   onClick={toggleModal}
-                  className="text-gray-400 hover:text-gray-600 text-2xl"
+                  className="text-gray-400 hover:text-gray-600 transition-colors duration-200"
                 >
-                  ×
+                  <span className="text-2xl">×</span>
                 </button>
               </div>
               <WorkspaceAssignMember />
@@ -1009,6 +2148,7 @@ const Workspace = (props) => {
         </div>
       )}
 
+      {/* Keep all other modal components exactly as they were with the same logic */}
       {showEditMajorTaskModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
           <div
@@ -1079,9 +2219,7 @@ const Workspace = (props) => {
           >
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-xl font-semibold text-gray-900">
-                  {/* Add New Task */}
-                </h3>
+                <h3 className="text-xl font-semibold text-gray-900"></h3>
                 <button
                   onClick={toggleAddTaskModal}
                   className="text-gray-400 hover:text-gray-600 text-2xl"
@@ -1213,7 +2351,7 @@ const Workspace = (props) => {
           </div>
         </div>
       )}
-    </div>
+    </Box>
   );
 };
 

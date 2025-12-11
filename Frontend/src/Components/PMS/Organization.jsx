@@ -195,7 +195,7 @@ const Organization = () => {
   };
 
   return (
-    <div className="ml-auto w-4/5 mr-5 mt-24 relative ">
+    <div className="ml-auto mr-5 mt-24 relative ">
       <div className="  mb-6">
         <h1 className="text-2xl font-bold">Organization</h1>
       </div>

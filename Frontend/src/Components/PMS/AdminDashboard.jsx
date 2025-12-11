@@ -405,7 +405,7 @@ const AdminDashboard = (props) => {
   ];
 
   return (
-    <Box className="ml-auto w-full lg:w-4/5 mt-6 mr-0 lg:mr-5 ">
+    <Box className="ml-auto w-full  mt-6 mr-0 lg:mr-5 ">
       <Helmet>
         <title>Admin Dashboard - Project Management System</title>
       </Helmet>

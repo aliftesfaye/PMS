@@ -36,7 +36,6 @@ import "./Sidebar.css";
 import Structure from "./Structure";
 import Teams from "./Teams";
 import Trash from "./Trashtry";
-
 import Profile from "./Userprofile";
 import Users from "./Users";
 import Workspace from "./Workspace";
@@ -683,216 +682,240 @@ const SideandNav = (props) => {
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
-      <Typography variant="h6" sx={{ my: 2 }}>
+      <Typography
+        variant="h6"
+        sx={{ my: 2, color: "#0A5077", fontWeight: 600 }}
+      >
         EAII - PMS
       </Typography>
       <Divider />
-      <div class="overflow-x-auto">
-        <Box sx={{ display: { xs: "block", sm: "block", md: "none" } }}>
-          <div class="">
-            {viewHome !== 0 && viewAdminDashboard === 0 && (
-              <div
-                className={`link ${selectedLink === 0 ? "selected" : ""}`}
-                onClick={() => handleLinkClick(0)}
-              >
-                <DashboardIcon
-                  style={{
-                    color: `${selectedLink === 0 ? "#fff" : "#0A5077"}`,
-                  }}
-                />
-                <Typography>Home</Typography>
-              </div>
-            )}
-            {viewAdminDashboard !== 0 && viewHome === 0 && (
-              <div
-                className={`link ${selectedLink === 0 ? "selected" : ""}`}
-                onClick={() => handleLinkClick(0)}
-              >
-                <DashboardIcon
-                  style={{
-                    color: `${selectedLink === 0 ? "#fff" : "#0A5077"}`,
-                  }}
-                />
-                <Typography>Dashboard</Typography>
-              </div>
-            )}
-
-            {viewAdminDashboard !== 0 && viewHome !== 0 && (
-              <div
-                className={`link ${selectedLink === 0 ? "selected" : ""}`}
-                onClick={() => handleLinkClick(0)}
-              >
-                <DashboardIcon
-                  style={{
-                    color: `${selectedLink === 0 ? "#fff" : "#0A5077"}`,
-                  }}
-                />
-                <Typography>Dashboard</Typography>
-              </div>
-            )}
-
-            {showDropdown && (
-              <div className="organization-box">
-                {viewOrganization !== 0 && (
-                  <div
-                    className={`link ${
-                      selectedLink === 6
-                        ? "selected dropdown-item"
-                        : "dropdown-item"
-                    }`}
-                    onClick={() => handleDropdownLinkClick(6)}
-                  >
-                    <OrgIcon
-                      style={{
-                        color: `${selectedLink === 6 ? "#fff" : "#0A5077"}`,
-                      }}
-                    />
-                    <Typography fontSize={13}>Organization</Typography>
-                  </div>
-                )}
-
-                {viewSector !== 0 && (
-                  <div
-                    className={`link ${
-                      selectedLink === 7
-                        ? "selected dropdown-item"
-                        : "dropdown-item"
-                    }`}
-                    onClick={() => handleDropdownLinkClick(7)}
-                  >
-                    <SectorIcon
-                      style={{
-                        color: `${selectedLink === 7 ? "#fff" : "#0A5077"}`,
-                      }}
-                    />
-                    <Typography fontSize={13}>Sectors</Typography>
-                  </div>
-                )}
-                {viewOrganizationalUnit !== 0 && (
-                  <div
-                    className={`link ${
-                      selectedLink === 8
-                        ? "selected dropdown-item"
-                        : "dropdown-item"
-                    }`}
-                    onClick={() => handleDropdownLinkClick(8)}
-                  >
-                    <OrgUnitIcon
-                      style={{
-                        color: `${selectedLink === 8 ? "#fff" : "#0A5077"}`,
-                      }}
-                    />
-                    <Typography fontSize={13}>Department</Typography>
-                  </div>
-                )}
-              </div>
-            )}
-            {viewStructure2 !== 0 && (
-              <div
-                className={`link ${selectedLink === 18 ? "selected" : ""}`}
-                onClick={() => handleLinkClick(18)}
-              >
-                <OrgIcon
-                  style={{
-                    color: `${selectedLink === 18 ? "#fff" : "#0A5077"}`,
-                  }}
-                />
-                <Typography>Structure</Typography>
-              </div>
-            )}
-
-            {viewRole !== 0 && (
-              <div
-                className={`link ${selectedLink === 4 ? "selected" : ""}`}
-                onClick={() => handleLinkClick(4)}
-              >
-                <RoleIcon
-                  style={{
-                    color: `${selectedLink === 4 ? "#fff" : "#0A5077"}`,
-                  }}
-                />
-                <Typography>Roles</Typography>
-              </div>
-            )}
-
-            {viewUsers !== 0 && (
-              <div
-                className={`link ${selectedLink === 3 ? "selected" : ""}`}
-                onClick={() => handleLinkClick(3)}
-              >
-                <UsersIcon
-                  style={{
-                    color: `${selectedLink === 3 ? "#fff" : "#0A5077"}`,
-                  }}
-                />
-                <Typography>Users</Typography>
-              </div>
-            )}
-            {viewProfile !== 0 && (
-              <div
-                className={`link ${selectedLink === 16 ? "selected" : ""}`}
-                onClick={() => handleLinkClick(16)}
-              >
-                <AccountBoxIcon
-                  style={{
-                    color: `${selectedLink === 16 ? "#fff" : "#0A5077"}`,
-                  }}
-                />
-                <Typography>Profile</Typography>
-              </div>
-            )}
-
+      <Box sx={{ display: { xs: "block", sm: "block", md: "none" }, px: 2 }}>
+        <div className="space-y-1">
+          {viewHome !== 0 && viewAdminDashboard === 0 && (
             <div
-              className={`link ${selectedLink === 1 ? "selected" : ""}`}
-              onClick={() => handleLinkClick(1)}
+              className={`link ${selectedLink === 0 ? "selected" : ""}`}
+              onClick={() => handleLinkClick(0)}
             >
-              <ProjectIcon
+              <DashboardIcon
+                className="transition-colors duration-200"
                 style={{
-                  color: `${selectedLink === 1 ? "#fff" : "#0A5077"}`,
+                  color: `${selectedLink === 0 ? "#fff" : "#0A5077"}`,
                 }}
               />
-              <Typography>Projects</Typography>
+              <Typography className="font-medium">Home</Typography>
             </div>
+          )}
+          {viewAdminDashboard !== 0 && viewHome === 0 && (
+            <div
+              className={`link ${selectedLink === 0 ? "selected" : ""}`}
+              onClick={() => handleLinkClick(0)}
+            >
+              <DashboardIcon
+                className="transition-colors duration-200"
+                style={{
+                  color: `${selectedLink === 0 ? "#fff" : "#0A5077"}`,
+                }}
+              />
+              <Typography className="font-medium">Dashboard</Typography>
+            </div>
+          )}
 
-            {viewTrash !== 0 && (
-              <div>
+          {viewAdminDashboard !== 0 && viewHome !== 0 && (
+            <div
+              className={`link ${selectedLink === 0 ? "selected" : ""}`}
+              onClick={() => handleLinkClick(0)}
+            >
+              <DashboardIcon
+                className="transition-colors duration-200"
+                style={{
+                  color: `${selectedLink === 0 ? "#fff" : "#0A5077"}`,
+                }}
+              />
+              <Typography className="font-medium">Dashboard</Typography>
+            </div>
+          )}
+
+          {showDropdown && (
+            <div className="organization-box space-y-1">
+              {viewOrganization !== 0 && (
                 <div
-                  className={`link ${selectedLink === 9 ? "selected" : ""}`}
-                  onClick={() => handleLinkClick(9)}
+                  className={`link ${
+                    selectedLink === 6
+                      ? "selected dropdown-item"
+                      : "dropdown-item"
+                  }`}
+                  onClick={() => handleDropdownLinkClick(6)}
                 >
-                  <TrashIcon
+                  <OrgIcon
+                    className="transition-colors duration-200"
                     style={{
-                      color: `${selectedLink === 9 ? "#fff" : "#0A5077"}`,
+                      color: `${selectedLink === 6 ? "#fff" : "#0A5077"}`,
                     }}
                   />
-                  <Typography>Trash</Typography>
-                </div>
-              </div>
-            )}
-            {isProjectSelected === true && (
-              <div>
-                <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
-                <div class="text-center py-5 flex flex-row items-center">
-                  <span class="box-border h-8 w-8 py-1 m-2 border-2  inline-block bg-gray-300 rounded-lg">
-                    {Object.keys(selectedProjectInfo).length !== 0
-                      ? selectedProjectInfo.name.charAt(0)
-                      : ""}
-                  </span>
-                  <Typography class="text-lg font-semibold">
-                    {selectedProjectInfo.name}
+                  <Typography fontSize={13} className="font-medium">
+                    Organization
                   </Typography>
                 </div>
+              )}
+
+              {viewSector !== 0 && (
+                <div
+                  className={`link ${
+                    selectedLink === 7
+                      ? "selected dropdown-item"
+                      : "dropdown-item"
+                  }`}
+                  onClick={() => handleDropdownLinkClick(7)}
+                >
+                  <SectorIcon
+                    className="transition-colors duration-200"
+                    style={{
+                      color: `${selectedLink === 7 ? "#fff" : "#0A5077"}`,
+                    }}
+                  />
+                  <Typography fontSize={13} className="font-medium">
+                    Sectors
+                  </Typography>
+                </div>
+              )}
+              {viewOrganizationalUnit !== 0 && (
+                <div
+                  className={`link ${
+                    selectedLink === 8
+                      ? "selected dropdown-item"
+                      : "dropdown-item"
+                  }`}
+                  onClick={() => handleDropdownLinkClick(8)}
+                >
+                  <OrgUnitIcon
+                    className="transition-colors duration-200"
+                    style={{
+                      color: `${selectedLink === 8 ? "#fff" : "#0A5077"}`,
+                    }}
+                  />
+                  <Typography fontSize={13} className="font-medium">
+                    Department
+                  </Typography>
+                </div>
+              )}
+            </div>
+          )}
+          {viewStructure2 !== 0 && (
+            <div
+              className={`link ${selectedLink === 18 ? "selected" : ""}`}
+              onClick={() => handleLinkClick(18)}
+            >
+              <OrgIcon
+                className="transition-colors duration-200"
+                style={{
+                  color: `${selectedLink === 18 ? "#fff" : "#0A5077"}`,
+                }}
+              />
+              <Typography className="font-medium">Structure</Typography>
+            </div>
+          )}
+
+          {viewRole !== 0 && (
+            <div
+              className={`link ${selectedLink === 4 ? "selected" : ""}`}
+              onClick={() => handleLinkClick(4)}
+            >
+              <RoleIcon
+                className="transition-colors duration-200"
+                style={{
+                  color: `${selectedLink === 4 ? "#fff" : "#0A5077"}`,
+                }}
+              />
+              <Typography className="font-medium">Roles</Typography>
+            </div>
+          )}
+
+          {viewUsers !== 0 && (
+            <div
+              className={`link ${selectedLink === 3 ? "selected" : ""}`}
+              onClick={() => handleLinkClick(3)}
+            >
+              <UsersIcon
+                className="transition-colors duration-200"
+                style={{
+                  color: `${selectedLink === 3 ? "#fff" : "#0A5077"}`,
+                }}
+              />
+              <Typography className="font-medium">Users</Typography>
+            </div>
+          )}
+          {viewProfile !== 0 && (
+            <div
+              className={`link ${selectedLink === 16 ? "selected" : ""}`}
+              onClick={() => handleLinkClick(16)}
+            >
+              <AccountBoxIcon
+                className="transition-colors duration-200"
+                style={{
+                  color: `${selectedLink === 16 ? "#fff" : "#0A5077"}`,
+                }}
+              />
+              <Typography className="font-medium">Profile</Typography>
+            </div>
+          )}
+
+          <div
+            className={`link ${selectedLink === 1 ? "selected" : ""}`}
+            onClick={() => handleLinkClick(1)}
+          >
+            <ProjectIcon
+              className="transition-colors duration-200"
+              style={{
+                color: `${selectedLink === 1 ? "#fff" : "#0A5077"}`,
+              }}
+            />
+            <Typography className="font-medium">Projects</Typography>
+          </div>
+
+          {viewTrash !== 0 && (
+            <div>
+              <div
+                className={`link ${selectedLink === 9 ? "selected" : ""}`}
+                onClick={() => handleLinkClick(9)}
+              >
+                <TrashIcon
+                  className="transition-colors duration-200"
+                  style={{
+                    color: `${selectedLink === 9 ? "#fff" : "#0A5077"}`,
+                  }}
+                />
+                <Typography className="font-medium">Trash</Typography>
+              </div>
+            </div>
+          )}
+          {isProjectSelected === true && (
+            <div className="mt-6">
+              <Divider className="my-4" />
+              <div className="flex flex-col items-center py-4">
+                <div className="flex items-center justify-center w-10 h-10 mb-2 rounded-full bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200">
+                  <span className="text-blue-700 font-semibold">
+                    {Object.keys(selectedProjectInfo).length !== 0
+                      ? selectedProjectInfo.name.charAt(0).toUpperCase()
+                      : ""}
+                  </span>
+                </div>
+                <Typography className="text-sm font-semibold text-gray-800 text-center">
+                  {selectedProjectInfo.name}
+                </Typography>
+              </div>
+              <div className="space-y-1">
                 {viewProjectDashboard !== 0 && (
                   <div
                     className={`link ${selectedLink === 10 ? "selected" : ""}`}
                     onClick={() => handleLinkClick(10)}
                   >
                     <DashboardIcon
+                      className="transition-colors duration-200"
                       style={{
                         color: `${selectedLink === 10 ? "#fff" : "#0A5077"}`,
                       }}
                     />
-                    <Typography>Dashboard</Typography>
+                    <Typography className="font-medium">Dashboard</Typography>
                   </div>
                 )}
                 {viewActivity !== 0 && (
@@ -901,11 +924,12 @@ const SideandNav = (props) => {
                     onClick={() => handleLinkClick(11)}
                   >
                     <MilestoneIcon
+                      className="transition-colors duration-200"
                       style={{
                         color: `${selectedLink === 11 ? "#fff" : "#0A5077"}`,
                       }}
                     />
-                    <Typography>Activities</Typography>
+                    <Typography className="font-medium">Activities</Typography>
                   </div>
                 )}
                 {viewProjectMembersProfile !== 0 && (
@@ -914,11 +938,12 @@ const SideandNav = (props) => {
                     onClick={() => handleLinkClick(12)}
                   >
                     <ProjectMembersIcon
+                      className="transition-colors duration-200"
                       style={{
                         color: `${selectedLink === 12 ? "#fff" : "#0A5077"}`,
                       }}
                     />
-                    <Typography>Members</Typography>
+                    <Typography className="font-medium">Members</Typography>
                   </div>
                 )}
 
@@ -928,11 +953,12 @@ const SideandNav = (props) => {
                     onClick={() => handleLinkClick(13)}
                   >
                     <ProjectWorkspaceIcon
+                      className="transition-colors duration-200"
                       style={{
                         color: `${selectedLink === 13 ? "#fff" : "#0A5077"}`,
                       }}
                     />
-                    <Typography>Workspace</Typography>
+                    <Typography className="font-medium">Workspace</Typography>
                   </div>
                 )}
                 {viewMilestone !== 0 && (
@@ -941,31 +967,32 @@ const SideandNav = (props) => {
                     onClick={() => handleLinkClick(17)}
                   >
                     <Flag
+                      className="transition-colors duration-200"
                       style={{
                         color: `${selectedLink === 17 ? "#fff" : "#0A5077"}`,
                       }}
                     />
-                    <Typography>Milestone</Typography>
+                    <Typography className="font-medium">Milestone</Typography>
                   </div>
                 )}
 
                 <div
                   className={`link ${selectedLink === 14 ? "selected" : ""}`}
                   onClick={() => handleLinkClick(14)}
-                  class="flex p-1 gap-5 ml-1"
                 >
                   <ProjectDocsIcon
+                    className="transition-colors duration-200"
                     style={{
                       color: `${selectedLink === 14 ? "#fff" : "#0A5077"}`,
                     }}
                   />
-                  <Typography>Docs</Typography>
+                  <Typography className="font-medium">Docs</Typography>
                 </div>
               </div>
-            )}
-          </div>
-        </Box>
-      </div>
+            </div>
+          )}
+        </div>
+      </Box>
     </Box>
   );
   useEffect(() => {
@@ -1130,7 +1157,6 @@ const SideandNav = (props) => {
     setViewTeam(GET_TEAM.length);
     setViewProjectMembersProfile(GET_PROJECT_MEMBERS_PROFILE.length);
     setViewTrash(GET_TRASH.length);
-    console.log("is project selected", isProjectSelected);
   }, [userInfo, permissions, projectPermissions, isProjectSelected]);
 
   const handleDropdownClick = (option) => {
@@ -1140,455 +1166,544 @@ const SideandNav = (props) => {
   };
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-50">
       <Navbar
         drawer={drawer}
         handleDrawerToggle={handleDrawerToggle}
         mobileOpen={mobileOpen}
       />
 
-      <div class="overflow-x-auto">
+      <div className="flex min-h-screen">
+        {/* Desktop Sidebar */}
         <Box sx={{ display: { xs: "none", sm: "none", md: "block" } }}>
-          <div class="no-scrollbar fixed h-screen overflow-x-hidden lg:px-1 py-10 w-1/6 items-center lg:z-40 md:z-40 shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] bg-white">
-            {viewHome !== 0 && viewAdminDashboard === 0 && (
-              <div
-                className={`link ${selectedLink === 0 ? "selected" : ""}`}
-                onClick={() => handleLinkClick(0)}
-              >
-                <DashboardIcon
-                  style={{
-                    color: `${selectedLink === 0 ? "#fff" : "#0A5077"}`,
-                  }}
-                />
-                <Typography>Home</Typography>
-              </div>
-            )}
-            {viewAdminDashboard !== 0 && viewHome === 0 && (
-              <div
-                className={`link ${selectedLink === 0 ? "selected" : ""}`}
-                onClick={() => handleLinkClick(0)}
-              >
-                <DashboardIcon
-                  style={{
-                    color: `${selectedLink === 0 ? "#fff" : "#0A5077"}`,
-                  }}
-                />
-                <Typography>Dashboard</Typography>
-              </div>
-            )}
+          <div className="fixed h-screen w-64 lg:w-72 xl:w-80 overflow-y-auto py-8 px-4 bg-white border-r border-gray-200 shadow-lg shadow-gray-100">
+            <div className="space-y-1">
+              {viewHome !== 0 && viewAdminDashboard === 0 && (
+                <div
+                  className={`link group ${
+                    selectedLink === 0 ? "selected" : ""
+                  }`}
+                  onClick={() => handleLinkClick(0)}
+                >
+                  <DashboardIcon
+                    className="transition-all duration-200 group-hover:scale-110"
+                    style={{
+                      color: `${selectedLink === 0 ? "#fff" : "#0A5077"}`,
+                    }}
+                  />
+                  <Typography className="font-medium">Home</Typography>
+                </div>
+              )}
+              {viewAdminDashboard !== 0 && viewHome === 0 && (
+                <div
+                  className={`link group ${
+                    selectedLink === 0 ? "selected" : ""
+                  }`}
+                  onClick={() => handleLinkClick(0)}
+                >
+                  <DashboardIcon
+                    className="transition-all duration-200 group-hover:scale-110"
+                    style={{
+                      color: `${selectedLink === 0 ? "#fff" : "#0A5077"}`,
+                    }}
+                  />
+                  <Typography className="font-medium">Dashboard</Typography>
+                </div>
+              )}
 
-            {viewAdminDashboard !== 0 && viewHome !== 0 && (
+              {viewAdminDashboard !== 0 && viewHome !== 0 && (
+                <div
+                  className={`link group ${
+                    selectedLink === 0 ? "selected" : ""
+                  }`}
+                  onClick={() => handleLinkClick(0)}
+                >
+                  <DashboardIcon
+                    className="transition-all duration-200 group-hover:scale-110"
+                    style={{
+                      color: `${selectedLink === 0 ? "#fff" : "#0A5077"}`,
+                    }}
+                  />
+                  <Typography className="font-medium">Dashboard</Typography>
+                </div>
+              )}
+
+              {showDropdown && (
+                <div className="organization-box space-y-1 ml-6 border-l border-blue-100 pl-4">
+                  {viewOrganization !== 0 && (
+                    <div
+                      className={`link group ${
+                        selectedLink === 6
+                          ? "selected dropdown-item"
+                          : "dropdown-item"
+                      }`}
+                      onClick={() => handleDropdownLinkClick(6)}
+                    >
+                      <OrgIcon
+                        className="transition-all duration-200 group-hover:scale-110"
+                        style={{
+                          color: `${selectedLink === 6 ? "#fff" : "#0A5077"}`,
+                        }}
+                      />
+                      <Typography fontSize={14} className="font-medium">
+                        Organization
+                      </Typography>
+                    </div>
+                  )}
+
+                  {viewSector !== 0 && (
+                    <div
+                      className={`link group ${
+                        selectedLink === 7
+                          ? "selected dropdown-item"
+                          : "dropdown-item"
+                      }`}
+                      onClick={() => handleDropdownLinkClick(7)}
+                    >
+                      <SectorIcon
+                        className="transition-all duration-200 group-hover:scale-110"
+                        style={{
+                          color: `${selectedLink === 7 ? "#fff" : "#0A5077"}`,
+                        }}
+                      />
+                      <Typography fontSize={14} className="font-medium">
+                        Sectors
+                      </Typography>
+                    </div>
+                  )}
+                  {viewOrganizationalUnit !== 0 && (
+                    <div
+                      className={`link group ${
+                        selectedLink === 8
+                          ? "selected dropdown-item"
+                          : "dropdown-item"
+                      }`}
+                      onClick={() => handleDropdownLinkClick(8)}
+                    >
+                      <OrgUnitIcon
+                        className="transition-all duration-200 group-hover:scale-110"
+                        style={{
+                          color: `${selectedLink === 8 ? "#fff" : "#0A5077"}`,
+                        }}
+                      />
+                      <Typography fontSize={14} className="font-medium">
+                        Department
+                      </Typography>
+                    </div>
+                  )}
+                </div>
+              )}
+              {viewStructure2 !== 0 && (
+                <div
+                  className={`link group ${
+                    selectedLink === 18 ? "selected" : ""
+                  }`}
+                  onClick={() => handleLinkClick(18)}
+                >
+                  <OrgIcon
+                    className="transition-all duration-200 group-hover:scale-110"
+                    style={{
+                      color: `${selectedLink === 18 ? "#fff" : "#0A5077"}`,
+                    }}
+                  />
+                  <Typography className="font-medium">Structure</Typography>
+                </div>
+              )}
+
+              {viewRole !== 0 && (
+                <div
+                  className={`link group ${
+                    selectedLink === 4 ? "selected" : ""
+                  }`}
+                  onClick={() => handleLinkClick(4)}
+                >
+                  <RoleIcon
+                    className="transition-all duration-200 group-hover:scale-110"
+                    style={{
+                      color: `${selectedLink === 4 ? "#fff" : "#0A5077"}`,
+                    }}
+                  />
+                  <Typography className="font-medium">Roles</Typography>
+                </div>
+              )}
+
+              {viewUsers !== 0 && (
+                <div
+                  className={`link group ${
+                    selectedLink === 3 ? "selected" : ""
+                  }`}
+                  onClick={() => handleLinkClick(3)}
+                >
+                  <UsersIcon
+                    className="transition-all duration-200 group-hover:scale-110"
+                    style={{
+                      color: `${selectedLink === 3 ? "#fff" : "#0A5077"}`,
+                    }}
+                  />
+                  <Typography className="font-medium">Users</Typography>
+                </div>
+              )}
+              {viewProfile !== 0 && (
+                <div
+                  className={`link group ${
+                    selectedLink === 16 ? "selected" : ""
+                  }`}
+                  onClick={() => handleLinkClick(16)}
+                >
+                  <AccountBoxIcon
+                    className="transition-all duration-200 group-hover:scale-110"
+                    style={{
+                      color: `${selectedLink === 16 ? "#fff" : "#0A5077"}`,
+                    }}
+                  />
+                  <Typography className="font-medium">Profile</Typography>
+                </div>
+              )}
+
               <div
-                className={`link ${selectedLink === 0 ? "selected" : ""}`}
-                onClick={() => handleLinkClick(0)}
+                className={`link group ${selectedLink === 1 ? "selected" : ""}`}
+                onClick={() => handleLinkClick(1)}
               >
-                <DashboardIcon
+                <ProjectIcon
+                  className="transition-all duration-200 group-hover:scale-110"
                   style={{
-                    color: `${selectedLink === 0 ? "#fff" : "#0A5077"}`,
+                    color: `${selectedLink === 1 ? "#fff" : "#0A5077"}`,
                   }}
                 />
-                <Typography>Dashboard</Typography>
+                <Typography className="font-medium">Projects</Typography>
               </div>
-            )}
 
-            {showDropdown && (
-              <div className="organization-box">
-                {viewOrganization !== 0 && (
+              {viewTrash !== 0 && (
+                <div>
                   <div
-                    className={`link ${
-                      selectedLink === 6
-                        ? "selected dropdown-item"
-                        : "dropdown-item"
+                    className={`link group ${
+                      selectedLink === 9 ? "selected" : ""
                     }`}
-                    onClick={() => handleDropdownLinkClick(6)}
+                    onClick={() => handleLinkClick(9)}
                   >
-                    <OrgIcon
+                    <TrashIcon
+                      className="transition-all duration-200 group-hover:scale-110"
                       style={{
-                        color: `${selectedLink === 6 ? "#fff" : "#0A5077"}`,
+                        color: `${selectedLink === 9 ? "#fff" : "#0A5077"}`,
                       }}
                     />
-                    <Typography fontSize={13}>Organization</Typography>
+                    <Typography className="font-medium">Trash</Typography>
                   </div>
-                )}
-
-                {viewSector !== 0 && (
-                  <div
-                    className={`link ${
-                      selectedLink === 7
-                        ? "selected dropdown-item"
-                        : "dropdown-item"
-                    }`}
-                    onClick={() => handleDropdownLinkClick(7)}
-                  >
-                    <SectorIcon
-                      style={{
-                        color: `${selectedLink === 7 ? "#fff" : "#0A5077"}`,
-                      }}
-                    />
-                    <Typography fontSize={13}>Sectors</Typography>
+                </div>
+              )}
+              {isProjectSelected === true && (
+                <div className="mt-8">
+                  <Divider className="my-6" />
+                  <div className="flex flex-col items-center py-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl mb-6">
+                    <div className="flex items-center justify-center w-12 h-12 mb-3 rounded-full bg-gradient-to-br from-blue-100 to-indigo-200 border-2 border-white shadow-md">
+                      <span className="text-blue-800 font-bold text-lg">
+                        {Object.keys(selectedProjectInfo).length !== 0
+                          ? selectedProjectInfo.name.charAt(0).toUpperCase()
+                          : ""}
+                      </span>
+                    </div>
+                    <Typography className="text-base font-bold text-gray-900 text-center px-2">
+                      {selectedProjectInfo && selectedProjectInfo.name}
+                    </Typography>
+                    <Typography className="text-xs text-gray-600 mt-1">
+                      Active Project
+                    </Typography>
                   </div>
-                )}
-                {viewOrganizationalUnit !== 0 && (
-                  <div
-                    className={`link ${
-                      selectedLink === 8
-                        ? "selected dropdown-item"
-                        : "dropdown-item"
-                    }`}
-                    onClick={() => handleDropdownLinkClick(8)}
-                  >
-                    <OrgUnitIcon
-                      style={{
-                        color: `${selectedLink === 8 ? "#fff" : "#0A5077"}`,
-                      }}
-                    />
-                    <Typography fontSize={13}>Department</Typography>
+                  <div className="space-y-1">
+                    {viewProjectDashboard !== 0 && (
+                      <div
+                        className={`link group ${
+                          selectedLink === 10 ? "selected" : ""
+                        }`}
+                        onClick={() => handleLinkClick(10)}
+                      >
+                        <DashboardIcon
+                          className="transition-all duration-200 group-hover:scale-110"
+                          style={{
+                            color: `${
+                              selectedLink === 10 ? "#fff" : "#0A5077"
+                            }`,
+                          }}
+                        />
+                        <Typography className="font-medium">
+                          Dashboard
+                        </Typography>
+                      </div>
+                    )}
+                    {viewActivity !== 0 && (
+                      <div
+                        className={`link group ${
+                          selectedLink === 11 ? "selected" : ""
+                        }`}
+                        onClick={() => handleLinkClick(11)}
+                      >
+                        <MilestoneIcon
+                          className="transition-all duration-200 group-hover:scale-110"
+                          style={{
+                            color: `${
+                              selectedLink === 11 ? "#fff" : "#0A5077"
+                            }`,
+                          }}
+                        />
+                        <Typography className="font-medium">
+                          Activities
+                        </Typography>
+                      </div>
+                    )}
+                    {viewProjectMembersProfile !== 0 && (
+                      <div
+                        className={`link group ${
+                          selectedLink === 12 ? "selected" : ""
+                        }`}
+                        onClick={() => handleLinkClick(12)}
+                      >
+                        <ProjectMembersIcon
+                          className="transition-all duration-200 group-hover:scale-110"
+                          style={{
+                            color: `${
+                              selectedLink === 12 ? "#fff" : "#0A5077"
+                            }`,
+                          }}
+                        />
+                        <Typography className="font-medium">Members</Typography>
+                      </div>
+                    )}
+
+                    {viewWorkspace !== 0 && (
+                      <div
+                        className={`link group ${
+                          selectedLink === 13 ? "selected" : ""
+                        }`}
+                        onClick={() => handleLinkClick(13)}
+                      >
+                        <ProjectWorkspaceIcon
+                          className="transition-all duration-200 group-hover:scale-110"
+                          style={{
+                            color: `${
+                              selectedLink === 13 ? "#fff" : "#0A5077"
+                            }`,
+                          }}
+                        />
+                        <Typography className="font-medium">
+                          Workspace
+                        </Typography>
+                      </div>
+                    )}
+                    {viewMilestone !== 0 && (
+                      <div
+                        className={`link group ${
+                          selectedLink === 17 ? "selected" : ""
+                        }`}
+                        onClick={() => handleLinkClick(17)}
+                      >
+                        <Flag
+                          className="transition-all duration-200 group-hover:scale-110"
+                          style={{
+                            color: `${
+                              selectedLink === 17 ? "#fff" : "#0A5077"
+                            }`,
+                          }}
+                        />
+                        <Typography className="font-medium">
+                          Milestone
+                        </Typography>
+                      </div>
+                    )}
+
+                    <div
+                      className={`link group ${
+                        selectedLink === 14 ? "selected" : ""
+                      }`}
+                      onClick={() => handleLinkClick(14)}
+                    >
+                      <ProjectDocsIcon
+                        className="transition-all duration-200 group-hover:scale-110"
+                        style={{
+                          color: `${selectedLink === 14 ? "#fff" : "#0A5077"}`,
+                        }}
+                      />
+                      <Typography className="font-medium">Docs</Typography>
+                    </div>
                   </div>
-                )}
-              </div>
-            )}
-            {viewStructure2 !== 0 && (
-              <div
-                className={`link ${selectedLink === 18 ? "selected" : ""}`}
-                onClick={() => handleLinkClick(18)}
-              >
-                <OrgIcon
-                  style={{
-                    color: `${selectedLink === 18 ? "#fff" : "#0A5077"}`,
-                  }}
-                />
-                <Typography>Structure</Typography>
-              </div>
-            )}
-
-            {viewRole !== 0 && (
-              <div
-                className={`link ${selectedLink === 4 ? "selected" : ""}`}
-                onClick={() => handleLinkClick(4)}
-              >
-                <RoleIcon
-                  style={{
-                    color: `${selectedLink === 4 ? "#fff" : "#0A5077"}`,
-                  }}
-                />
-                <Typography>Roles</Typography>
-              </div>
-            )}
-
-            {viewUsers !== 0 && (
-              <div
-                className={`link ${selectedLink === 3 ? "selected" : ""}`}
-                onClick={() => handleLinkClick(3)}
-              >
-                <UsersIcon
-                  style={{
-                    color: `${selectedLink === 3 ? "#fff" : "#0A5077"}`,
-                  }}
-                />
-                <Typography>Users</Typography>
-              </div>
-            )}
-            {viewProfile !== 0 && (
-              <div
-                className={`link ${selectedLink === 16 ? "selected" : ""}`}
-                onClick={() => handleLinkClick(16)}
-              >
-                <AccountBoxIcon
-                  style={{
-                    color: `${selectedLink === 16 ? "#fff" : "#0A5077"}`,
-                  }}
-                />
-                <Typography>Profile</Typography>
-              </div>
-            )}
-
-            <div
-              className={`link ${selectedLink === 1 ? "selected" : ""}`}
-              onClick={() => handleLinkClick(1)}
-            >
-              <ProjectIcon
-                style={{
-                  color: `${selectedLink === 1 ? "#fff" : "#0A5077"}`,
-                }}
-              />
-              <Typography>Projects</Typography>
+                </div>
+              )}
             </div>
-
-            {viewTrash !== 0 && (
-              <div>
-                <div
-                  className={`link ${selectedLink === 9 ? "selected" : ""}`}
-                  onClick={() => handleLinkClick(9)}
-                >
-                  <TrashIcon
-                    style={{
-                      color: `${selectedLink === 9 ? "#fff" : "#0A5077"}`,
-                    }}
-                  />
-                  <Typography>Trash</Typography>
-                </div>
-              </div>
-            )}
-            {isProjectSelected === true && (
-              <div>
-                <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
-                <div class="text-center py-5 flex flex-row items-center">
-                  <span class="box-border h-8 w-8 py-1 m-2 border-2  inline-block bg-gray-300 rounded-lg">
-                    {Object.keys(selectedProjectInfo).length !== 0
-                      ? selectedProjectInfo.name.charAt(0)
-                      : ""}
-                  </span>
-                  <Typography class="text-lg font-semibold">
-                    {selectedProjectInfo && selectedProjectInfo.name}
-                  </Typography>
-                </div>
-                {viewProjectDashboard !== 0 && (
-                  <div
-                    className={`link ${selectedLink === 10 ? "selected" : ""}`}
-                    onClick={() => handleLinkClick(10)}
-                  >
-                    <DashboardIcon
-                      style={{
-                        color: `${selectedLink === 10 ? "#fff" : "#0A5077"}`,
-                      }}
-                    />
-                    <Typography>Dashboard</Typography>
-                  </div>
-                )}
-                {viewActivity !== 0 && (
-                  <div
-                    className={`link ${selectedLink === 11 ? "selected" : ""}`}
-                    onClick={() => handleLinkClick(11)}
-                  >
-                    <MilestoneIcon
-                      style={{
-                        color: `${selectedLink === 11 ? "#fff" : "#0A5077"}`,
-                      }}
-                    />
-                    <Typography>Activities</Typography>
-                  </div>
-                )}
-                {viewProjectMembersProfile !== 0 && (
-                  <div
-                    className={`link ${selectedLink === 12 ? "selected" : ""}`}
-                    onClick={() => handleLinkClick(12)}
-                  >
-                    <ProjectMembersIcon
-                      style={{
-                        color: `${selectedLink === 12 ? "#fff" : "#0A5077"}`,
-                      }}
-                    />
-                    <Typography>Members</Typography>
-                  </div>
-                )}
-
-                {viewWorkspace !== 0 && (
-                  <div
-                    className={`link ${selectedLink === 13 ? "selected" : ""}`}
-                    onClick={() => handleLinkClick(13)}
-                  >
-                    <ProjectWorkspaceIcon
-                      style={{
-                        color: `${selectedLink === 13 ? "#fff" : "#0A5077"}`,
-                      }}
-                    />
-                    <Typography>Workspace</Typography>
-                  </div>
-                )}
-                {viewMilestone !== 0 && (
-                  <div
-                    className={`link ${selectedLink === 17 ? "selected" : ""}`}
-                    onClick={() => handleLinkClick(17)}
-                  >
-                    <Flag
-                      style={{
-                        color: `${selectedLink === 17 ? "#fff" : "#0A5077"}`,
-                      }}
-                    />
-                    <Typography>Milestone</Typography>
-                  </div>
-                )}
-
-                <div
-                  className={`link ${selectedLink === 14 ? "selected" : ""}`}
-                  onClick={() => handleLinkClick(14)}
-                  class="flex p-1 gap-5 ml-1"
-                >
-                  <ProjectDocsIcon
-                    style={{
-                      color: `${selectedLink === 14 ? "#fff" : "#0A5077"}`,
-                    }}
-                  />
-                  <Typography>Docs</Typography>
-                </div>
-              </div>
-            )}
           </div>
         </Box>
+
+        {/* Main Content Area */}
+        <main className="flex-1 md:ml-64 lg:ml-72 xl:ml-80 transition-all duration-300">
+          <div className="p-4 md:p-6 lg:p-8">
+            <Routes>
+              {selectedLink === 0 && (
+                <React.Fragment>
+                  {viewAdminDashboard !== 0 ? (
+                    <Route path="/" element={<AdminDashboard />} />
+                  ) : viewHome !== 0 ? (
+                    <Route path="/" element={<Home />} />
+                  ) : null}
+                </React.Fragment>
+              )}
+              {selectedLink === 16 && (
+                <React.Fragment>
+                  <Route path="/profiles" element={<Profile />} />
+                </React.Fragment>
+              )}
+
+              {selectedLink === 1 && (
+                <React.Fragment>
+                  <Route
+                    path="/projects"
+                    element={
+                      <Projects
+                        isProjectSelected={false}
+                        setIsProjectSelected={setIsProjectSelected}
+                        setSelectedProjectInfo={handleProjectSelection}
+                        setShowDashboardBox={setShowDashboardBox}
+                        setShowMilestoneBox={setShowMilestoneBox}
+                        setShowActivityBox={setShowActivityBox}
+                        setShowWorkspaceBox={setShowWorkspaceBox}
+                        setShowProjectsBox={setShowProjectsBox}
+                        handleLinkClick={handleLinkClick}
+                      />
+                    }
+                  />
+                </React.Fragment>
+              )}
+
+              {selectedLink === 2 && (
+                <React.Fragment>
+                  <Route path="/teams" element={<Teams />} />
+                </React.Fragment>
+              )}
+
+              {selectedLink === 3 && (
+                <React.Fragment>
+                  <Route path="/users" element={<Users />} />
+                </React.Fragment>
+              )}
+
+              {selectedLink === 6 && (
+                <React.Fragment>
+                  <Route path="/organization" element={<Organization />} />
+                </React.Fragment>
+              )}
+
+              {selectedLink === 7 && (
+                <React.Fragment>
+                  <Route path="/structure/clusters" element={<Sectors />} />
+                </React.Fragment>
+              )}
+
+              {selectedLink === 8 && (
+                <React.Fragment>
+                  <Route
+                    path="/structure/departments"
+                    element={<OrganizationalUnits />}
+                  />
+                </React.Fragment>
+              )}
+
+              {selectedLink === 9 && (
+                <React.Fragment>
+                  <Route path="/trash" element={<Trash />} />
+                </React.Fragment>
+              )}
+              {selectedLink === 15 && (
+                <React.Fragment>
+                  <Route path="/settings" element={<Settings />} />
+                </React.Fragment>
+              )}
+
+              {selectedLink === 10 && (
+                <React.Fragment>
+                  <Route
+                    path={`${selectedProjectInfo.name}/dashboard`}
+                    element={
+                      <Dashboard setSelectedProjectInfo={selectedProjectInfo} />
+                    }
+                  />
+                </React.Fragment>
+              )}
+              {selectedLink === 11 && (
+                <React.Fragment>
+                  <Route
+                    path={`${selectedProjectInfo.name}/activities`}
+                    element={
+                      <Activity setSelectedProjectInfo={selectedProjectInfo} />
+                    }
+                  />
+                </React.Fragment>
+              )}
+              {selectedLink === 17 && (
+                <React.Fragment>
+                  <Route
+                    path={`${selectedProjectInfo.name}/milestones`}
+                    element={
+                      <Milestone
+                        setSelectedProjectInfo={selectedProjectInfo}
+                        activity_id={props.activity_id}
+                        task_id={props.task_id}
+                      />
+                    }
+                  />
+                </React.Fragment>
+              )}
+
+              {selectedLink === 4 && (
+                <React.Fragment>
+                  <Route path="/roles" element={<Roles />} />
+                </React.Fragment>
+              )}
+              {selectedLink === 12 && (
+                <React.Fragment>
+                  <Route
+                    path={`${selectedProjectInfo.name}/members`}
+                    element={
+                      <MembersDashboard
+                        selectedProjectInfo={selectedProjectInfo}
+                      />
+                    }
+                  />
+                </React.Fragment>
+              )}
+              {selectedLink === 13 && (
+                <React.Fragment>
+                  <Route
+                    path={`${selectedProjectInfo.name}/workspace`}
+                    element={
+                      <Workspace setSelectedProjectInfo={selectedProjectInfo} />
+                    }
+                  />
+                </React.Fragment>
+              )}
+
+              {selectedLink === 14 && (
+                <React.Fragment>
+                  <Route
+                    path={`${selectedProjectInfo.name}/documents`}
+                    element={
+                      <Docs setSelectedProjectInfo={selectedProjectInfo} />
+                    }
+                  />
+                </React.Fragment>
+              )}
+
+              {selectedLink === 18 && (
+                <React.Fragment>
+                  <Route
+                    path="/structure"
+                    element={
+                      <Structure setSelectedProjectInfo={selectedProjectInfo} />
+                    }
+                  />
+                </React.Fragment>
+              )}
+            </Routes>
+          </div>
+          <Footer />
+        </main>
       </div>
-      <Routes>
-        {selectedLink === 0 && (
-          <React.Fragment className="home-box">
-            {viewAdminDashboard !== 0 ? (
-              <Route path="/" element={<AdminDashboard />} />
-            ) : viewHome !== 0 ? (
-              <Route path="/" element={<Home />} />
-            ) : null}
-          </React.Fragment>
-        )}
-        {selectedLink === 16 && (
-          <React.Fragment className="home-box">
-            <Route path="/profiles" element={<Profile />} />
-          </React.Fragment>
-        )}
-
-        {selectedLink === 1 && (
-          <React.Fragment className="projects-box">
-            <Route
-              path="/projects"
-              element={
-                <Projects
-                  isProjectSelected={false} // Always set to false when rendering Projects
-                  setIsProjectSelected={setIsProjectSelected}
-                  setSelectedProjectInfo={handleProjectSelection}
-                  setShowDashboardBox={setShowDashboardBox}
-                  setShowMilestoneBox={setShowMilestoneBox}
-                  setShowActivityBox={setShowActivityBox}
-                  setShowWorkspaceBox={setShowWorkspaceBox}
-                  setShowProjectsBox={setShowProjectsBox}
-                  handleLinkClick={handleLinkClick}
-                />
-              }
-            />
-          </React.Fragment>
-        )}
-
-        {selectedLink === 2 && (
-          <React.Fragment className="teams-box">
-            <Route path="/teams" element={<Teams />} />
-          </React.Fragment>
-        )}
-
-        {selectedLink === 3 && (
-          <React.Fragment className="users-box">
-            <Route path="/users" element={<Users />} />
-          </React.Fragment>
-        )}
-
-        {selectedLink === 6 && (
-          <React.Fragment className="sector-box">
-            <Route path="/organization" element={<Organization />} />
-          </React.Fragment>
-        )}
-
-        {selectedLink === 7 && (
-          <React.Fragment className="sector-box">
-            <Route path="/structure/clusters" element={<Sectors />} />
-          </React.Fragment>
-        )}
-
-        {selectedLink === 8 && (
-          <React.Fragment className="organizational-unit-box">
-            <Route
-              path="/structure/departments"
-              element={<OrganizationalUnits />}
-            />
-          </React.Fragment>
-        )}
-
-        {selectedLink === 9 && (
-          <React.Fragment className="organizational-unit-box">
-            <Route path="/trash" element={<Trash />} />
-          </React.Fragment>
-        )}
-        {selectedLink === 15 && (
-          <React.Fragment className="organizational-unit-box">
-            <Route path="/settings" element={<Settings />} />
-          </React.Fragment>
-        )}
-
-        {selectedLink === 10 && (
-          <React.Fragment>
-            <Route
-              path={`${selectedProjectInfo.name}/dashboard`}
-              element={
-                <Dashboard setSelectedProjectInfo={selectedProjectInfo} />
-              }
-            />
-          </React.Fragment>
-        )}
-        {selectedLink === 11 && (
-          <React.Fragment>
-            <Route
-              path={`${selectedProjectInfo.name}/activities`}
-              element={
-                <Activity setSelectedProjectInfo={selectedProjectInfo} />
-              }
-            />
-          </React.Fragment>
-        )}
-        {selectedLink === 17 && (
-          <React.Fragment>
-            <Route
-              path={`${selectedProjectInfo.name}/milestones`}
-              element={
-                <Milestone
-                  setSelectedProjectInfo={selectedProjectInfo}
-                  activity_id={props.activity_id}
-                  task_id={props.task_id}
-                />
-              }
-            />
-          </React.Fragment>
-        )}
-
-        {selectedLink === 4 && (
-          <React.Fragment className="users-box">
-            <Route path="/roles" element={<Roles />} />
-          </React.Fragment>
-        )}
-        {selectedLink === 12 && (
-          <React.Fragment>
-            <Route
-              path={`${selectedProjectInfo.name}/members`}
-              element={
-                <MembersDashboard selectedProjectInfo={selectedProjectInfo} />
-              }
-            />
-          </React.Fragment>
-        )}
-        {selectedLink === 13 && (
-          <React.Fragment>
-            <Route
-              path={`${selectedProjectInfo.name}/workspace`}
-              element={
-                <Workspace setSelectedProjectInfo={selectedProjectInfo} />
-              }
-            />
-          </React.Fragment>
-        )}
-
-        {selectedLink === 14 && (
-          <React.Fragment>
-            <Route
-              path={`${selectedProjectInfo.name}/documents`}
-              element={<Docs setSelectedProjectInfo={selectedProjectInfo} />}
-            />
-          </React.Fragment>
-        )}
-
-        {selectedLink === 18 && (
-          <React.Fragment>
-            <Route
-              path="/structure"
-              element={
-                <Structure setSelectedProjectInfo={selectedProjectInfo} />
-              }
-            />
-          </React.Fragment>
-        )}
-      </Routes>
-      <Footer />
     </div>
   );
 };

@@ -1,46 +1,43 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios'; // Import Axios
-import './Signin.css';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios"; // Import Axios
+import "./Signin.css";
 
-
-import SigninImage from '../Assets/signin.png';
-import Loginlogo from '../Assets/login_logo.png';
+import SigninImage from "../Assets/signin.png";
+import Loginlogo from "../Assets/login_logo.png";
 
 const Signin = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
-      console.log('Email:', email);
-      console.log('Password:', password);
+      console.log("Email:", email);
+      console.log("Password:", password);
 
-      const response = await axios.post('http://172.20.10.2:5000/ums/login', {
+      const response = await axios.post("http://172.20.10.2:5000/ums/login", {
         email,
         password,
       });
 
-      console.log('API Response:', response);
-
-      navigate('/sideandnav');
+      navigate("/sideandnav");
     } catch (error) {
-      console.error('Login failed:', error.message);
-      setErrorMessage('Wrong password or email');
+      console.error("Login failed:", error.message);
+      setErrorMessage("Wrong password or email");
     }
   };
   return (
-    <div className='Signin_container'>
+    <div className="Signin_container">
       <img src={SigninImage} alt="Signin" className="signin-image" />
       <div className="boxx">
-        <div className='siginfieldcontainer'>
-          <div className='loginlogo'>
+        <div className="siginfieldcontainer">
+          <div className="loginlogo">
             <img src={Loginlogo} alt="Login" />
           </div>
-          <div className='login_name'>EAII-PMS</div>
+          <div className="login_name">EAII-PMS</div>
           <div className="signin-txts">Email</div>
           <div className="signin-input">
             <input
@@ -61,7 +58,7 @@ const Signin = () => {
 
           <div className="remember-me-and-link">
             <div className="remember-me">
-              <div className='check-box'>
+              <div className="check-box">
                 <input
                   type="checkbox"
                   id="rememberMe"
@@ -80,7 +77,7 @@ const Signin = () => {
             Login
           </button>
 
-          <div className="error-message" style={{ color: 'red' }}>
+          <div className="error-message" style={{ color: "red" }}>
             {errorMessage}
           </div>
         </div>
