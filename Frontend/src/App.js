@@ -49,9 +49,6 @@ import Createnewteam from "./Components/PMS/Createnewteam";
 import Division from "./Components/PMS/Division";
 import DivisionAdd from "./Components/PMS/DivisionAdd";
 import Employees from "./Components/PMS/Employees";
-import FirstReset from "./Components/PMS/FirstReset";
-import FirstResetPage from "./Components/PMS/FirstResetPage";
-import FirstResetnew from "./Components/PMS/FirstResetnew";
 import ForgetPassword from "./Components/PMS/ForgetPassword";
 import Members from "./Components/PMS/Members";
 import Registernewuser from "./Components/PMS/Registernewuser";
@@ -70,7 +67,7 @@ import Users from "./Components/PMS/Users";
 import Checkboxtest from "./Components/PMS/checkboxtest";
 
 import Assign from "./Components/PMS/Assign";
-import FirstResettry from "./Components/PMS/FirstResettry";
+import FirstReset from "./Components/PMS/FirstReset";
 import Footer from "./Components/PMS/Footer";
 
 import Organizationaluniteditt from "./Components/PMS/Organizationaluniteditt";
@@ -100,7 +97,7 @@ function App() {
       <Router>
         <Routes>
           <Route exact path="/" element={<Login />} />
-          <Route path="/FirstResettry" element={<FirstResettry />} />
+          <Route path="/FirstReset" element={<FirstReset />} />
           {/* <Route exact path="/home/*" element={<MainRoutes />} /> */}
           <Route
             path="/home/*"
@@ -180,9 +177,6 @@ function App() {
           {/* <Route path="/calander" element={<Calander />} /> */}
           {/* <Route path="/home" element={<Home />} /> */}
           <Route path="/myprofile" element={<Myprofile />} />
-          <Route path="/FirstResetnew" element={<FirstResetnew />} />
-          <Route path="/FirstReset" element={<FirstReset />} />
-          <Route path="/FirstResetPage" element={<FirstResetPage />} />
           <Route path="/Activity" element={<Activity />} />
           <Route path="/ResetPasswordbody" element={<ResetPasswordbody />} />
           <Route

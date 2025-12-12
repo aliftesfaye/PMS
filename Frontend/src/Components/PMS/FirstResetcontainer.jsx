@@ -159,7 +159,7 @@ const FirstResetcontainer = () => {
       {/* Header */}
       <div className="text-center mb-8">
         <div className="mb-2">
-          <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-gradient-to-r from-sky-900 via-sky-800 to-sky-900 rounded-full flex items-center justify-center mx-auto mb-4">
             <Lock style={{ fontSize: 32, color: "white" }} />
           </div>
         </div>
@@ -173,30 +173,25 @@ const FirstResetcontainer = () => {
 
       <form onSubmit={handleResetPassword}>
         <div className="space-y-6">
+
           {/* Current Password Field */}
-          <div>
-            <label
-              htmlFor="current_password"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Current Password
-            </label>
-            <div className="relative">
+          <div className="relative">
+            <div className="flex items-center border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all duration-200">
+              <div className="pl-3">
+                <Lock style={{ fontSize: 20, color: "#9CA3AF" }} />
+              </div>
               <input
                 id="current_password"
                 type={showCurrentPassword ? "text" : "password"}
                 name="current_password"
-                className="w-full px-4 py-3 pl-11 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                className="w-full px-3 py-3 border-0 focus:ring-0 focus:outline-none bg-transparent"
                 placeholder="Enter current password"
                 value={formData.current_password}
                 onChange={handleChange}
               />
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                <Lock style={{ fontSize: 20, color: "#9CA3AF" }} />
-              </div>
               <button
                 type="button"
-                className="absolute inset-y-0 right-0 flex items-center pr-3"
+                className="pr-3"
                 onClick={() => togglePasswordVisibility("current_password")}
               >
                 {showCurrentPassword ? (
@@ -210,36 +205,33 @@ const FirstResetcontainer = () => {
 
           {/* New Password Field */}
           <div>
-            <label
-              htmlFor="new_password"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              New Password
-            </label>
+
             <div className="relative">
-              <input
-                id="new_password"
-                type={showNewPassword ? "text" : "password"}
-                name="new_password"
-                className="w-full px-4 py-3 pl-11 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                placeholder="Enter new password"
-                value={formData.new_password}
-                onChange={handleChange}
-              />
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                <Lock style={{ fontSize: 20, color: "#9CA3AF" }} />
+              <div className="flex items-center border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all duration-200">
+                <div className="pl-3">
+                  <Lock style={{ fontSize: 20, color: "#9CA3AF" }} />
+                </div>
+                <input
+                  id="new_password"
+                  type={showNewPassword ? "text" : "password"}
+                  name="new_password"
+                  className="w-full px-3 py-3 border-0 focus:ring-0 focus:outline-none bg-transparent"
+                  placeholder="Enter new password"
+                  value={formData.new_password}
+                  onChange={handleChange}
+                />
+                <button
+                  type="button"
+                  className="pr-3"
+                  onClick={() => togglePasswordVisibility("new_password")}
+                >
+                  {showNewPassword ? (
+                    <VisibilityOff style={{ fontSize: 20, color: "#6B7280" }} />
+                  ) : (
+                    <Visibility style={{ fontSize: 20, color: "#6B7280" }} />
+                  )}
+                </button>
               </div>
-              <button
-                type="button"
-                className="absolute inset-y-0 right-0 flex items-center pr-3"
-                onClick={() => togglePasswordVisibility("new_password")}
-              >
-                {showNewPassword ? (
-                  <VisibilityOff style={{ fontSize: 20, color: "#6B7280" }} />
-                ) : (
-                  <Visibility style={{ fontSize: 20, color: "#6B7280" }} />
-                )}
-              </button>
             </div>
 
             {/* Password Requirements */}
@@ -259,11 +251,10 @@ const FirstResetcontainer = () => {
                     />
                   )}
                   <span
-                    className={`text-sm ${
-                      passwordValidation.minLength
-                        ? "text-green-600"
-                        : "text-gray-600"
-                    }`}
+                    className={`text-sm ${passwordValidation.minLength
+                      ? "text-green-600"
+                      : "text-gray-600"
+                      }`}
                   >
                     At least 8 characters
                   </span>
@@ -279,11 +270,10 @@ const FirstResetcontainer = () => {
                     />
                   )}
                   <span
-                    className={`text-sm ${
-                      passwordValidation.hasUpperCase
-                        ? "text-green-600"
-                        : "text-gray-600"
-                    }`}
+                    className={`text-sm ${passwordValidation.hasUpperCase
+                      ? "text-green-600"
+                      : "text-gray-600"
+                      }`}
                   >
                     One uppercase letter
                   </span>
@@ -299,11 +289,10 @@ const FirstResetcontainer = () => {
                     />
                   )}
                   <span
-                    className={`text-sm ${
-                      passwordValidation.hasLowerCase
-                        ? "text-green-600"
-                        : "text-gray-600"
-                    }`}
+                    className={`text-sm ${passwordValidation.hasLowerCase
+                      ? "text-green-600"
+                      : "text-gray-600"
+                      }`}
                   >
                     One lowercase letter
                   </span>
@@ -319,11 +308,10 @@ const FirstResetcontainer = () => {
                     />
                   )}
                   <span
-                    className={`text-sm ${
-                      passwordValidation.hasNumber
-                        ? "text-green-600"
-                        : "text-gray-600"
-                    }`}
+                    className={`text-sm ${passwordValidation.hasNumber
+                      ? "text-green-600"
+                      : "text-gray-600"
+                      }`}
                   >
                     One number
                   </span>
@@ -339,11 +327,10 @@ const FirstResetcontainer = () => {
                     />
                   )}
                   <span
-                    className={`text-sm ${
-                      passwordValidation.hasSpecialChar
-                        ? "text-green-600"
-                        : "text-gray-600"
-                    }`}
+                    className={`text-sm ${passwordValidation.hasSpecialChar
+                      ? "text-green-600"
+                      : "text-gray-600"
+                      }`}
                   >
                     One special character
                   </span>
@@ -354,36 +341,61 @@ const FirstResetcontainer = () => {
 
           {/* Confirm Password Field */}
           <div>
-            <label
-              htmlFor="confirm_password"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Confirm Password
-            </label>
+
             <div className="relative">
-              <input
-                id="confirm_password"
-                type={showConfirmPassword ? "text" : "password"}
-                name="confirm_password"
-                className="w-full px-4 py-3 pl-11 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                placeholder="Re-enter new password"
-                value={formData.confirm_password}
-                onChange={handleChange}
-              />
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                <Lock style={{ fontSize: 20, color: "#9CA3AF" }} />
+              <div className={`flex items-center border ${formData.new_password && formData.confirm_password
+                ? formData.new_password === formData.confirm_password
+                  ? "border-green-500 focus-within:ring-green-500"
+                  : "border-red-500 focus-within:ring-red-500"
+                : "border-gray-300"
+                } rounded-lg hover:border-gray-400 focus-within:ring-2 focus-within:border-transparent transition-all duration-200`}>
+                <div className="pl-3 pr-2">
+                  <Lock style={{
+                    fontSize: 20,
+                    color: formData.new_password && formData.confirm_password
+                      ? formData.new_password === formData.confirm_password
+                        ? "#10B981"
+                        : "#EF4444"
+                      : "#9CA3AF"
+                  }} />
+                </div>
+                <input
+                  id="confirm_password"
+                  type={showConfirmPassword ? "text" : "password"}
+                  name="confirm_password"
+                  className="w-full py-3 border-0 focus:ring-0 focus:outline-none bg-transparent placeholder-gray-500"
+                  placeholder="Re-enter new password"
+                  value={formData.confirm_password}
+                  onChange={handleChange}
+                />
+                <button
+                  type="button"
+                  className="px-3 py-3 hover:bg-gray-50 rounded-r-lg transition-colors"
+                  onClick={() => togglePasswordVisibility("confirm_password")}
+                >
+                  {showConfirmPassword ? (
+                    <VisibilityOff style={{ fontSize: 20, color: "#6B7280" }} />
+                  ) : (
+                    <Visibility style={{ fontSize: 20, color: "#6B7280" }} />
+                  )}
+                </button>
               </div>
-              <button
-                type="button"
-                className="absolute inset-y-0 right-0 flex items-center pr-3"
-                onClick={() => togglePasswordVisibility("confirm_password")}
-              >
-                {showConfirmPassword ? (
-                  <VisibilityOff style={{ fontSize: 20, color: "#6B7280" }} />
-                ) : (
-                  <Visibility style={{ fontSize: 20, color: "#6B7280" }} />
-                )}
-              </button>
+              {/* Password match indicator */}
+              {formData.new_password && formData.confirm_password && (
+                <div className="mt-1 flex items-center">
+                  {formData.new_password === formData.confirm_password ? (
+                    <>
+                      <CheckCircle style={{ fontSize: 16, color: "#10B981", marginRight: 4 }} />
+                      <span className="text-xs text-green-600">Passwords match</span>
+                    </>
+                  ) : (
+                    <>
+                      <Cancel style={{ fontSize: 16, color: "#EF4444", marginRight: 4 }} />
+                      <span className="text-xs text-red-600">Passwords do not match</span>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
@@ -403,7 +415,7 @@ const FirstResetcontainer = () => {
           <div className="mt-8">
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 transform hover:-translate-y-0.5"
+              className="w-full bg-gradient-to-r from-sky-900 via-sky-800 to-sky-900 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 transform hover:-translate-y-0.5"
             >
               Update Password
             </button>

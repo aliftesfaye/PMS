@@ -453,9 +453,8 @@ const Userprofile = (props) => {
     <Box
       className="w-full px-4 lg:px-8 py-6"
       sx={{
-        background: `linear-gradient(135deg, ${
-          theme.palette.background.default
-        } 0%, ${alpha(theme.palette.background.paper, 0.8)} 100%)`,
+        background: `linear-gradient(135deg, ${theme.palette.background.default
+          } 0%, ${alpha(theme.palette.background.paper, 0.8)} 100%)`,
         minHeight: "100vh",
       }}
     >
@@ -504,8 +503,9 @@ const Userprofile = (props) => {
             <Typography
               variant={isMobile ? "h4" : "h4"}
               className="font-bold"
+              color="#000"
+              backgroundColor="#000"
               sx={{
-                background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 mb: 1,
@@ -562,10 +562,7 @@ const Userprofile = (props) => {
                 p: isMobile ? 4 : 5,
                 position: "relative",
                 overflow: "hidden",
-                background: `linear-gradient(135deg, 
-                  ${theme.palette.primary.dark} 0%, 
-                  ${theme.palette.secondary.dark} 50%, 
-                  ${theme.palette.primary.main} 100%)`,
+
                 backgroundSize: "400% 400%",
                 animation: "gradient 15s ease infinite",
               }}
@@ -578,31 +575,7 @@ const Userprofile = (props) => {
                 }
               `}</style>
 
-              {/* Animated Background Elements */}
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: -50,
-                  right: -50,
-                  width: 200,
-                  height: 200,
-                  borderRadius: "50%",
-                  background: alpha("#fff", 0.1),
-                  animation: "float 6s ease-in-out infinite",
-                }}
-              />
-              <Box
-                sx={{
-                  position: "absolute",
-                  bottom: -30,
-                  left: -30,
-                  width: 150,
-                  height: 150,
-                  borderRadius: "50%",
-                  background: alpha("#fff", 0.05),
-                  animation: "float 8s ease-in-out infinite",
-                }}
-              />
+
 
               <Box className="flex flex-col sm:flex-row sm:items-center gap-6 relative z-10">
                 <Box
@@ -618,7 +591,6 @@ const Userprofile = (props) => {
                       height: isMobile ? 100 : 120,
                       border: "4px solid white",
                       boxShadow: "0 20px 40px rgba(0,0,0,0.2)",
-                      animation: "float 3s ease-in-out infinite",
                     }}
                   >
                     <AccountCircleIcon
@@ -644,7 +616,7 @@ const Userprofile = (props) => {
                 <Box sx={{ textAlign: isMobile ? "center" : "left", flex: 1 }}>
                   <Typography
                     variant={isMobile ? "h5" : "h4"}
-                    className="font-bold text-white mb-2"
+                    className="font-bold text-gray-500 mb-2"
                     sx={{
                       textShadow: "0 2px 10px rgba(0,0,0,0.2)",
                     }}
@@ -660,11 +632,11 @@ const Userprofile = (props) => {
                         backdropFilter: "blur(10px)",
                       }}
                     >
-                      <EmailIcon className="text-white" />
+                      <EmailIcon className="text-gray-600" />
                     </Box>
                     <Typography
                       variant={isMobile ? "body2" : "body1"}
-                      className="text-white/90"
+                      className="text-gray-600/90"
                       sx={{
                         fontWeight: 500,
                       }}

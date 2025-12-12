@@ -74,7 +74,7 @@ const ForgetPasswordContainer = () => {
       {/* Header */}
       <div className="text-center mb-8">
         <div className="mb-2">
-          <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-gradient-to-r from-sky-900 via-sky-800 to-sky-900 rounded-full flex items-center justify-center mx-auto mb-4">
             <Email style={{ fontSize: 32, color: "white" }} />
           </div>
         </div>

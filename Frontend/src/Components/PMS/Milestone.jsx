@@ -145,7 +145,7 @@ const Milestone = (props) => {
   }))(TableCell);
 
   return (
-    <div className="ml-auto w-4/5 mr-5 mt-24 relative">
+    <div className="ml-auto  mr-5 mt-5 relative">
       <div className="flex gap-3 px-5 py-5 ">
         <div className="flex flex-col justify-center text-3xl font-semibold text-white whitespace-nowrap">
           <div className="justify-center items-center px-3 py-1 bg-blue-600 rounded">
@@ -240,17 +240,16 @@ const Milestone = (props) => {
                   </StyledTableCell>
                   <StyledTableCell>
                     <div
-                      className={`w-24 text-center px-3 py-2 text-xs whitespace-nowrap rounded-md ${
-                        response.activity.activity_status === "Completed"
+                      className={`w-24 text-center px-3 py-2 text-xs whitespace-nowrap rounded-md ${response.activity.activity_status === "Completed"
                           ? "text-green-700 bg-green-200"
                           : response.activity.activity_status === "on Progress"
-                          ? "text-orange-700 bg-orange-200"
-                          : response.activity.activity_status === "Canceled"
-                          ? "text-red-700 bg-red-200"
-                          : response.activity.activity_status === "Pending"
-                          ? "text-gray-700 bg-gray-200"
-                          : ""
-                      }`}
+                            ? "text-orange-700 bg-orange-200"
+                            : response.activity.activity_status === "Canceled"
+                              ? "text-red-700 bg-red-200"
+                              : response.activity.activity_status === "Pending"
+                                ? "text-gray-700 bg-gray-200"
+                                : ""
+                        }`}
                     >
                       {response.activity.activity_status}{" "}
                     </div>{" "}
@@ -274,9 +273,8 @@ const Milestone = (props) => {
           (number) => (
             <div
               key={number + 1}
-              className={`bg-${
-                currentPage === number + 1 ? "gray-100" : "white"
-              } h-fit rounded-md px-3 mt-2 py-1 cursor-pointer`}
+              className={`bg-${currentPage === number + 1 ? "gray-100" : "white"
+                } h-fit rounded-md px-3 mt-2 py-1 cursor-pointer`}
               onClick={() => paginate(number + 1)}
             >
               {number + 1}
