@@ -170,7 +170,7 @@ const LoginContainer = () => {
           <div className="my-4">
             <button
               type="submit"
-              className="bg-blue-900 text-white px-2 py-2 rounded-xl w-full mt-4"
+              className="bg-gradient-to-r from-sky-900 via-sky-800 to-sky-900 text-white px-2 py-2 rounded-xl w-full mt-4"
             >
               Login
             </button>
