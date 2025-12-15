@@ -348,7 +348,7 @@ const Navbar = ({ drawer, mobileOpen, handleDrawerToggle }) => {
                 </div>
                 <div className="flex flex-col">
                   <span className="text-white font-bold text-lg tracking-tight">
-                    ECSC-PMS
+                    FCSC-PMS
                   </span>
                   <span className="text-white/80 text-xs">
                     Project Management System
