@@ -683,15 +683,17 @@ const Activity = (props) => {
 
                       {/* Actions Menu */}
                       <div className="relative">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleMenuOpen(activity.activity_id);
-                          }}
-                          className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-                        >
-                          <MoreHorizIcon />
-                        </button>
+                        {(updateActivity !== 0 || deleteActivity !== 0) && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleMenuOpen(activity.activity_id);
+                            }}
+                            className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                          >
+                            <MoreHorizIcon />
+                          </button>
+                        )}
 
                         {openRowMenu === activity.activity_id && (
                           <div className="absolute right-0 top-full mt-1 bg-white rounded-lg shadow-lg border border-slate-200 z-10 min-w-[120px] py-1">
