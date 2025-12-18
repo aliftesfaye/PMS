@@ -1,7 +1,7 @@
-//export const BASE_URL = "http://localhost:5000";
-export const BASE_URL = "http://196.189.247.228/api";
-export const SOCKET_URL = "http://196.189.247.228:5001";
-//export const SOCKET_URL = "http://localhost:5001";
+export const BASE_URL = "http://localhost:5000/api";
+// export const BASE_URL = "http://196.189.247.228/api";
+// export const SOCKET_URL = "http://196.189.247.228:5001";
+export const SOCKET_URL = "http://localhost:5001";
 
 export const PERMISSIONS = {
   // user permission
