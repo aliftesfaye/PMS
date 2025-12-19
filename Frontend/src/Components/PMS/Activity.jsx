@@ -1147,7 +1147,7 @@ const Activity = (props) => {
                   canAddComment: commentOnActivity !== 0,
                   canEditOwnComments: true,
                   canDeleteOwnComments: true,
-                  canPinComments: userInfo?.foundUser?.role === 'admin' || userInfo?.foundUser?.role === 'manager',
+                  canPinComments: true,
                   canViewPrivateComments: userInfo?.foundUser?.role === 'admin' || userInfo?.foundUser?.role === 'manager'
                 }}
                 handleCloseModal={handleDetailModalClose}
