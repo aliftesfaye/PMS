@@ -559,14 +559,16 @@ const apiService = {
       }
 
       const config = { headers: { Authorization: `Bearer ${token}` } };
+
       const response = await instance.post(
-        `/comments/${commentId}/like`,
+        `/comments/comment/${commentId}/like`,
         {},
         config
       );
-      return response.data;
+
+      return response;
     } catch (error) {
-      console.error("Error toggling like:", error);
+      console.error("Error liking comment:", error);
       throw error;
     }
   },
@@ -582,7 +584,7 @@ const apiService = {
 
       const config = { headers: { Authorization: `Bearer ${token}` } };
       const response = await instance.post(
-        `/comments/${commentId}/pin`,
+        `/comments/comment/${commentId}/pin`,
         {},
         config
       );
@@ -745,6 +747,9 @@ const apiService = {
       sub_task_id: params?.sub_task_id,
     });
   },
+
+
+
   taskadd: async (taskData, activity_id) => {
     try {
       console.log("task calling ...");

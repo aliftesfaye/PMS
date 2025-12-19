@@ -161,9 +161,8 @@ const AdvancedCommentSystem = ({
 
       const reply = {
         id: `reply-${commentId}-${i}-${Date.now()}`,
-        content: `This is a mock reply to ${commentAuthor}'s comment. ${
-          hasAttachments ? "I've attached some files for review." : ""
-        }`,
+        content: `This is a mock reply to ${commentAuthor}'s comment. ${hasAttachments ? "I've attached some files for review." : ""
+          }`,
         userId: user.id,
         userName: user.name,
         createdAt: new Date(
@@ -173,10 +172,10 @@ const AdvancedCommentSystem = ({
         likedByUser: Math.random() > 0.8,
         replies: hasNestedReplies
           ? generateMockReplies(
-              `nested-${commentId}-${i}`,
-              user.name,
-              depth + 1
-            )
+            `nested-${commentId}-${i}`,
+            user.name,
+            depth + 1
+          )
           : [],
         isPinned: true,
         isPrivate: Math.random() > 0.9,
@@ -186,8 +185,8 @@ const AdvancedCommentSystem = ({
         editedAt:
           Math.random() > 0.8
             ? new Date(
-                Date.now() - Math.random() * 24 * 60 * 60 * 1000
-              ).toISOString()
+              Date.now() - Math.random() * 24 * 60 * 60 * 1000
+            ).toISOString()
             : null,
       };
 
@@ -210,11 +209,10 @@ const AdvancedCommentSystem = ({
 
       const comment = {
         id: `mock-comment-${i}-${Date.now()}`,
-        content: `This is a mock comment about "${activityName}". ${
-          hasAttachments
-            ? "I've included some relevant documents."
-            : "This needs attention."
-        }`,
+        content: `This is a mock comment about "${activityName}". ${hasAttachments
+          ? "I've included some relevant documents."
+          : "This needs attention."
+          }`,
         userId: user.id,
         userName: user.name,
         createdAt: new Date(
@@ -233,8 +231,8 @@ const AdvancedCommentSystem = ({
         editedAt:
           Math.random() > 0.7
             ? new Date(
-                Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000
-              ).toISOString()
+              Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000
+            ).toISOString()
             : null,
       };
 
@@ -599,11 +597,11 @@ const AdvancedCommentSystem = ({
               "unknown",
             userName: commentData.user.full_name || "Unknown User",
             createdAt: commentData.createdAt || new Date().toISOString(),
-            likes: commentData.likes || 0,
-            likedByUser: commentData.likedBy?.includes(userId) || false,
+            likes: commentData.likes_count || 0,
+            likedByUser: commentData.liked_by_user || false,
             replies: commentData.replies || [],
-            isPinned: commentData.isPinned || false,
-            isPrivate: commentData.isPrivate || false,
+            isPinned: commentData.is_pinned || false,
+            isPrivate: commentData.is_private || false,
             attachments: commentData.attachments || [],
             editedAt: commentData.updatedAt || commentData.editedAt,
           };
@@ -638,11 +636,11 @@ const AdvancedCommentSystem = ({
                 reply.created_by || reply.user_id || reply.userId || "unknown",
               userName: reply.user.full_name || "Unknown User",
               createdAt: reply.createdAt || new Date().toISOString(),
-              likes: reply.likes || 0,
-              likedByUser: reply.likedBy?.includes(userId) || false,
+              likes: reply.likes_count || 0,
+              likedByUser: reply.liked_by_user || false,
               replies: reply.replies || [],
-              isPinned: reply.isPinned || false,
-              isPrivate: reply.isPrivate || false,
+              isPinned: reply.is_pinned || false,
+              isPrivate: reply.is_private || false,
               attachments: reply.attachments || [],
               editedAt: reply.updatedAt || reply.editedAt,
             })),
@@ -773,7 +771,15 @@ const AdvancedCommentSystem = ({
 
       let response;
       if (editCommentId) {
-        const commentToEdit = comments.find((c) => c.id === editCommentId);
+        const allComments = [
+          ...comments,
+          ...comments.flatMap((c) => c.replies || []),
+        ];
+
+        const commentToEdit = allComments.find(
+          (c) => c.id === editCommentId || c.comment_id === editCommentId
+        );
+
         if (
           !commentToEdit ||
           (commentToEdit.userId !== userId && !canEditOwnComments)
@@ -834,26 +840,8 @@ const AdvancedCommentSystem = ({
   };
 
   const handleLikeComment = async (commentId) => {
-    if (useMockData) {
-      // Mock like functionality
-      setComments((prev) =>
-        prev.map((comment) => {
-          if (comment.id === commentId) {
-            const alreadyLiked = comment.likedByUser;
-            return {
-              ...comment,
-              likes: alreadyLiked ? comment.likes - 1 : comment.likes + 1,
-              likedByUser: !alreadyLiked,
-            };
-          }
-          return comment;
-        })
-      );
-      return;
-    }
-
     try {
-      const response = await apiService.likeComment(commentId, userId);
+      const response = await apiService.toggleLike(commentId, userId);
       if (response.status === 200) {
         fetchComments();
       }
@@ -908,7 +896,14 @@ const AdvancedCommentSystem = ({
   };
 
   const handleDelete = async (commentId) => {
-    const comment = comments.find((c) => c.id === commentId);
+    const allComments = [
+      ...comments,
+      ...comments.flatMap((c) => c.replies || []),
+    ];
+
+    const comment = allComments.find(
+      (c) => c.id === commentId || c.comment_id === commentId
+    );
     if (!comment) return;
 
     if (
@@ -956,39 +951,11 @@ const AdvancedCommentSystem = ({
       return;
     }
 
-    if (useMockData) {
-      // Mock pin functionality
-      setComments((prev) =>
-        prev.map((comment) => {
-          if (comment.id === commentId) {
-            return { ...comment, isPinned: !currentPinStatus };
-          }
-          return comment;
-        })
-      );
-
-      Swal.fire({
-        position: "top-end",
-        icon: "success",
-        title: currentPinStatus ? "Comment Unpinned" : "Comment Pinned",
-        showConfirmButton: false,
-        timer: 1500,
-        toast: true,
-      });
-      return;
-    }
 
     try {
-      await apiService.pinComment(commentId, !currentPinStatus);
+      await apiService.togglePin(commentId, !currentPinStatus);
       fetchComments();
-      Swal.fire({
-        position: "top-end",
-        icon: "success",
-        title: currentPinStatus ? "Comment Unpinned" : "Comment Pinned",
-        showConfirmButton: false,
-        timer: 1500,
-        toast: true,
-      });
+
     } catch (error) {
       Swal.fire("Error!", "Failed to update pin status.", "error");
     }
@@ -1221,13 +1188,12 @@ const AdvancedCommentSystem = ({
     return (
       <div className={`${isReply ? "ml-8 mt-3" : "mb-4"}`}>
         <div
-          className={`bg-white rounded-lg border ${
-            comment.isPinned
-              ? "border-yellow-300 border-2 bg-yellow-50"
-              : comment.isPrivate
+          className={`bg-white rounded-lg border ${comment.isPinned
+            ? "border-yellow-300 border-2 bg-yellow-50"
+            : comment.isPrivate
               ? "border-purple-200 bg-purple-50"
               : "border-slate-200"
-          } hover:border-slate-300 transition-colors p-4`}
+            } hover:border-slate-300 transition-colors p-4`}
         >
           {/* Comment header */}
           <div className="flex items-start justify-between mb-3">
@@ -1272,9 +1238,7 @@ const AdvancedCommentSystem = ({
                   {comment.editedAt && (
                     <span className="text-slate-400">• Edited</span>
                   )}
-                  {useMockData && comment.id.startsWith("mock-") && (
-                    <span className="text-blue-400">• Demo</span>
-                  )}
+
                 </div>
               </div>
             </div>
@@ -1284,11 +1248,10 @@ const AdvancedCommentSystem = ({
               {canPinComments && !isReply && (
                 <button
                   onClick={() => handlePinComment(comment.id, comment.isPinned)}
-                  className={`p-1 hover:bg-slate-100 rounded ${
-                    comment.isPinned
-                      ? "text-yellow-500 hover:text-yellow-600"
-                      : "text-slate-400 hover:text-slate-600"
-                  }`}
+                  className={`p-1 hover:bg-slate-100 rounded ${comment.isPinned
+                    ? "text-yellow-500 hover:text-yellow-600"
+                    : "text-slate-400 hover:text-slate-600"
+                    }`}
                   title={comment.isPinned ? "Unpin comment" : "Pin comment"}
                 >
                   <Pin className="w-4 h-4" />
@@ -1315,7 +1278,7 @@ const AdvancedCommentSystem = ({
                 </button>
               )}
 
-              {canAddComment && (
+              {canAddComment && !isReply && (
                 <button
                   onClick={() => handleReply(comment)}
                   className="p-1 hover:bg-slate-100 rounded text-slate-400 hover:text-blue-600"
@@ -1330,11 +1293,10 @@ const AdvancedCommentSystem = ({
           {/* Comment content */}
           <div className="mb-3">
             <p
-              className={`text-slate-700 ${
-                !isExpanded && !isReply && comment.content.length > 300
-                  ? "line-clamp-3"
-                  : ""
-              }`}
+              className={`text-slate-700 ${!isExpanded && !isReply && comment.content.length > 300
+                ? "line-clamp-3"
+                : ""
+                }`}
             >
               {comment.content}
             </p>
@@ -1361,11 +1323,10 @@ const AdvancedCommentSystem = ({
             <div className="flex items-center gap-4">
               <button
                 onClick={() => handleLikeComment(comment.id)}
-                className={`flex items-center gap-1.5 text-sm ${
-                  comment.likedByUser
-                    ? "text-blue-600"
-                    : "text-slate-500 hover:text-slate-700"
-                }`}
+                className={`flex items-center gap-1.5 text-sm ${comment.likedByUser
+                  ? "text-blue-600"
+                  : "text-slate-500 hover:text-slate-700"
+                  }`}
               >
                 <ThumbsUp className="w-4 h-4" />
                 <span>{comment.likes || 0}</span>
@@ -1413,8 +1374,8 @@ const AdvancedCommentSystem = ({
           {editCommentId
             ? "Edit Comment"
             : replyTo
-            ? `Reply to ${replyTo.userName}`
-            : "Add New Comment"}
+              ? `Reply to ${replyTo.userName}`
+              : "Add New Comment"}
         </h4>
         {replyTo && (
           <button
@@ -1464,11 +1425,10 @@ const AdvancedCommentSystem = ({
               Your {replyTo ? "reply" : "comment"}
             </label>
             <span
-              className={`text-sm ${
-                characterCount > maxCharacters
-                  ? "text-red-500"
-                  : "text-slate-500"
-              }`}
+              className={`text-sm ${characterCount > maxCharacters
+                ? "text-red-500"
+                : "text-slate-500"
+                }`}
             >
               {characterCount}/{maxCharacters}
             </span>
@@ -1482,8 +1442,8 @@ const AdvancedCommentSystem = ({
               !canAddComment
                 ? "You don't have permission to add comments"
                 : replyTo
-                ? `Reply to ${replyTo.userName}...`
-                : "Write your comment here..."
+                  ? `Reply to ${replyTo.userName}...`
+                  : "Write your comment here..."
             }
             value={formData.comment}
             onChange={handleInputChange}
@@ -1548,15 +1508,14 @@ const AdvancedCommentSystem = ({
                 isUploading ||
                 characterCount > maxCharacters
               }
-              className={`flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-medium transition-all ${
-                (!formData.comment.trim() &&
-                  formData.attachments.length === 0) ||
+              className={`flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-medium transition-all ${(!formData.comment.trim() &&
+                formData.attachments.length === 0) ||
                 isSubmitting ||
                 isUploading ||
                 characterCount > maxCharacters
-                  ? "bg-slate-300 text-slate-500 cursor-not-allowed"
-                  : "bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow"
-              }`}
+                ? "bg-slate-300 text-slate-500 cursor-not-allowed"
+                : "bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow"
+                }`}
             >
               {isSubmitting || isUploading ? (
                 <>
@@ -1565,8 +1524,8 @@ const AdvancedCommentSystem = ({
                     {isUploading
                       ? "Uploading..."
                       : editCommentId
-                      ? "Updating..."
-                      : "Submitting..."}
+                        ? "Updating..."
+                        : "Submitting..."}
                   </span>
                 </>
               ) : (
@@ -1576,8 +1535,8 @@ const AdvancedCommentSystem = ({
                     {editCommentId
                       ? "Update Comment"
                       : replyTo
-                      ? "Post Reply"
-                      : "Post Comment"}
+                        ? "Post Reply"
+                        : "Post Comment"}
                   </span>
                 </>
               )}
@@ -1764,11 +1723,10 @@ const AdvancedCommentSystem = ({
       <div className="flex border-b border-slate-200 mb-4">
         <button
           onClick={() => setActiveTab("view")}
-          className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
-            activeTab === "view"
-              ? "border-blue-500 text-blue-600"
-              : "border-transparent text-slate-500 hover:text-slate-700"
-          }`}
+          className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${activeTab === "view"
+            ? "border-blue-500 text-blue-600"
+            : "border-transparent text-slate-500 hover:text-slate-700"
+            }`}
         >
           <div className="flex items-center gap-2">
             <MessageSquare className="w-4 h-4" />
@@ -1779,11 +1737,10 @@ const AdvancedCommentSystem = ({
         <button
           onClick={() => canAddComment && setActiveTab("add")}
           disabled={!canAddComment}
-          className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
-            activeTab === "add"
-              ? "border-blue-500 text-blue-600"
-              : "border-transparent text-slate-500 hover:text-slate-700 disabled:hover:text-slate-500 disabled:cursor-not-allowed"
-          } ${!canAddComment ? "opacity-50" : ""}`}
+          className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${activeTab === "add"
+            ? "border-blue-500 text-blue-600"
+            : "border-transparent text-slate-500 hover:text-slate-700 disabled:hover:text-slate-500 disabled:cursor-not-allowed"
+            } ${!canAddComment ? "opacity-50" : ""}`}
         >
           <div className="flex items-center gap-2">
             {canAddComment ? (
@@ -1840,8 +1797,7 @@ const AdvancedCommentSystem = ({
                 link.setAttribute("href", dataUri);
                 link.setAttribute(
                   "download",
-                  `comments-${activityId || "demo"}-${
-                    new Date().toISOString().split("T")[0]
+                  `comments-${activityId || "demo"}-${new Date().toISOString().split("T")[0]
                   }.json`
                 );
                 link.click();

@@ -158,21 +158,21 @@ const getComments = async (req, res) => {
       sort_by === "oldest"
         ? [["createdAt", "ASC"]]
         : sort_by === "most_liked"
-        ? [
+          ? [
             ["likes_count", "DESC"],
             ["createdAt", "DESC"],
           ]
-        : sort_by === "most_replied"
-        ? [
-            ["replies_count", "DESC"],
-            ["createdAt", "DESC"],
-          ]
-        : sort_by === "pinned"
-        ? [
-            ["is_pinned", "DESC"],
-            ["createdAt", "DESC"],
-          ]
-        : [["createdAt", "DESC"]];
+          : sort_by === "most_replied"
+            ? [
+              ["replies_count", "DESC"],
+              ["createdAt", "DESC"],
+            ]
+            : sort_by === "pinned"
+              ? [
+                ["is_pinned", "DESC"],
+                ["createdAt", "DESC"],
+              ]
+              : [["createdAt", "DESC"]];
 
     const comments = await Comment.findAll({ where, order, raw: true });
 
@@ -180,16 +180,16 @@ const getComments = async (req, res) => {
 
     const replies = commentIds.length
       ? await Comment.findAll({
-          where: {
-            parent_comment_id: { [Op.in]: commentIds },
-            ...(include_deleted ? {} : { is_deleted: false }),
-            ...(show_private
-              ? {}
-              : { [Op.or]: [{ is_private: false }, { created_by: user_id }] }),
-          },
-          order: [["createdAt", "ASC"]],
-          raw: true,
-        })
+        where: {
+          parent_comment_id: { [Op.in]: commentIds },
+          ...(include_deleted ? {} : { is_deleted: false }),
+          ...(show_private
+            ? {}
+            : { [Op.or]: [{ is_private: false }, { created_by: user_id }] }),
+        },
+        order: [["createdAt", "ASC"]],
+        raw: true,
+      })
       : [];
 
     const allItems = [...comments, ...replies];
@@ -216,11 +216,36 @@ const getComments = async (req, res) => {
       });
     });
 
-    const result = comments.map((c) => ({
-      ...c,
-      user: userMap[c.created_by] || null,
-      replies: repliesByParent[c.comment_id] || [],
-    }));
+    const likes = await CommentLike.findAll({
+      where: { comment_id: commentIds },
+      attributes: ["comment_id", "user_id"],
+      raw: true,
+    });
+
+    const likesByComment = {};
+    likes.forEach((l) => {
+      if (!likesByComment[l.comment_id]) likesByComment[l.comment_id] = [];
+      likesByComment[l.comment_id].push(l.user_id);
+    });
+
+    const userLikedMap = {};
+    commentIds.forEach((id) => {
+      const arr = likesByComment[id] || [];
+      userLikedMap[id] = arr.includes(user_id);
+    });
+
+    const result = comments.map((c) => {
+      const commentLikes = likesByComment[c.comment_id] || [];
+
+      return {
+        ...c,
+        user: userMap[c.created_by] || null,
+        likes_count: commentLikes.length,
+        liked_by_user: userLikedMap[c.comment_id] || false,
+        likes: commentLikes.map((uid) => userMap[uid] || { user_id: uid }),
+        replies: repliesByParent[c.comment_id] || [],
+      };
+    });
 
     res.json({ success: true, data: result });
   } catch (e) {
@@ -276,7 +301,7 @@ const toggleLike = async (req, res) => {
   const t = await db.sequelize.transaction();
   try {
     const like = await CommentLike.findOne({
-      where: { comment_id: req.params.comment_id, user_id: req.user.user_id },
+      where: { comment_id: req.params.comment_id, user_id: req.id },
     });
 
     if (like) {
@@ -288,7 +313,7 @@ const toggleLike = async (req, res) => {
       });
     } else {
       await CommentLike.create(
-        { comment_id: req.params.comment_id, user_id: req.user.user_id },
+        { comment_id: req.params.comment_id, user_id: req.id },
         { transaction: t }
       );
       await Comment.increment("likes_count", {
@@ -299,7 +324,9 @@ const toggleLike = async (req, res) => {
     }
 
     await t.commit();
-    res.json({ success: true });
+    return res.status(200).json({
+      success: true,
+    });
   } catch (e) {
     await t.rollback();
     res.status(500).json({ message: e.message });
