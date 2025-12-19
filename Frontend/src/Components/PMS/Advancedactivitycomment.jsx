@@ -72,6 +72,9 @@ const AdvancedCommentSystem = ({
   const [useMockData, setUseMockData] = useState(false);
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [commentToDelete, setCommentToDelete] = useState(null);
+  const [deleteConfirmData, setDeleteConfirmData] = useState(null);
 
   // Extract permissions with defaults
   const {
@@ -161,8 +164,9 @@ const AdvancedCommentSystem = ({
 
       const reply = {
         id: `reply-${commentId}-${i}-${Date.now()}`,
-        content: `This is a mock reply to ${commentAuthor}'s comment. ${hasAttachments ? "I've attached some files for review." : ""
-          }`,
+        content: `This is a mock reply to ${commentAuthor}'s comment. ${
+          hasAttachments ? "I've attached some files for review." : ""
+        }`,
         userId: user.id,
         userName: user.name,
         createdAt: new Date(
@@ -172,10 +176,10 @@ const AdvancedCommentSystem = ({
         likedByUser: Math.random() > 0.8,
         replies: hasNestedReplies
           ? generateMockReplies(
-            `nested-${commentId}-${i}`,
-            user.name,
-            depth + 1
-          )
+              `nested-${commentId}-${i}`,
+              user.name,
+              depth + 1
+            )
           : [],
         isPinned: true,
         isPrivate: Math.random() > 0.9,
@@ -185,8 +189,8 @@ const AdvancedCommentSystem = ({
         editedAt:
           Math.random() > 0.8
             ? new Date(
-              Date.now() - Math.random() * 24 * 60 * 60 * 1000
-            ).toISOString()
+                Date.now() - Math.random() * 24 * 60 * 60 * 1000
+              ).toISOString()
             : null,
       };
 
@@ -209,10 +213,11 @@ const AdvancedCommentSystem = ({
 
       const comment = {
         id: `mock-comment-${i}-${Date.now()}`,
-        content: `This is a mock comment about "${activityName}". ${hasAttachments
-          ? "I've included some relevant documents."
-          : "This needs attention."
-          }`,
+        content: `This is a mock comment about "${activityName}". ${
+          hasAttachments
+            ? "I've included some relevant documents."
+            : "This needs attention."
+        }`,
         userId: user.id,
         userName: user.name,
         createdAt: new Date(
@@ -231,8 +236,8 @@ const AdvancedCommentSystem = ({
         editedAt:
           Math.random() > 0.7
             ? new Date(
-              Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000
-            ).toISOString()
+                Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000
+              ).toISOString()
             : null,
       };
 
@@ -406,158 +411,6 @@ const AdvancedCommentSystem = ({
 
     return uploadedAttachments;
   };
-
-  //   const fetchComments = useCallback(async () => {
-  //     if (!activityId && !useMockData) return;
-
-  //     try {
-  //       setLoading(true);
-
-  //       let commentsData = [];
-
-  //       if (useMockData) {
-  //         // Use mock data
-  //         commentsData = generateMockComments();
-  //       } else {
-  //         // Fetch from API
-  //         const response = await apiService.getAllActivityComments(activityId);
-  //         if (
-  //           response &&
-  //           typeof response === "object" &&
-  //           !Array.isArray(response)
-  //         ) {
-  //           if (response.data && Array.isArray(response.data)) {
-  //             commentsData = response.data;
-  //           } else if (response.comments && Array.isArray(response.comments)) {
-  //             commentsData = response.comments;
-  //           } else if (response.comment_id) {
-  //             commentsData = [response];
-  //           }
-  //         } else if (Array.isArray(response)) {
-  //           commentsData = response;
-  //         }
-
-  //         if (!Array.isArray(commentsData) || commentsData.length === 0) {
-  //           // If no real data, offer to use mock data
-  //           setUseMockData(true);
-  //           commentsData = generateMockComments();
-  //         }
-  //       }
-
-  //       const processedComments = commentsData
-  //         .map((item) => {
-  //           const commentData = item.comment || item;
-
-  //           return {
-  //             id:
-  //               commentData.comment_id ||
-  //               commentData.id ||
-  //               `comment-${Date.now()}-${Math.random()}`,
-  //             content: commentData.comment || commentData.content || "",
-  //             userId:
-  //               commentData.created_by ||
-  //               commentData.user_id ||
-  //               commentData.userId ||
-  //               "unknown",
-  //             userName:
-  //               commentData.commentedBy || commentData.userName || "Unknown User",
-  //             createdAt: commentData.createdAt || new Date().toISOString(),
-  //             likes: commentData.likes || 0,
-  //             likedByUser: commentData.likedBy?.includes(userId) || false,
-  //             replies: commentData.replies || [],
-  //             isPinned: commentData.isPinned || false,
-  //             isPrivate: commentData.isPrivate || false,
-  //             attachments: commentData.attachments || [],
-  //             editedAt: commentData.updatedAt || commentData.editedAt,
-  //           };
-  //         })
-  //         .filter((comment) => {
-  //           if (
-  //             comment.isPrivate &&
-  //             !canViewPrivateComments &&
-  //             comment.userId !== userId
-  //           ) {
-  //             return false;
-  //           }
-  //           return true;
-  //         })
-  //         .map((comment) => ({
-  //           ...comment,
-  //           replies: (comment.replies || [])
-  //             .filter((reply) => {
-  //               if (
-  //                 reply.isPrivate &&
-  //                 !canViewPrivateComments &&
-  //                 reply.userId !== userId
-  //               ) {
-  //                 return false;
-  //               }
-  //               return true;
-  //             })
-  //             .map((reply) => ({
-  //               id:
-  //                 reply.comment_id ||
-  //                 reply.id ||
-  //                 `reply-${Date.now()}-${Math.random()}`,
-  //               content: reply.comment || reply.content || "",
-  //               userId:
-  //                 reply.created_by || reply.user_id || reply.userId || "unknown",
-  //               userName: reply.commentedBy || reply.userName || "Unknown User",
-  //               createdAt: reply.createdAt || new Date().toISOString(),
-  //               likes: reply.likes || 0,
-  //               likedByUser: reply.likedBy?.includes(userId) || false,
-  //               replies: reply.replies || [],
-  //               isPinned: reply.isPinned || true,
-  //               isPrivate: reply.isPrivate || false,
-  //               attachments: reply.attachments || [],
-  //               editedAt: reply.updatedAt || reply.editedAt,
-  //             })),
-  //         }));
-
-  //       const sortedComments = sortComments(processedComments, sortBy);
-
-  //       setComments(sortedComments);
-  //       setFilteredComments(sortedComments);
-  //     } catch (error) {
-  //       console.error("Error fetching comments:", error);
-
-  //       // If API fails, offer mock data
-  //       if (!useMockData) {
-  //         const useMock = await Swal.fire({
-  //           title: "API Error",
-  //           text: "Failed to load comments. Would you like to see demo data instead?",
-  //           icon: "error",
-  //           showCancelButton: true,
-  //           confirmButtonText: "Yes, show demo",
-  //           cancelButtonText: "No, try again",
-  //           confirmButtonColor: "#3B82F6",
-  //         });
-
-  //         if (useMock.isConfirmed) {
-  //           setUseMockData(true);
-  //           fetchComments(); // Retry with mock data
-  //           return;
-  //         }
-  //       }
-
-  //       Swal.fire({
-  //         icon: "error",
-  //         title: "Failed to load comments",
-  //         text: "Please try again later",
-  //         confirmButtonColor: "#3B82F6",
-  //       });
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   }, [
-  //     activityId,
-  //     userId,
-  //     sortBy,
-  //     canViewPrivateComments,
-  //     useMockData,
-  //     activityName,
-  //   ]);
-
   const fetchComments = useCallback(async () => {
     if (!activityId) return;
 
@@ -919,24 +772,51 @@ const AdvancedCommentSystem = ({
       return;
     }
 
-    const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "This comment and all attachments will be permanently deleted!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, delete it!",
-    });
+    setCommentToDelete(commentId);
 
-    if (result.isConfirmed) {
-      try {
-        await apiService.deleteComment(commentId);
-        Swal.fire("Deleted!", "Comment has been deleted.", "success");
-        fetchComments();
-      } catch (error) {
-        Swal.fire("Error!", "Failed to delete comment.", "error");
-      }
+    setDeleteConfirmData({
+      userName: comment.userName,
+      commentPreview:
+        comment.content.length > 50
+          ? comment.content.substring(0, 50) + "..."
+          : comment.content,
+      attachmentsCount: comment.attachments?.length || 0,
+    });
+    setShowDeleteConfirm(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!commentToDelete) return;
+
+    try {
+      await apiService.deleteComment(commentToDelete);
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Comment has been deleted.",
+        showConfirmButton: false,
+        timer: 2000,
+        background: "#10B981",
+        color: "#FFFFFF",
+        toast: true,
+      });
+      fetchComments();
+    } catch (error) {
+      Swal.fire({
+        position: "top-end",
+        icon: "error",
+        title: "Failed to delete comment.",
+        showConfirmButton: false,
+        timer: 2000,
+        background: "#EF4444",
+        color: "#FFFFFF",
+        toast: true,
+      });
+    } finally {
+      // Close confirmation modal
+      setShowDeleteConfirm(false);
+      setCommentToDelete(null);
+      setDeleteConfirmData(null);
     }
   };
 
@@ -951,11 +831,9 @@ const AdvancedCommentSystem = ({
       return;
     }
 
-
     try {
       await apiService.togglePin(commentId, !currentPinStatus);
       fetchComments();
-
     } catch (error) {
       Swal.fire("Error!", "Failed to update pin status.", "error");
     }
@@ -1188,12 +1066,13 @@ const AdvancedCommentSystem = ({
     return (
       <div className={`${isReply ? "ml-8 mt-3" : "mb-4"}`}>
         <div
-          className={`bg-white rounded-lg border ${comment.isPinned
-            ? "border-yellow-300 border-2 bg-yellow-50"
-            : comment.isPrivate
+          className={`bg-white rounded-lg border ${
+            comment.isPinned
+              ? "border-yellow-300 border-2 bg-yellow-50"
+              : comment.isPrivate
               ? "border-purple-200 bg-purple-50"
               : "border-slate-200"
-            } hover:border-slate-300 transition-colors p-4`}
+          } hover:border-slate-300 transition-colors p-4`}
         >
           {/* Comment header */}
           <div className="flex items-start justify-between mb-3">
@@ -1238,7 +1117,6 @@ const AdvancedCommentSystem = ({
                   {comment.editedAt && (
                     <span className="text-slate-400">• Edited</span>
                   )}
-
                 </div>
               </div>
             </div>
@@ -1248,10 +1126,11 @@ const AdvancedCommentSystem = ({
               {canPinComments && !isReply && (
                 <button
                   onClick={() => handlePinComment(comment.id, comment.isPinned)}
-                  className={`p-1 hover:bg-slate-100 rounded ${comment.isPinned
-                    ? "text-yellow-500 hover:text-yellow-600"
-                    : "text-slate-400 hover:text-slate-600"
-                    }`}
+                  className={`p-1 hover:bg-slate-100 rounded ${
+                    comment.isPinned
+                      ? "text-yellow-500 hover:text-yellow-600"
+                      : "text-slate-400 hover:text-slate-600"
+                  }`}
                   title={comment.isPinned ? "Unpin comment" : "Pin comment"}
                 >
                   <Pin className="w-4 h-4" />
@@ -1293,10 +1172,11 @@ const AdvancedCommentSystem = ({
           {/* Comment content */}
           <div className="mb-3">
             <p
-              className={`text-slate-700 ${!isExpanded && !isReply && comment.content.length > 300
-                ? "line-clamp-3"
-                : ""
-                }`}
+              className={`text-slate-700 ${
+                !isExpanded && !isReply && comment.content.length > 300
+                  ? "line-clamp-3"
+                  : ""
+              }`}
             >
               {comment.content}
             </p>
@@ -1323,10 +1203,11 @@ const AdvancedCommentSystem = ({
             <div className="flex items-center gap-4">
               <button
                 onClick={() => handleLikeComment(comment.id)}
-                className={`flex items-center gap-1.5 text-sm ${comment.likedByUser
-                  ? "text-blue-600"
-                  : "text-slate-500 hover:text-slate-700"
-                  }`}
+                className={`flex items-center gap-1.5 text-sm ${
+                  comment.likedByUser
+                    ? "text-blue-600"
+                    : "text-slate-500 hover:text-slate-700"
+                }`}
               >
                 <ThumbsUp className="w-4 h-4" />
                 <span>{comment.likes || 0}</span>
@@ -1374,8 +1255,8 @@ const AdvancedCommentSystem = ({
           {editCommentId
             ? "Edit Comment"
             : replyTo
-              ? `Reply to ${replyTo.userName}`
-              : "Add New Comment"}
+            ? `Reply to ${replyTo.userName}`
+            : "Add New Comment"}
         </h4>
         {replyTo && (
           <button
@@ -1425,10 +1306,11 @@ const AdvancedCommentSystem = ({
               Your {replyTo ? "reply" : "comment"}
             </label>
             <span
-              className={`text-sm ${characterCount > maxCharacters
-                ? "text-red-500"
-                : "text-slate-500"
-                }`}
+              className={`text-sm ${
+                characterCount > maxCharacters
+                  ? "text-red-500"
+                  : "text-slate-500"
+              }`}
             >
               {characterCount}/{maxCharacters}
             </span>
@@ -1442,8 +1324,8 @@ const AdvancedCommentSystem = ({
               !canAddComment
                 ? "You don't have permission to add comments"
                 : replyTo
-                  ? `Reply to ${replyTo.userName}...`
-                  : "Write your comment here..."
+                ? `Reply to ${replyTo.userName}...`
+                : "Write your comment here..."
             }
             value={formData.comment}
             onChange={handleInputChange}
@@ -1508,14 +1390,15 @@ const AdvancedCommentSystem = ({
                 isUploading ||
                 characterCount > maxCharacters
               }
-              className={`flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-medium transition-all ${(!formData.comment.trim() &&
-                formData.attachments.length === 0) ||
+              className={`flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-medium transition-all ${
+                (!formData.comment.trim() &&
+                  formData.attachments.length === 0) ||
                 isSubmitting ||
                 isUploading ||
                 characterCount > maxCharacters
-                ? "bg-slate-300 text-slate-500 cursor-not-allowed"
-                : "bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow"
-                }`}
+                  ? "bg-slate-300 text-slate-500 cursor-not-allowed"
+                  : "bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow"
+              }`}
             >
               {isSubmitting || isUploading ? (
                 <>
@@ -1524,8 +1407,8 @@ const AdvancedCommentSystem = ({
                     {isUploading
                       ? "Uploading..."
                       : editCommentId
-                        ? "Updating..."
-                        : "Submitting..."}
+                      ? "Updating..."
+                      : "Submitting..."}
                   </span>
                 </>
               ) : (
@@ -1535,8 +1418,8 @@ const AdvancedCommentSystem = ({
                     {editCommentId
                       ? "Update Comment"
                       : replyTo
-                        ? "Post Reply"
-                        : "Post Comment"}
+                      ? "Post Reply"
+                      : "Post Comment"}
                   </span>
                 </>
               )}
@@ -1723,10 +1606,11 @@ const AdvancedCommentSystem = ({
       <div className="flex border-b border-slate-200 mb-4">
         <button
           onClick={() => setActiveTab("view")}
-          className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${activeTab === "view"
-            ? "border-blue-500 text-blue-600"
-            : "border-transparent text-slate-500 hover:text-slate-700"
-            }`}
+          className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
+            activeTab === "view"
+              ? "border-blue-500 text-blue-600"
+              : "border-transparent text-slate-500 hover:text-slate-700"
+          }`}
         >
           <div className="flex items-center gap-2">
             <MessageSquare className="w-4 h-4" />
@@ -1737,10 +1621,11 @@ const AdvancedCommentSystem = ({
         <button
           onClick={() => canAddComment && setActiveTab("add")}
           disabled={!canAddComment}
-          className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${activeTab === "add"
-            ? "border-blue-500 text-blue-600"
-            : "border-transparent text-slate-500 hover:text-slate-700 disabled:hover:text-slate-500 disabled:cursor-not-allowed"
-            } ${!canAddComment ? "opacity-50" : ""}`}
+          className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${
+            activeTab === "add"
+              ? "border-blue-500 text-blue-600"
+              : "border-transparent text-slate-500 hover:text-slate-700 disabled:hover:text-slate-500 disabled:cursor-not-allowed"
+          } ${!canAddComment ? "opacity-50" : ""}`}
         >
           <div className="flex items-center gap-2">
             {canAddComment ? (
@@ -1797,7 +1682,8 @@ const AdvancedCommentSystem = ({
                 link.setAttribute("href", dataUri);
                 link.setAttribute(
                   "download",
-                  `comments-${activityId || "demo"}-${new Date().toISOString().split("T")[0]
+                  `comments-${activityId || "demo"}-${
+                    new Date().toISOString().split("T")[0]
                   }.json`
                 );
                 link.click();
@@ -1810,6 +1696,116 @@ const AdvancedCommentSystem = ({
           </div>
         </div>
       </div>
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center">
+          {/* Backdrop with higher z-index */}
+          <div
+            className="absolute inset-0 bg-black bg-opacity-50"
+            onClick={() => setShowDeleteConfirm(false)}
+          />
+
+          {/* Confirmation Modal */}
+          <div
+            className="relative bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 animate-fade-in"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-4 border-b border-slate-200">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-red-100 rounded-lg">
+                  <AlertTriangle className="w-5 h-5 text-red-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-slate-800">
+                  Delete Comment
+                </h3>
+              </div>
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6">
+              <div className="space-y-4">
+                {/* Warning icon and message */}
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-6 h-6 text-amber-500 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-slate-800 font-medium">
+                      Are you sure you want to delete this comment?
+                    </p>
+                    <p className="text-slate-600 text-sm mt-1">
+                      This action cannot be undone. The comment and all
+                      attachments will be permanently deleted.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Comment details */}
+                <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                  {deleteConfirmData && (
+                    <>
+                      <div className="flex items-center gap-2 mb-2">
+                        <User className="w-4 h-4 text-slate-500" />
+                        <span className="text-sm font-medium text-slate-700">
+                          {deleteConfirmData.userName}
+                        </span>
+                      </div>
+                      <p className="text-sm text-slate-600 mb-3">
+                        "{deleteConfirmData.commentPreview}"
+                      </p>
+                      {deleteConfirmData.attachmentsCount > 0 && (
+                        <div className="flex items-center gap-2 text-sm text-slate-500">
+                          <Paperclip className="w-4 h-4" />
+                          <span>
+                            {deleteConfirmData.attachmentsCount} attachment
+                            {deleteConfirmData.attachmentsCount !== 1
+                              ? "s"
+                              : ""}{" "}
+                            will also be deleted
+                          </span>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+
+                {/* Security note */}
+                <div className="text-xs text-slate-500 bg-blue-50 p-3 rounded-lg border border-blue-100">
+                  <div className="flex items-start gap-2">
+                    <Shield className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <span className="font-medium">Note:</span> This action is
+                      irreversible and will remove the comment from all users'
+                      view.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex items-center justify-end gap-3 p-4 border-t border-slate-200">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="px-4 py-2.5 text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmDelete}
+                className="px-5 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 rounded-lg shadow-sm hover:shadow transition-all duration-200 flex items-center gap-2"
+              >
+                <Trash2 className="w-4 h-4" />
+                Yes, Delete Permanently
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
