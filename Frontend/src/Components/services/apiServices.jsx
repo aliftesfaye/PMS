@@ -720,11 +720,11 @@ const apiService = {
         throw new Error("No token found");
       }
 
-      const config = { headers: { Authorization: `Bearer ${token}` } };
-      const response = await instance.get(
-        `/comments/subtask/${sub_task_id}`,
-        config
-      );
+      const config = {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { sub_task_id },
+      };
+      const response = await instance.get("/comments/comment", config);
       return response.data;
     } catch (error) {
       console.error("Error fetching subtask comments:", error);
@@ -747,8 +747,12 @@ const apiService = {
       sub_task_id: params?.sub_task_id,
     });
   },
-
-
+  updateSubTask: async (commentData, params) => {
+    return apiService.createComment({
+      ...commentData,
+      sub_task_id: params?.sub_task_id,
+    });
+  },
 
   taskadd: async (taskData, activity_id) => {
     try {
