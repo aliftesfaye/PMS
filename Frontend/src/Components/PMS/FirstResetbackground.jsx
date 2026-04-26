@@ -31,8 +31,8 @@ const FirstResetbackground = () => {
                 <div className="flex justify-center mb-6 sm:mb-7 md:mb-8">
                   <div className="bg-white/20 p-3 sm:p-3.5 md:p-4 rounded-xl sm:rounded-2xl backdrop-blur-sm border border-white/30">
                     <img
-                      src={EaiiLogin}
-                      alt="ETHIOPIAN ARTIFICIAL INTELLIGENCE INSTITUTE"
+                      src={ethiopian_civil_service_commistion_logo}
+                      alt="Federal Civil Service Commission"
                       className="h-12 sm:h-14 md:h-16 w-auto"
                     />
                   </div>
@@ -41,7 +41,7 @@ const FirstResetbackground = () => {
                 {/* Institute Info */}
                 <div className="text-center mb-6 sm:mb-7 md:mb-8">
                   <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-3 sm:mb-4 leading-tight">
-                    ETHIOPIAN ARTIFICIAL INTELLIGENCE INSTITUTE
+                    Federal Civil Service Commission
                   </h1>
                   <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-white/90 mb-1 sm:mb-2">
                     PROJECT MANAGEMENT SYSTEM
@@ -125,7 +125,7 @@ const FirstResetbackground = () => {
         {/* Footer */}
         <div className="text-center mt-4 sm:mt-5 md:mt-6 px-2">
           <p className="text-black/70 text-xs sm:text-sm">
-            © 2025 Ethiopian Artificial Intelligence Institute. All rights
+            © 2026 Federal Civil Service Commission. All rights
             reserved.
           </p>
         </div>

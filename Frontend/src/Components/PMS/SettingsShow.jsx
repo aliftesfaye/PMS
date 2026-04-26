@@ -10,14 +10,14 @@ const SettingsShow = () => {
   const loginPageBackgroundColor = "#000000";
   const systemHeaderColor = "#FFFFFF";
   const systemFooterColor = "#FFFFFF";
-  const copyrightText = "@Ethiopian Artificial Intelligence Institute";
+  const copyrightText = "@Federal Civil Service Commission";
 
   return (
     <div>
       <div className="flex gap-5 items-start py-12 pr-9 pl-20 text-black bg-white rounded-2xl max-md:flex-wrap max-md:px-5">
         <div className="flex flex-col grow shrink-0 mt-4 basis-0 w-fit max-md:max-w-full">
           <div className="text-2xl font-bold text-blue-950 max-md:mr-2.5 max-md:max-w-full">
-            Ethiopian Artificial Intelligence Institute
+            Federal Civil Service Commission
           </div>
           <div className="flex gap-5 justify-between mt-8 max-w-full text-sm whitespace-nowrap w-[100px]">
             <div className="my-auto font-bold">Logo</div>
@@ -54,7 +54,7 @@ const SettingsShow = () => {
           <div className="flex gap-5 self-start mt-4 text-xs whitespace-nowrap">
             <img
               src={browser}
-              alt='' 
+              alt=''
               className="shrink-0 w-5 aspect-square fill-black"
             />
             <div className="flex-auto my-auto italic">www.aii.et</div>

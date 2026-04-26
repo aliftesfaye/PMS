@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import apiService from "../services/apiServices";
 import Swal from "sweetalert2";
+import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import { Tooltip } from "@material-ui/core";
 
 const ProfileUpdate = ({ closeModal }) => {
   const [userInfo, setUserInfo] = useState(() => {
@@ -9,9 +12,15 @@ const ProfileUpdate = ({ closeModal }) => {
   const [permissions, setPermissions] = useState(() => {
     return JSON.parse(localStorage.getItem("permissions")) || [];
   });
+
+  // Password visibility states
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const [formData, setFormData] = useState({
-    full_name: userInfo.foundUser.full_name,
-    email: userInfo.foundUser.email,
+    full_name: userInfo.foundUser?.full_name || "",
+    email: userInfo.foundUser?.email || "",
     current_password: "",
     new_password: "",
     confirm_password: "",
@@ -54,6 +63,19 @@ const ProfileUpdate = ({ closeModal }) => {
         position: "center",
         icon: "error",
         title: "Password does not meet all requirements",
+        showConfirmButton: true,
+        customClass: {
+          popup: "custom-popup-style",
+        },
+      });
+      return;
+    }
+
+    if (formData.new_password !== formData.confirm_password) {
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "Passwords do not match",
         showConfirmButton: true,
         customClass: {
           popup: "custom-popup-style",
@@ -106,7 +128,7 @@ const ProfileUpdate = ({ closeModal }) => {
         position: "center",
         icon: "error",
         title: "Profile Updating Failed",
-        text: error.data.message,
+        text: error.response?.data?.message || "An error occurred while updating profile",
         showConfirmButton: true,
         timer: 1500,
         customClass: {
@@ -130,152 +152,184 @@ const ProfileUpdate = ({ closeModal }) => {
   }, [userInfo, permissions]);
 
   return (
-    <div className="max-w-md mx-auto bg-white rounded-lg overflow-hidden shadow-lg p-6">
-      <div className="flex justify-between ">
-        <h2 className="text-2xl font-bold mb-4 text-center">Update Profile</h2>
+    <form onSubmit={handleSubmit} className="space-y-5">
+      {/* Full Name */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+          Full Name
+        </label>
+        <input
+          type="text"
+          name="full_name"
+          value={formData.full_name}
+          onChange={handleChange}
+          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white"
+          placeholder="Enter your full name"
+          required
+        />
       </div>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label
-            htmlFor="fullName"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Full Name
-          </label>
+
+      {/* Email */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+          Email Address
+        </label>
+        <input
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white"
+          placeholder="Enter your email"
+          required
+        />
+      </div>
+
+      {/* Current Password */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+          Current Password
+        </label>
+        <div className="relative">
           <input
-            type="text"
-            id="full_name"
-            name="full_name"
-            value={formData.full_name}
-            onChange={handleChange}
-            className="mt-1 pl-2 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="mt-1 pl-2 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            htmlFor="currentPassword"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Current Password
-          </label>
-          <input
-            type="password"
-            id="current_password"
+            type={showCurrentPassword ? "text" : "password"}
             name="current_password"
             value={formData.current_password}
             onChange={handleChange}
-            className="mt-1 pl-2 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            className="w-full px-4 py-2.5 pr-11 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white"
+            placeholder="Enter your current password"
             required
           />
+          <Tooltip title={showCurrentPassword ? "Hide Password" : "View Password"} placement="top">
+            <button
+              type="button"
+              onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-md hover:bg-gray-100"
+            >
+              {showCurrentPassword ? (
+                <VisibilityOffOutlinedIcon fontSize="small" />
+              ) : (
+                <VisibilityOutlinedIcon fontSize="small" />
+              )}
+            </button>
+          </Tooltip>
         </div>
-        <div className="mb-4">
-          <label
-            htmlFor="newPassword"
-            className="block text-sm font-medium text-gray-700"
-          >
-            New Password
-          </label>
+      </div>
+
+      {/* New Password */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+          New Password
+        </label>
+        <div className="relative">
           <input
-            type="password"
-            id="new_password"
+            type={showNewPassword ? "text" : "password"}
             name="new_password"
             value={formData.new_password}
             onChange={handleChange}
-            className="mt-1 pl-2 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            className="w-full px-4 py-2.5 pr-11 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white"
+            placeholder="Enter new password"
             required
           />
-          <ul className="mt-2 text-sm text-gray-600">
-            <li
-              className={
-                passwordValidation.minLength ? "text-green-500" : "text-red-500"
-              }
+          <Tooltip title={showNewPassword ? "Hide Password" : "View Password"} placement="top">
+            <button
+              type="button"
+              onClick={() => setShowNewPassword(!showNewPassword)}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-md hover:bg-gray-100"
             >
-              At least 8 characters long
-            </li>
-            <li
-              className={
-                passwordValidation.hasUpperCase
-                  ? "text-green-500"
-                  : "text-red-500"
-              }
-            >
-              At least one uppercase letter
-            </li>
-            <li
-              className={
-                passwordValidation.hasLowerCase
-                  ? "text-green-500"
-                  : "text-red-500"
-              }
-            >
-              At least one lowercase letter
-            </li>
-            <li
-              className={
-                passwordValidation.hasNumber ? "text-green-500" : "text-red-500"
-              }
-            >
-              At least one number
-            </li>
-            <li
-              className={
-                passwordValidation.hasSpecialChar
-                  ? "text-green-500"
-                  : "text-red-500"
-              }
-            >
-              At least one special character
-            </li>
-          </ul>
+              {showNewPassword ? (
+                <VisibilityOffOutlinedIcon fontSize="small" />
+              ) : (
+                <VisibilityOutlinedIcon fontSize="small" />
+              )}
+            </button>
+          </Tooltip>
         </div>
-        <div className="mb-4">
-          <label
-            htmlFor="confirmPassword"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Confirm Password
-          </label>
+      </div>
+
+      {/* Password Requirements */}
+      <div className="bg-gray-50 rounded-lg p-4 space-y-2">
+        <p className="text-sm font-medium text-gray-700 mb-2">Password Requirements:</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+          <div className={`flex items-center gap-2 ${passwordValidation.minLength ? 'text-green-600' : 'text-gray-500'}`}>
+            <span className="text-base">{passwordValidation.minLength ? '✓' : '○'}</span>
+            <span>At least 8 characters</span>
+          </div>
+          <div className={`flex items-center gap-2 ${passwordValidation.hasUpperCase ? 'text-green-600' : 'text-gray-500'}`}>
+            <span className="text-base">{passwordValidation.hasUpperCase ? '✓' : '○'}</span>
+            <span>One uppercase letter</span>
+          </div>
+          <div className={`flex items-center gap-2 ${passwordValidation.hasLowerCase ? 'text-green-600' : 'text-gray-500'}`}>
+            <span className="text-base">{passwordValidation.hasLowerCase ? '✓' : '○'}</span>
+            <span>One lowercase letter</span>
+          </div>
+          <div className={`flex items-center gap-2 ${passwordValidation.hasNumber ? 'text-green-600' : 'text-gray-500'}`}>
+            <span className="text-base">{passwordValidation.hasNumber ? '✓' : '○'}</span>
+            <span>One number</span>
+          </div>
+          <div className={`flex items-center gap-2 ${passwordValidation.hasSpecialChar ? 'text-green-600' : 'text-gray-500'} md:col-span-2`}>
+            <span className="text-base">{passwordValidation.hasSpecialChar ? '✓' : '○'}</span>
+            <span>One special character (!@#$%^&*)</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Confirm Password */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+          Confirm New Password
+        </label>
+        <div className="relative">
           <input
-            type="password"
-            id="confirm_password"
+            type={showConfirmPassword ? "text" : "password"}
             name="confirm_password"
             value={formData.confirm_password}
             onChange={handleChange}
-            className="mt-1 pl-2 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            className={`w-full px-4 py-2.5 pr-11 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white ${formData.confirm_password && formData.new_password !== formData.confirm_password
+                ? 'border-red-500'
+                : 'border-gray-300'
+              }`}
+            placeholder="Confirm your new password"
             required
           />
-        </div>
-        <div className="flex items-center justify-center ">
-          <div className="w-1/3">
+          <Tooltip title={showConfirmPassword ? "Hide Password" : "View Password"} placement="top">
             <button
-              type="submit"
-              className="w-full text-white p-2"
-              style={{ backgroundColor: "#082f49" }}
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-md hover:bg-gray-100"
             >
-              Update
+              {showConfirmPassword ? (
+                <VisibilityOffOutlinedIcon fontSize="small" />
+              ) : (
+                <VisibilityOutlinedIcon fontSize="small" />
+              )}
             </button>
-          </div>
+          </Tooltip>
         </div>
-      </form>
-    </div>
+        {formData.confirm_password && formData.new_password !== formData.confirm_password && (
+          <p className="text-red-500 text-xs mt-1.5 flex items-center gap-1">
+            <span>⚠</span> Passwords do not match
+          </p>
+        )}
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex gap-3 pt-4">
+        <button
+          type="button"
+          onClick={closeModal}
+          className="flex-1 px-4 py-2.5 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all duration-200 font-medium"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          className="flex-1 px-4 py-2.5 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all duration-200 font-medium shadow-sm hover:shadow-md"
+        >
+          Update Profile
+        </button>
+      </div>
+    </form>
   );
 };
 

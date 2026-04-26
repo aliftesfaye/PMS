@@ -1,4 +1,5 @@
 import Backdrop from "@mui/material/Backdrop";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
@@ -17,6 +18,7 @@ const LoginContainer = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [open, setOpen] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
   const auth = useAuth();
@@ -114,22 +116,39 @@ const LoginContainer = () => {
             </div>
           </div>
 
-          {/* Password Field */}
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Password
             </label>
+
             <div className="relative">
               <input
                 id="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={password}
                 placeholder="Enter your password"
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 pl-11 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                className="w-full px-4 py-3 pl-11 pr-11 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
               />
+
+              {/* Left icon */}
               <div className="absolute inset-y-0 left-0 flex items-center pl-3">
                 <Lock style={{ fontSize: 20, color: "#9CA3AF" }} />
+              </div>
+
+              {/* Right toggle icon */}
+              <div
+                className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <VisibilityOff style={{ fontSize: 20, color: "#9CA3AF" }} />
+                ) : (
+                  <Visibility style={{ fontSize: 20, color: "#9CA3AF" }} />
+                )}
               </div>
             </div>
           </div>

@@ -1,8 +1,10 @@
 {
   "files": {
-    "main.css": "/static/css/main.ec09b06a.css",
-    "main.js": "/static/js/main.e76d8dac.js",
-    "static/js/453.464a3187.chunk.js": "/static/js/453.464a3187.chunk.js",
+    "main.css": "/static/css/main.08956808.css",
+    "main.js": "/static/js/main.a8dd3171.js",
+    "static/js/977.43860f3e.chunk.js": "/static/js/977.43860f3e.chunk.js",
+    "static/js/455.e057defe.chunk.js": "/static/js/455.e057defe.chunk.js",
+    "static/js/453.ddbccfc0.chunk.js": "/static/js/453.ddbccfc0.chunk.js",
     "static/media/Loginbackground.png": "/static/media/Loginbackground.8f5b620b14f3ffef0597.png",
     "static/media/signin.png": "/static/media/signin.dd7bdef82caf0d8be567.png",
     "static/media/EaiiLoginicon.png": "/static/media/EaiiLoginicon.feeb67d80bb6a82bf09e.png",
@@ -10,15 +12,17 @@
     "static/media/Reset_logo.png": "/static/media/Reset_logo.d30d90c27d77dd894599.png",
     "static/media/mypp.png": "/static/media/mypp.d60f59b7b6e0d1ad939b.png",
     "static/media/ethiopian_civil_service_commistion_logo-removebg-preview (1).png": "/static/media/ethiopian_civil_service_commistion_logo-removebg-preview (1).2a4420628ad7ab44b04c.png",
-    "static/media/Vector.svg": "/static/media/Vector.2c0725aafa97f222aa2bb617fcdfd40e.svg",
-    "static/media/Completed.svg": "/static/media/Completed.9c240049807456381dc7b392596ffaf3.svg",
+    "static/media/Vector.svg": "/static/media/Vector.eedb216f8f3a4e00c427776aa38a1650.svg",
+    "static/media/Completed.svg": "/static/media/Completed.c31101f5382595f74b68e420fba1a003.svg",
     "index.html": "/index.html",
-    "main.ec09b06a.css.map": "/static/css/main.ec09b06a.css.map",
-    "main.e76d8dac.js.map": "/static/js/main.e76d8dac.js.map",
-    "453.464a3187.chunk.js.map": "/static/js/453.464a3187.chunk.js.map"
+    "main.08956808.css.map": "/static/css/main.08956808.css.map",
+    "main.a8dd3171.js.map": "/static/js/main.a8dd3171.js.map",
+    "977.43860f3e.chunk.js.map": "/static/js/977.43860f3e.chunk.js.map",
+    "455.e057defe.chunk.js.map": "/static/js/455.e057defe.chunk.js.map",
+    "453.ddbccfc0.chunk.js.map": "/static/js/453.ddbccfc0.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.ec09b06a.css",
-    "static/js/main.e76d8dac.js"
+    "static/css/main.08956808.css",
+    "static/js/main.a8dd3171.js"
   ]
 }

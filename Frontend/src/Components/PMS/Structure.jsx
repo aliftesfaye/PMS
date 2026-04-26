@@ -28,13 +28,13 @@ import Sectordelete from "./Sectordelete.jsx";
 const useStyles = makeStyles({
   "@global": {
     ".MuiTreeItem-root.Mui-selected > .MuiTreeItem-content .MuiTreeItem-label":
-      {
-        backgroundColor: "white",
-      },
+    {
+      backgroundColor: "white",
+    },
     ".MuiTreeItem-root.Mui-selected > .MuiTreeItem-content .MuiTreeItem-label:hover, .MuiTreeItem-root.Mui-selected:focus > .MuiTreeItem-content .MuiTreeItem-label":
-      {
-        backgroundColor: "blue",
-      },
+    {
+      backgroundColor: "blue",
+    },
   },
 });
 
@@ -318,7 +318,7 @@ const Structure = (props) => {
     setShowAddSubTaskModal(false);
   };
 
-  const toggleAddSubSubTaskModal = () => {};
+  const toggleAddSubSubTaskModal = () => { };
 
   const handleClickOutsideModal = (e) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
@@ -360,7 +360,7 @@ const Structure = (props) => {
       ...prevOptions,
       [`${organizationIndex}-${clusterIndex}-${selectedDepartmentIndex}`]:
         !prevOptions[
-          `${organizationIndex}-${clusterIndex}-${selectedDepartmentIndex}`
+        `${organizationIndex}-${clusterIndex}-${selectedDepartmentIndex}`
         ],
     }));
   };
@@ -800,8 +800,8 @@ const Structure = (props) => {
                                               <AccountCircleIcon className="text-blue-500" />
                                               <span className="font-medium">
                                                 {selectedDepartment.Users &&
-                                                selectedDepartment.Users
-                                                  .length !== 0 ? (
+                                                  selectedDepartment.Users
+                                                    .length !== 0 ? (
                                                   selectedDepartment.Users.find(
                                                     (user) =>
                                                       user.is_division_leader
@@ -840,21 +840,21 @@ const Structure = (props) => {
 
                                               {assignmembertodepartment !==
                                                 0 && (
-                                                <button
-                                                  onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleSectorAssignMemberClick(
-                                                      selectedDepartment
-                                                    );
-                                                  }}
-                                                  className="flex items-center gap-1 px-3 py-1.5 bg-white hover:bg-gray-50 text-gray-700 rounded-lg border border-gray-300 transition-colors duration-200 text-xs font-medium"
-                                                >
-                                                  <PersonAddAlt1Icon
-                                                    style={{ fontSize: 14 }}
-                                                  />
-                                                  <span>Assign Members</span>
-                                                </button>
-                                              )}
+                                                  <button
+                                                    onClick={(e) => {
+                                                      e.stopPropagation();
+                                                      handleSectorAssignMemberClick(
+                                                        selectedDepartment
+                                                      );
+                                                    }}
+                                                    className="flex items-center gap-1 px-3 py-1.5 bg-white hover:bg-gray-50 text-gray-700 rounded-lg border border-gray-300 transition-colors duration-200 text-xs font-medium"
+                                                  >
+                                                    <PersonAddAlt1Icon
+                                                      style={{ fontSize: 14 }}
+                                                    />
+                                                    <span>Assign Members</span>
+                                                  </button>
+                                                )}
 
                                               <div className="flex items-center gap-2">
                                                 {updateDepartment !== 0 && (
@@ -917,7 +917,7 @@ const Structure = (props) => {
                   onClick={() => handleOrganizationAddClick()}
                   className="mt-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
                 >
-                  Create Your First Organization
+                  Create Your Organization
                 </button>
               )}
             </div>
@@ -952,50 +952,25 @@ const Structure = (props) => {
 
       {editModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">
-                  Edit Organization
-                </h2>
-                <button
-                  onClick={handleEditModalClose}
-                  className="text-gray-400 hover:text-gray-600 text-2xl"
-                >
-                  ✕
-                </button>
-              </div>
-              <Editorganization
-                leader={leader}
-                selectedRow={selectedRow}
-                handleCloseModal={handleEditModalClose}
-                handlefetchOrganization={fetchData}
-              />
-            </div>
+          <div className="rounded-2xl shadow-2xl w-full max-w-2xl">
+
+            <Editorganization
+              leader={leader}
+              selectedRow={selectedRow}
+              handleCloseModal={handleEditModalClose}
+              handlefetchOrganization={fetchData}
+            />
           </div>
         </div>
       )}
 
       {addSectorModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">
-                  Add Cluster
-                </h2>
-                <button
-                  onClick={handleAddSectorModalClose}
-                  className="text-gray-400 hover:text-gray-600 text-2xl"
-                >
-                  ✕
-                </button>
-              </div>
-              <SectorAdd
-                handlefetchSectors={fetchClusters}
-                handleCloseModal={handleAddSectorModalClose}
-              />
-            </div>
+          <div className="rounded-2xl shadow-2xl w-full max-w-2xl">
+            <SectorAdd
+              handlefetchSectors={fetchClusters}
+              handleCloseModal={handleAddSectorModalClose}
+            />
           </div>
         </div>
       )}
@@ -1027,25 +1002,12 @@ const Structure = (props) => {
 
       {editClusterModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">
-                  Edit Cluster
-                </h2>
-                <button
-                  onClick={handleEditClusterModalClose}
-                  className="text-gray-400 hover:text-gray-600 text-2xl"
-                >
-                  ✕
-                </button>
-              </div>
-              <SectorEdit
-                handlefetchClusters={fetchClusters}
-                handleCloseModal={handleEditClusterModalClose}
-                selectedRow={selectedRow}
-              />
-            </div>
+          <div className="rounded-2xl shadow-2xl w-full max-w-2xl">
+            <SectorEdit
+              handlefetchClusters={fetchClusters}
+              handleCloseModal={handleEditClusterModalClose}
+              selectedRow={selectedRow}
+            />
           </div>
         </div>
       )}

@@ -49,6 +49,27 @@ router
     verifyAccessWithoutProject(process.env.GET_ALL_USER),
     adminController.getAllUser
   );
+router
+  .route("/find_organization_admin_user")
+  .get(
+    verifyJWT,
+    verifyAccessWithoutProject(process.env.GET_ALL_USER),
+    adminController.getOrganizationAdminUser
+  );
+router
+  .route("/find_sector_admin_user")
+  .get(
+    verifyJWT,
+    verifyAccessWithoutProject(process.env.GET_ALL_USER),
+    adminController.getSectorAdminUser
+  );
+router
+  .route("/find_department_admin_user")
+  .get(
+    verifyJWT,
+    verifyAccessWithoutProject(process.env.GET_ALL_USER),
+    adminController.getDepartmentAdminUser
+  );
 router.route("/profile/update/:id").put(verifyJWT, adminController.editMember);
 router
   .route("/profile/update_user_profile/:id")

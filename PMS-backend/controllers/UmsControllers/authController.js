@@ -51,9 +51,7 @@ const handleAuth = async (req, res) => {
           "You are temporarily banned from accessing your account. Please contact us for assistance.",
       });
     }
-    console.log(password, foundUser.password);
     const match = await bcrypt.compare(password, foundUser.password);
-    console.log(match);
     if (match) {
       const accessToken = jwt.sign(
         {

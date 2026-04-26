@@ -686,7 +686,7 @@ const SideandNav = (props) => {
         variant="h6"
         sx={{ my: 2, color: "#0A5077", fontWeight: 600 }}
       >
-        EAII - PMS
+        ECSC - PMS
       </Typography>
       <Divider />
       <Box sx={{ display: { xs: "block", sm: "block", md: "none" }, px: 2 }}>

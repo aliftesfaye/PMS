@@ -547,9 +547,9 @@ const Users = () => {
                           )}
                         </div>
                       ) : (
-                        <div className="text-gray-400 text-sm">
-                          No password set
-                        </div>
+                       <div className="flex items-center justify-left text-gray-400 text-lg">
+                        🔒
+                      </div>
                       )}
                     </StyledTableCell>
                     <StyledTableCell>

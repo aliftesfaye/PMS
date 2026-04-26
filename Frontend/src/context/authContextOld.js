@@ -19,7 +19,7 @@ const AuthProvider = ({ children }) => {
     try {
       const response = await instance.post("/ums/login", { email, password });
       const responseData = response.data;
-      if (response.status === 200) {
+      if (response.statusText === "OK") {
         localStorage.removeItem("userInfo");
         localStorage.removeItem("permissions");
         localStorage.removeItem("selectedLink");
@@ -29,6 +29,7 @@ const AuthProvider = ({ children }) => {
         localStorage.removeItem("showDropdown");
         const info = await responseData;
         localStorage.setItem("userInfo", JSON.stringify(info));
+        console.log(responseData);
         await isLoggedIn();
         return info;
       }

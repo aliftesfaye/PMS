@@ -71,6 +71,90 @@ const getAllUser = async (req, res) => {
   }
 };
 
+const getOrganizationAdminUser = async (req, res) => {
+  try {
+    const users = await User.findAll({
+      where: { is_deleted: false },
+      include: [
+        { model: Project, as: "Projects" },
+        {
+          model: Roles,
+          as: "Roles",
+          where: {
+            name: "Organization Admin",
+            is_deleted: false,
+          },
+          required: true,
+        },
+      ],
+    });
+    if (!users || users.length === 0) {
+      return res.status(404).json({ message: "No users found" });
+    }
+
+    return res.status(200).json(users); // Use 200 status code for success
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+const getSectorAdminUser = async (req, res) => {
+  try {
+    const users = await User.findAll({
+      where: { is_deleted: false },
+      include: [
+        { model: Project, as: "Projects" },
+        {
+          model: Roles,
+          as: "Roles",
+          where: {
+            name: "Cluster Admin",
+            is_deleted: false,
+          },
+          required: true,
+        },
+      ],
+    });
+    if (!users || users.length === 0) {
+      return res.status(404).json({ message: "No users found" });
+    }
+
+    return res.status(200).json(users); // Use 200 status code for success
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+const getDepartmentAdminUser = async (req, res) => {
+  try {
+    const users = await User.findAll({
+      where: { is_deleted: false },
+      include: [
+        { model: Project, as: "Projects" },
+        {
+          model: Roles,
+          as: "Roles",
+          where: {
+            name: "Department Admin",
+            is_deleted: false,
+          },
+          required: true,
+        },
+      ],
+    });
+    if (!users || users.length === 0) {
+      return res.status(404).json({ message: "No users found" });
+    }
+
+    return res.status(200).json(users); // Use 200 status code for success
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
 const deleteUser = async (req, res) => {
   const full_name = req.params.full_name;
   const role = req.params.role;
@@ -282,5 +366,8 @@ module.exports = {
   editUserProfile,
   toggleSuspend,
   getAllUser,
+  getOrganizationAdminUser,
+  getSectorAdminUser,
+  getDepartmentAdminUser,
   getAllUserproject,
 };

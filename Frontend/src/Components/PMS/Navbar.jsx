@@ -26,6 +26,7 @@ import { useAuth } from "../../context/authContext";
 import apiService from "../services/apiServices";
 import ProfileUpdate from "./Myprofile";
 import EaiiIcon from "../Assets/Eaii.png";
+import ethiopian_civil_service_commistion_logo from "../Assets/ethiopian_civil_service_commistion_logo.png";
 import ECSCIcon from "../Assets/ethiopian_civil_service_commistion_logo.png";
 import { Divider } from "@material-ui/core";
 
@@ -174,15 +175,13 @@ const Navbar = ({ drawer, mobileOpen, handleDrawerToggle }) => {
             <MenuItem
               key={notification.id}
               onClick={() => markNotificationAsSeen(notification.id)}
-              className={`px-4 py-3 hover:bg-gray-50 transition-colors ${
-                !notification.seen ? "bg-blue-50" : ""
-              }`}
+              className={`px-4 py-3 hover:bg-gray-50 transition-colors ${!notification.seen ? "bg-blue-50" : ""
+                }`}
             >
               <div className="flex items-start space-x-3">
                 <div
-                  className={`mt-1 w-2 h-2 rounded-full ${
-                    !notification.seen ? "bg-primary-500" : "bg-transparent"
-                  }`}
+                  className={`mt-1 w-2 h-2 rounded-full ${!notification.seen ? "bg-primary-500" : "bg-transparent"
+                    }`}
                 />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-900">
@@ -283,9 +282,8 @@ const Navbar = ({ drawer, mobileOpen, handleDrawerToggle }) => {
   // Render search bar
   const renderSearchBar = () => (
     <div
-      className={`hidden lg:flex items-center transition-all duration-300 ${
-        searchOpen ? "flex-1 max-w-2xl" : "w-64"
-      }`}
+      className={`hidden lg:flex items-center transition-all duration-300 ${searchOpen ? "flex-1 max-w-2xl" : "w-64"
+        }`}
     >
       <div className="relative flex-1">
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -295,9 +293,8 @@ const Navbar = ({ drawer, mobileOpen, handleDrawerToggle }) => {
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className={`w-full pl-10 pr-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-transparent text-white placeholder-white/70 transition-all duration-300 ${
-            searchOpen ? "opacity-100" : "opacity-0 lg:opacity-100"
-          }`}
+          className={`w-full pl-10 pr-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-transparent text-white placeholder-white/70 transition-all duration-300 ${searchOpen ? "opacity-100" : "opacity-0 lg:opacity-100"
+            }`}
           placeholder="Search projects, users, tasks..."
         />
         {searchOpen && (
@@ -340,15 +337,15 @@ const Navbar = ({ drawer, mobileOpen, handleDrawerToggle }) => {
               <div className="flex items-center space-x-3">
                 <div className="hidden lg:flex items-center space-x-2">
                   <img
-                    src={EaiiIcon}
-                    alt="EAII Logo"
+                    src={ethiopian_civil_service_commistion_logo}
+                    alt="Federal Civil Service Commission logo"
                     className="h-8 w-8 object-contain"
                   />
                   <div className="h-6 w-px bg-white/30" />
                 </div>
                 <div className="flex flex-col">
                   <span className="text-white font-bold text-lg tracking-tight">
-                    EAII-PMS
+                    ECSC-PMS
                   </span>
                   <span className="text-white/80 text-xs">
                     Project Management System
@@ -459,12 +456,12 @@ const Navbar = ({ drawer, mobileOpen, handleDrawerToggle }) => {
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <img
-                  src={EaiiIcon}
-                  alt="EAII Logo"
+                  src={ethiopian_civil_service_commistion_logo}
+                  alt="ECSC Logo"
                   className="h-10 w-10 object-contain"
                 />
                 <div>
-                  <h2 className="text-white font-bold text-lg">EAII PMS</h2>
+                  <h2 className="text-white font-bold text-lg">ECSC PMS</h2>
                   <p className="text-white/80 text-xs">Project Management</p>
                 </div>
               </div>
@@ -509,14 +506,16 @@ const Navbar = ({ drawer, mobileOpen, handleDrawerToggle }) => {
       {/* Profile Modal */}
       {modalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-xl shadow-2xl">
+          <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white rounded-xl shadow-2xl">
             <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200 rounded-t-xl">
               <h2 className="text-xl font-bold text-gray-900">My Profile</h2>
               <button
                 onClick={closeProfileModal}
                 className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
               >
-                <Close className="h-5 w-5" />
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
             </div>
             <div className="p-6">

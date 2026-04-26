@@ -278,6 +278,42 @@ const apiService = {
       throw error;
     }
   },
+  getOrganizationAdminUsers: async (token) => {
+    // const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    // const token = userInfo.access_token;
+    const config = { headers: { Authorization: `Bearer ${token}` } };
+    try {
+      const response = await instance.get("/ums/find_organization_admin_user", config);
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+  getSectorAdminUsers: async (token) => {
+    // const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    // const token = userInfo.access_token;
+    const config = { headers: { Authorization: `Bearer ${token}` } };
+    try {
+      const response = await instance.get("/ums/find_sector_admin_user", config);
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+  getDepartmentAdminUsers: async (token) => {
+    // const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    // const token = userInfo.access_token;
+    const config = { headers: { Authorization: `Bearer ${token}` } };
+    try {
+      const response = await instance.get("/ums/find_department_admin_user", config);
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
   getUsers: async () => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     const token = userInfo.access_token;

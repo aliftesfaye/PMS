@@ -1,6 +1,6 @@
 //export const BASE_URL = "http://localhost:5000";
-export const BASE_URL = "http://196.189.247.228/api";
-export const SOCKET_URL = "http://196.189.247.228:5001";
+export const BASE_URL = "https://pms.ecsc.gov.et/api";
+export const SOCKET_URL = "https://pms.ecsc.gov.et/socket";
 //export const SOCKET_URL = "http://localhost:5001";
 
 export const PERMISSIONS = {

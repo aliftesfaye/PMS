@@ -37,6 +37,8 @@ module.exports = (sequelize, DataTypes) => {
           model: "Project", // The name of the referenced model
           key: "project_id", // The name of the referenced column in the project table
         },
+        allowNull: true,
+        defaultValue: null,
       },
       role_id: {
         type: DataTypes.UUID,
